@@ -1,7 +1,7 @@
 // script.js
 
 // --- 1. CONFIGURACIÓN BASE: URL de tu API Backend ---
-const API_URL = 'http://localhost:5000/api'; // <--- ¡ASEGÚRATE DE QUE ESTA URL SEA LA CORRECTA PARA TU BACKEND!
+const API_URL = '/api'; // <--- ¡ASEGÚRATE DE QUE ESTA URL SEA LA CORRECTA PARA TU BACKEND!
 
 document.addEventListener('DOMContentLoaded', () => {
 
