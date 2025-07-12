@@ -6,19 +6,33 @@ services:
     rootDir: backend
     buildCommand: |
       echo "📁 Current directory: $(pwd)"
-      echo "📂 List root contents:"
+      echo "📂 Listing contents of repo root:"
       ls -la ..
+      
+      echo "📦 Moving into admin-frontend..."
       cd ../admin-frontend
-      echo "📦 Instalando dependencias de React..."
-      npm install
-      echo "🏗️ Construyendo el panel admin..."
+
+      if [ -f package-lock.json ]; then
+        echo "📥 Running npm ci..."
+        npm ci
+      else
+        echo "📥 Running npm install..."
+        npm install
+      fi
+
+      echo "🏗️ Running Vite build..."
       npm run build
-      echo "📂 Verificando archivos en dist:"
+
+      echo "📁 Listing build output:"
       ls -la dist
+
+      echo "📂 Creating admin folder in backend if missing..."
       mkdir -p ../backend/admin
-      echo "🧹 Limpiando carpeta admin..."
+
+      echo "🧹 Clearing previous admin contents..."
       rm -rf ../backend/admin/*
-      echo "📋 Copiando archivos build a backend/admin..."
+
+      echo "📋 Copying new build files to backend/admin..."
       cp -r dist/* ../backend/admin/
     startCommand: node server.js
     envVars:
