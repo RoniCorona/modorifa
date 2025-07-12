@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rifas Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a la Gran Rifa</h1>
+        <p>Participa, selecciona tus números y gana increíbles premios</p>
+    </header>
+
+    <main>
+        <section id="rifas-disponibles">
+            <h2>Rifas disponibles</h2>
+            <div class="contenedor-rifas" id="contenedorRifas">
+                <p>Cargando rifas...</p> 
+            </div>
+        </section>
+    </main>
+
+    <div id="modalTickets" class="modal oculto">
+        <div class="modal-contenido">
+            <span class="cerrar-modal">&times;</span>
+            <h2>Consultar mis Tickets</h2>
+            <p>Ingresa tu correo electrónico para ver los tickets asociados a tus compras.</p>
+            <form id="formConsultarTickets">
+                <label for="correoConsulta">Correo Electrónico:</label>
+                <input type="email" id="correoConsulta" placeholder="tu@ejemplo.com" required>
+                <button type="submit">Consultar Tickets</button>
+            </form>
+            <div id="resultados-consulta-tickets" style="margin-top: 1rem; text-align: left;">
+            </div>
+        </div>
+    </div>
+
+    <div id="modalTerminos" class="modal">
+        <div class="modal-contenido terminos">
+            <h2>Términos y Condiciones de la Rifa</h2>
+            <div class="terminos-texto">
+                <p>Bienvenido a nuestras rifas. Al participar, aceptas los siguientes términos y condiciones:</p>
+                <ol>
+                    <li><strong>Edad Mínima:</strong> Debes ser mayor de 18 años para participar.</li>
+                    <li><strong>Validez del Ticket:</strong> Un ticket es válido solo después de que el pago haya sido verificado por nuestro equipo.</li>
+                    <li><strong>Sorteo:</strong> Los ganadores serán seleccionados de forma aleatoria en la fecha del sorteo indicada en la rifa. Los resultados son finales.</li>
+                    <li><strong>Notificación:</strong> Los ganadores serán notificados por correo electrónico y/o teléfono. Es tu responsabilidad proporcionar información de contacto correcta.</li>
+                    <li><strong>No Reembolsable:</strong> La compra de tickets no es reembolsable.</li>
+                    <li><strong>Privacidad:</strong> Nos comprometemos a proteger tu información personal y no la compartiremos con terceros.</li>
+                </ol>
+                <p>Al hacer clic en "Acepto", confirmas que has leído y estás de acuerdo con todos los términos y condiciones.</p>
+            </div>
+            <div class="acciones-modal">
+                <button id="btnAceptarTerminos" class="btn-aceptar">Acepto</button>
+                <button id="btnRechazarTerminos" class="btn-rechazar">No Acepto, Salir</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>Gracias por participar en nuestras rifas 🎉</p>
+    </footer>
+
+    <script src="script.js"></script> 
+</body>
+</html>
