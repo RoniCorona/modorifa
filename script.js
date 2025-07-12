@@ -304,9 +304,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (metodo === "binance") {
                 html = `
-                    <h4>Pago vía Binance</h4>
-                    <p><strong>Usuario:</strong> ronidev.bnb</p>
-                    <p><strong>Red:</strong> BSC (BEP-20)</p>
+                    <h4>Pago vía Binance USDT</h4>
+                    <p><strong>Usuario:</strong> Jesus Galindez</p>
+                    <p><strong>Correo:</strong> napogalindez@gmail.com</p>
+                    <p><strong>Compra mínima para este metodo de pago:</strong> 5 Tickets</p>
                     <p><strong>Monto a pagar:</strong> $${totalUSD.toFixed(2)}</p>
                     <label for="referenciaBinance">Referencia / ID de la Transacción:</label>
                     <input type="text" id="referenciaBinance" name="referenciaPago" placeholder="ID de la transacción Binance" required />
@@ -320,10 +321,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const totalBs = totalUSD * rifaTasaCambio;
                 html = `
                     <h4>Pago Móvil</h4>
-                    <p><strong>Banco:</strong> Banesco</p>
-                    <p><strong>Teléfono:</strong> 0412-1234567</p>
-                    <p><strong>CI:</strong> V-12345678</p>
-                    <p><strong>Nombre:</strong> Roni Dev</p>
+                    <p><strong>Banco:</strong> Venezuela</p>
+                    <p><strong>Teléfono:</strong> 0414-3548533</p>
+                    <p><strong>CI:</strong> V-24771856</p>
+                    <p><strong>Nombre:</strong> Jesus Galindez</p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
                     <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
@@ -332,8 +333,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (metodo === "zelle") {
                 html = `
                     <h4>Pago vía Zelle</h4>
-                    <p><strong>Correo:</strong> correo@zelle.com</p>
-                    <p><strong>Nombre:</strong> Nombre Apellido</p>
+                    <p><strong>Correo:</strong> modorifa@gmail.com</p>
+                    <p><strong>Nombre:</strong> Elvia Nunez</p>
+                    <p><strong>Compra mínima para este metodo de pago:</strong> 10 Tickets</p>
                     <p><strong>Monto a pagar:</strong> $${totalUSD.toFixed(2)}</p>
                     <label for="referenciaZelle">Confirmación o Nombre de Envío:</label>
                     <input type="text" id="referenciaZelle" name="referenciaPago" placeholder="ID o Nombre de la transacción" required />
