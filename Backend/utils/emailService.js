@@ -27,16 +27,17 @@ const sendTicketConfirmationEmail = async (emailTo, nombreComprador, rifa, ticke
     const ticketHtmlList = tickets.map(ticket => `
         <span style="
             display: inline-block;
-            background-color: #e0f2f7; /* Azul muy claro */
-            border: 1px solid #a7d9ed; /* Borde azul suave */
+            /* Colores dorados */
+            background-color: #FFF3E0; /* Amarillo muy claro, casi crema */
+            border: 1px solid #FFECB3; /* Amarillo suave para el borde */
             border-radius: 5px;
             padding: 8px 12px;
             margin: 5px;
             font-family: 'Montserrat', sans-serif;
             font-size: 1.1em;
             font-weight: 600;
-            color: #0056b3; /* Azul más oscuro */
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            color: #FFC107; /* Amarillo dorado más vibrante para el texto */
+            box-shadow: 2px 2px 5px rgba(255, 193, 7, 0.3); /* Sombra dorada para un efecto más brillante */
             min-width: 70px;
             text-align: center;
         ">
