@@ -5,10 +5,11 @@ services:
     plan: free
     rootDir: backend
     buildCommand: |
-      cd ../admin-frontend
-      npm install
-      npm run build
-      rm -rf ../backend/admin/*
+      cd ../admin-frontend && \
+      npm install && \
+      npm run build && \
+      mkdir -p ../backend/admin && \
+      rm -rf ../backend/admin/* && \
       cp -r dist/* ../backend/admin/
     startCommand: node server.js
     envVars:
