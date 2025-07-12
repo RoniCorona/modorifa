@@ -411,7 +411,7 @@ const PagosPanel = () => {
                                             <td>{pago.metodo || 'N/A'}</td> 
                                             <td>
                                                 {pago.comprobanteUrl ? (
-                                                    <a href={`http://localhost:5000${pago.comprobanteUrl}`} target="_blank" rel="noopener noreferrer" className="view-comprobante-link">
+                                                    <a href={`${axios.defaults.baseURL.replace('/api', '')}${pago.comprobanteUrl}`} target="_blank" rel="noopener noreferrer" className="view-comprobante-link">
                                                         Ver
                                                     </a>
                                                 ) : 'N/A'}
