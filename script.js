@@ -305,9 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (metodo === "binance") {
                 html = `
                     <h4>Pago vía Binance</h4>
-                    <p><strong>Usuario:</strong> Jesus Galindez</p>
-                    <p><strong>Correo:</strong> napogalindez@gmail.com</p>
-                    <p><strong>Compra mínima para este metodo de pago:</strong> 5 Tickets</p>
+                    <p><strong>Usuario:</strong> ronidev.bnb</p>
+                    <p><strong>Red:</strong> BSC (BEP-20)</p>
                     <p><strong>Monto a pagar:</strong> $${totalUSD.toFixed(2)}</p>
                     <label for="referenciaBinance">Referencia / ID de la Transacción:</label>
                     <input type="text" id="referenciaBinance" name="referenciaPago" placeholder="ID de la transacción Binance" required />
@@ -321,10 +320,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const totalBs = totalUSD * rifaTasaCambio;
                 html = `
                     <h4>Pago Móvil</h4>
-                    <p><strong>Banco:</strong> Venezuela</p>
-                    <p><strong>Teléfono:</strong> 0414-3548533</p>
-                    <p><strong>CI:</strong> V-24771856</p>
-                    <p><strong>Nombre:</strong> Jesus Galindez</p>
+                    <p><strong>Banco:</strong> Banesco</p>
+                    <p><strong>Teléfono:</strong> 0412-1234567</p>
+                    <p><strong>CI:</strong> V-12345678</p>
+                    <p><strong>Nombre:</strong> Roni Dev</p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
                     <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
@@ -333,9 +332,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (metodo === "zelle") {
                 html = `
                     <h4>Pago vía Zelle</h4>
-                    <p><strong>Correo:</strong> modorifa@gmail.com</p>
-                    <p><strong>Nombre:</strong> Elvia Nunez</p>
-                    <p><strong>Compra mínima para este metodo de pago:</strong> 10 Ticket</p>
+                    <p><strong>Correo:</strong> correo@zelle.com</p>
+                    <p><strong>Nombre:</strong> Nombre Apellido</p>
                     <p><strong>Monto a pagar:</strong> $${totalUSD.toFixed(2)}</p>
                     <label for="referenciaZelle">Confirmación o Nombre de Envío:</label>
                     <input type="text" id="referenciaZelle" name="referenciaPago" placeholder="ID o Nombre de la transacción" required />
@@ -386,15 +384,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const rifa = await response.json();
 
-                document.getElementById('rifaTitulo').textContent = rifa.nombreProducto;
-                document.getElementById('rifaImagen').src = rifa.imagenUrl;
-                document.getElementById('rifaDescripcion').textContent = rifa.descripcion;
-                document.getElementById('rifaPrecio').textContent = rifa.precioTicketUSD.toFixed(2);
+                // Asegurarse de que el elemento existe antes de intentar actualizarlo
+                const rifaTituloElement = document.getElementById('rifaTitulo');
+                if (rifaTituloElement) rifaTituloElement.textContent = rifa.nombreProducto;
                 
-                // Estos elementos ya no están en el HTML, por lo que no se intenta acceder a ellos:
-                // document.getElementById('totalTickets').textContent = rifa.totalTickets;
-                // document.getElementById('ticketsVendidos').textContent = rifa.ticketsVendidos;
-                // document.getElementById('ticketsDisponibles').textContent = rifa.ticketsDisponibles;
+                const rifaImagenElement = document.getElementById('rifaImagen');
+                if (rifaImagenElement) rifaImagenElement.src = rifa.imagenUrl;
+                
+                const rifaDescripcionElement = document.getElementById('rifaDescripcion');
+                if (rifaDescripcionElement) rifaDescripcionElement.textContent = rifa.descripcion;
+                
+                const rifaPrecioElement = document.getElementById('rifaPrecio');
+                if (rifaPrecioElement) rifaPrecioElement.textContent = rifa.precioTicketUSD.toFixed(2);
+                
+                // Elementos ocultados/comentados en rifa.html, no se tocan aquí
+                // const totalTicketsElement = document.getElementById('totalTickets');
+                // if (totalTicketsElement) totalTicketsElement.textContent = rifa.totalTickets;
+                // const ticketsVendidosElement = document.getElementById('ticketsVendidos');
+                // if (ticketsVendidosElement) ticketsVendidosElement.textContent = rifa.ticketsVendidos;
+                // const ticketsDisponiblesElement = document.getElementById('ticketsDisponibles');
+                // if (ticketsDisponiblesElement) ticketsDisponiblesElement.textContent = rifa.ticketsDisponibles;
 
                 const porcentaje = rifa.totalTickets > 0 ? (rifa.ticketsVendidos / rifa.totalTickets) * 100 : 0;
                 const barraProgresoDetalle = document.querySelector('.barra-global-progreso');
@@ -403,24 +412,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (barraProgresoDetalle) barraProgresoDetalle.style.width = `${porcentaje}%`;
                 if (porcentajeVentaTexto) porcentajeVentaTexto.textContent = `${porcentaje.toFixed(0)}% Vendido`;
 
-                // Ocultar fecha de sorteo
-                // if (rifa.fechaSorteo) {
-                //     document.getElementById('rifaSorteoFecha').textContent = new Date(rifa.fechaSorteo).toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-                // } else {
-                //     document.getElementById('rifaSorteoFecha').textContent = 'Pendiente';
+                // Fecha de sorteo ocultada/comentada en rifa.html
+                // const rifaSorteoFechaElement = document.getElementById('rifaSorteoFecha');
+                // if (rifaSorteoFechaElement) {
+                //     if (rifa.fechaSorteo) {
+                //         rifaSorteoFechaElement.textContent = new Date(rifa.fechaSorteo).toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                //     } else {
+                //         rifaSorteoFechaElement.textContent = 'Pendiente';
+                //     }
                 // }
                 
                 // Mostrar fecha de inicio y fin (estos no se pidieron ocultar)
-                if (rifa.fechaInicioSorteo) {
-                    document.getElementById('rifaInicioFecha').textContent = new Date(rifa.fechaInicioSorteo).toLocaleDateString('es-VE');
-                } else {
-                    document.getElementById('rifaInicioFecha').textContent = 'N/A';
+                const rifaInicioFechaElement = document.getElementById('rifaInicioFecha');
+                if (rifaInicioFechaElement) {
+                    if (rifa.fechaInicioSorteo) {
+                        rifaInicioFechaElement.textContent = new Date(rifa.fechaInicioSorteo).toLocaleDateString('es-VE');
+                    } else {
+                        rifaInicioFechaElement.textContent = 'N/A';
+                    }
                 }
-                if (rifa.fechaFin) {
-                    document.getElementById('rifaFinFecha').textContent = new Date(rifa.fechaFin).toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-                } else {
-                    document.getElementById('rifaFinFecha').textContent = 'N/A';
+
+                const rifaFinFechaElement = document.getElementById('rifaFinFecha');
+                if (rifaFinFechaElement) {
+                    if (rifa.fechaFin) {
+                        rifaFinFechaElement.textContent = new Date(rifa.fechaFin).toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                    } else {
+                        rifaFinFechaElement.textContent = 'N/A';
+                    }
                 }
+
 
                 rifaPrecioUnitario = rifa.precioTicketUSD;
                 if (precioTicketDisplaySpan) precioTicketDisplaySpan.textContent = rifaPrecioUnitario.toFixed(2);
@@ -642,4 +662,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-}); // Fin de DOMContentLoaded 
+}); // Fin de DOMContentLoaded
