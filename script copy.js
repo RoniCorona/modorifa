@@ -1,7 +1,7 @@
 // script.js
 
 // --- 1. CONFIGURACIÓN BASE: URL de tu API Backend ---
-const API_URL = 'http://localhost:5000/api'; // <--- ¡ASEGÚRATE DE QUE ESTA URL SEA LA CORRECTA PARA TU BACKEND!
+const API_URL = '/api'; // <--- ¡ASEGÚRATE DE QUE ESTA URL SEA LA CORRECTA PARA TU BACKEND!
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -96,9 +96,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     rifas.forEach(rifa => {
                         const porcentajeVendido = rifa.totalTickets > 0 ? (rifa.ticketsVendidos / rifa.totalTickets) * 100 : 0;
-                        const estadoBoton = porcentajeVendido >= 100 ? '¡Rifa Cerrada!' : 'Comprar Números';
-                        const isDisabled = porcentajeVendido >= 100 ? 'disabled' : '';
-                        const hrefLink = porcentajeVendido >= 100 ? '#' : `rifa.html?id=${rifa._id}`;
+                        
+                        // Determinar el estado del botón de compra y el enlace
+                        let estadoBoton = 'Comprar Números';
+                        let isDisabled = '';
+                        let hrefLink = `rifa.html?id=${rifa._id}`;
+
+                        // Lógica combinada para deshabilitar el botón
+                        if (rifa.ticketsVendidos >= rifa.totalTickets) {
+                            estadoBoton = '¡Rifa Agotada!';
+                            isDisabled = 'disabled';
+                            hrefLink = '#';
+                        } else if (rifa.estado === 'pausada') { // Si el estado general es pausada
+                            estadoBoton = 'Rifa Pausada';
+                            isDisabled = 'disabled';
+                            hrefLink = '#';
+                        } else if (rifa.estado === 'finalizada' || rifa.estado === 'sorteada') { // Si ya finalizó o fue sorteada
+                            estadoBoton = 'Rifa Finalizada';
+                            isDisabled = 'disabled';
+                            hrefLink = '#';
+                        } else if (rifa.estaAbiertaParaVenta === false) { // ¡NUEVO! Si está cerrada manualmente
+                            estadoBoton = 'Rifa Cerrada';
+                            isDisabled = 'disabled';
+                            hrefLink = '#';
+                        }
+
 
                         const rifaCard = document.createElement('div');
                         rifaCard.className = 'rifa-card';
@@ -235,12 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
             seccionCompra.classList.remove("oculto");
             detallesPago.innerHTML = "";
             detallesPago.classList.add("oculto");
-            const btnBinance = document.getElementById("pagoBinance");
-            const btnPagoMovil = document.getElementById("pagoMovil");
-            const btnZelle = document.getElementById("pagoZelle");
-            if (btnBinance) btnBinance.classList.remove("seleccionado");
-            if (btnPagoMovil) btnPagoMovil.classList.remove("seleccionado");
-            if (btnZelle) btnZelle.classList.remove("seleccionado");
+            const allPaymentButtons = document.querySelectorAll('.metodos-pago .metodo');
+            allPaymentButtons.forEach(btn => {
+                btn.classList.remove("seleccionado");
+            });
         });
     }
 
@@ -254,16 +274,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // === MÉTODO DE PAGO DINÁMICO (INTEGRACIÓN ZELLE) ===
     const btnBinance = document.getElementById("pagoBinance");
     const btnPagoMovil = document.getElementById("pagoMovil");
-    const btnZelle = document.getElementById("pagoZelle"); // <-- AÑADIDO
+    const btnZelle = document.getElementById("pagoZelle"); 
     const detallesPago = document.getElementById("detalles-pago");
     const tasaBCVDisplay = document.getElementById("tasaBCVDisplay");
 
     let metodoPagoSeleccionado = '';
 
-    if (btnBinance && btnPagoMovil && btnZelle && detallesPago && inputCantidad) {
+    if (detallesPago && inputCantidad) { 
         function limpiarSeleccion() {
-            [btnBinance, btnPagoMovil, btnZelle].forEach(btn => { // <-- MODIFICADO
-                if (btn) btn.classList.remove("seleccionado");
+            const allPaymentButtons = document.querySelectorAll('.metodos-pago .metodo');
+            allPaymentButtons.forEach(btn => {
+                btn.classList.remove("seleccionado");
             });
             detallesPago.innerHTML = "";
             detallesPago.classList.add("oculto");
@@ -292,8 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 metodoPagoSeleccionado = 'Binance';
             } else if (metodo === "pagomovil") {
                 if (rifaTasaCambio === 0) {
-                     showMessage('La tasa de cambio no está disponible para este método de pago.', 'error');
-                     return;
+                    showMessage('La tasa de cambio no está disponible para este método de pago.', 'error');
+                    return;
                 }
                 const totalBs = totalUSD * rifaTasaCambio;
                 html = `
@@ -307,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
                 `;
                 metodoPagoSeleccionado = 'Pago Móvil';
-            } else if (metodo === "zelle") { // <-- AÑADIDO
+            } else if (metodo === "zelle") {
                 html = `
                     <h4>Pago vía Zelle</h4>
                     <p><strong>Correo:</strong> correo@zelle.com</p>
@@ -323,24 +344,31 @@ document.addEventListener('DOMContentLoaded', () => {
             detallesPago.classList.remove("oculto");
         }
 
-        btnBinance.addEventListener("click", () => {
-            limpiarSeleccion();
-            btnBinance.classList.add("seleccionado");
-            mostrarDetalles("binance");
-        });
+        if (btnBinance) {
+            btnBinance.addEventListener("click", () => {
+                limpiarSeleccion();
+                btnBinance.classList.add("seleccionado");
+                mostrarDetalles("binance");
+            });
+        }
 
-        btnPagoMovil.addEventListener("click", () => {
-            limpiarSeleccion();
-            btnPagoMovil.classList.add("seleccionado");
-            mostrarDetalles("pagomovil");
-        });
+        if (btnPagoMovil) {
+            btnPagoMovil.addEventListener("click", () => {
+                limpiarSeleccion();
+                btnPagoMovil.classList.add("seleccionado");
+                mostrarDetalles("pagomovil");
+            });
+        }
         
-        btnZelle.addEventListener("click", () => { // <-- AÑADIDO
-            limpiarSeleccion();
-            btnZelle.classList.add("seleccionado");
-            mostrarDetalles("zelle");
-        });
+        if (btnZelle) { 
+            btnZelle.addEventListener("click", () => {
+                limpiarSeleccion();
+                btnZelle.classList.add("seleccionado");
+                mostrarDetalles("zelle");
+            });
+        }
     }
+
 
     // === Carga de detalles de la rifa en rifa.html (cuando se accede con un ID) ===
     const rifaId = getUrlParameter('id');
@@ -459,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 moneda: monedaPago,
                 metodo: metodoPagoSeleccionado,
                 referenciaPago: referenciaPagoInput.value,
-                comprobanteUrl: null,
+                comprobanteUrl: null, // Asumiendo que por ahora no hay comprobante
                 nombreComprador, emailComprador, telefonoComprador,
                 tipoIdentificacionComprador, numeroIdentificacionComprador,
                 tasaCambioUsada: rifaTasaCambio 

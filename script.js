@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     contenedorRifas.innerHTML = '';
 
                     rifas.forEach(rifa => {
+                        // El porcentaje de venta sigue siendo relevante para la barra de progreso general
                         const porcentajeVendido = rifa.totalTickets > 0 ? (rifa.ticketsVendidos / rifa.totalTickets) * 100 : 0;
                         
                         // Determinar el estado del botón de compra y el enlace
@@ -304,8 +305,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (metodo === "binance") {
                 html = `
                     <h4>Pago vía Binance</h4>
-                    <p><strong>Usuario:</strong> ronidev.bnb</p>
-                    <p><strong>Red:</strong> BSC (BEP-20)</p>
+                    <p><strong>Usuario:</strong> Jesus Galindez</p>
+                    <p><strong>Correo:</strong> napogalindez@gmail.com</p>
+                    <p><strong>Compra mínima para este metodo de pago:</strong> 5 Tickets</p>
                     <p><strong>Monto a pagar:</strong> $${totalUSD.toFixed(2)}</p>
                     <label for="referenciaBinance">Referencia / ID de la Transacción:</label>
                     <input type="text" id="referenciaBinance" name="referenciaPago" placeholder="ID de la transacción Binance" required />
@@ -319,10 +321,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const totalBs = totalUSD * rifaTasaCambio;
                 html = `
                     <h4>Pago Móvil</h4>
-                    <p><strong>Banco:</strong> Banesco</p>
-                    <p><strong>Teléfono:</strong> 0412-1234567</p>
-                    <p><strong>CI:</strong> V-12345678</p>
-                    <p><strong>Nombre:</strong> Roni Dev</p>
+                    <p><strong>Banco:</strong> Venezuela</p>
+                    <p><strong>Teléfono:</strong> 0414-3548533</p>
+                    <p><strong>CI:</strong> V-24771856</p>
+                    <p><strong>Nombre:</strong> Jesus Galindez</p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
                     <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
@@ -331,8 +333,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (metodo === "zelle") {
                 html = `
                     <h4>Pago vía Zelle</h4>
-                    <p><strong>Correo:</strong> correo@zelle.com</p>
-                    <p><strong>Nombre:</strong> Nombre Apellido</p>
+                    <p><strong>Correo:</strong> modorifa@gmail.com</p>
+                    <p><strong>Nombre:</strong> Elvia Nunez</p>
+                    <p><strong>Compra mínima para este metodo de pago:</strong> 10 Ticket</p>
                     <p><strong>Monto a pagar:</strong> $${totalUSD.toFixed(2)}</p>
                     <label for="referenciaZelle">Confirmación o Nombre de Envío:</label>
                     <input type="text" id="referenciaZelle" name="referenciaPago" placeholder="ID o Nombre de la transacción" required />
@@ -387,9 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('rifaImagen').src = rifa.imagenUrl;
                 document.getElementById('rifaDescripcion').textContent = rifa.descripcion;
                 document.getElementById('rifaPrecio').textContent = rifa.precioTicketUSD.toFixed(2);
-                document.getElementById('totalTickets').textContent = rifa.totalTickets;
-                document.getElementById('ticketsVendidos').textContent = rifa.ticketsVendidos;
-                document.getElementById('ticketsDisponibles').textContent = rifa.ticketsDisponibles;
+                
+                // Estos elementos ya no están en el HTML, por lo que no se intenta acceder a ellos:
+                // document.getElementById('totalTickets').textContent = rifa.totalTickets;
+                // document.getElementById('ticketsVendidos').textContent = rifa.ticketsVendidos;
+                // document.getElementById('ticketsDisponibles').textContent = rifa.ticketsDisponibles;
 
                 const porcentaje = rifa.totalTickets > 0 ? (rifa.ticketsVendidos / rifa.totalTickets) * 100 : 0;
                 const barraProgresoDetalle = document.querySelector('.barra-global-progreso');
@@ -398,11 +403,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (barraProgresoDetalle) barraProgresoDetalle.style.width = `${porcentaje}%`;
                 if (porcentajeVentaTexto) porcentajeVentaTexto.textContent = `${porcentaje.toFixed(0)}% Vendido`;
 
-                if (rifa.fechaSorteo) {
-                    document.getElementById('rifaSorteoFecha').textContent = new Date(rifa.fechaSorteo).toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-                } else {
-                    document.getElementById('rifaSorteoFecha').textContent = 'Pendiente';
-                }
+                // Ocultar fecha de sorteo
+                // if (rifa.fechaSorteo) {
+                //     document.getElementById('rifaSorteoFecha').textContent = new Date(rifa.fechaSorteo).toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                // } else {
+                //     document.getElementById('rifaSorteoFecha').textContent = 'Pendiente';
+                // }
+                
+                // Mostrar fecha de inicio y fin (estos no se pidieron ocultar)
                 if (rifa.fechaInicioSorteo) {
                     document.getElementById('rifaInicioFecha').textContent = new Date(rifa.fechaInicioSorteo).toLocaleDateString('es-VE');
                 } else {
@@ -634,4 +642,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-}); // Fin de DOMContentLoaded
+}); // Fin de DOMContentLoaded 
