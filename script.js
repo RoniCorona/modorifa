@@ -397,13 +397,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rifaPrecioElement = document.getElementById('rifaPrecio');
                 if (rifaPrecioElement) rifaPrecioElement.textContent = rifa.precioTicketUSD.toFixed(2);
                 
-                // Elementos ocultados/comentados en rifa.html, no se tocan aquí
-                // const totalTicketsElement = document.getElementById('totalTickets');
-                // if (totalTicketsElement) totalTicketsElement.textContent = rifa.totalTickets;
-                // const ticketsVendidosElement = document.getElementById('ticketsVendidos');
-                // if (ticketsVendidosElement) ticketsVendidosElement.textContent = rifa.ticketsVendidos;
-                // const ticketsDisponiblesElement = document.getElementById('ticketsDisponibles');
-                // if (ticketsDisponiblesElement) ticketsDisponiblesElement.textContent = rifa.ticketsDisponibles;
+                // Elementos que han sido comentados en rifa.html y ahora se omiten en script.js
+                // No se intenta acceder a totalTickets, ticketsVendidos, ticketsDisponibles.
+                // Esto es crucial para evitar el error "Cannot set properties of null".
 
                 const porcentaje = rifa.totalTickets > 0 ? (rifa.ticketsVendidos / rifa.totalTickets) * 100 : 0;
                 const barraProgresoDetalle = document.querySelector('.barra-global-progreso');
@@ -412,9 +408,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (barraProgresoDetalle) barraProgresoDetalle.style.width = `${porcentaje}%`;
                 if (porcentajeVentaTexto) porcentajeVentaTexto.textContent = `${porcentaje.toFixed(0)}% Vendido`;
 
-                // Fecha de sorteo ocultada/comentada en rifa.html
+                // Fecha de sorteo ocultada/comentada en rifa.html, se omite aquí
                 // const rifaSorteoFechaElement = document.getElementById('rifaSorteoFecha');
-                // if (rifaSorteoFechaElement) {
+                // if (rifaSorteoFechaElement) { // Esta comprobación ya no es necesaria si el elemento está siempre comentado
                 //     if (rifa.fechaSorteo) {
                 //         rifaSorteoFechaElement.textContent = new Date(rifa.fechaSorteo).toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
                 //     } else {
