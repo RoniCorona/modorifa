@@ -12,11 +12,11 @@ services:
     startCommand: node server.js
     envVars:
       - key: MONGO_URI
-        value: TU_STRING_DE_CONEXION_MONGODB
+        value: mongodb+srv://RoniCorona:22121997@rifascluster.iqlewr4.mongodb.net/RifasDB?retryWrites=true&w=majority&appName=RifasCluster
       - key: PORT
         value: 10000
       - key: ALLOWED_ORIGINS
-        value: https://rifas.onrender.com,http://localhost:5000
+        value: https://rifas-app.onrender.com,http://localhost:5000
     buildFilter:
       paths:
         - backend/**
