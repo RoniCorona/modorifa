@@ -27,17 +27,17 @@ const sendTicketConfirmationEmail = async (emailTo, nombreComprador, rifa, ticke
     const ticketHtmlList = tickets.map(ticket => `
         <span style="
             display: inline-block;
-            /* Colores dorados */
-            background-color: #FFF3E0; /* Amarillo muy claro, casi crema */
-            border: 1px solid #FFECB3; /* Amarillo suave para el borde */
+            /* Fondo azul y borde para el ticket */
+            background-color: #e0f2f7; /* Azul muy claro */
+            border: 1px solid #a7d9ed; /* Borde azul suave */
             border-radius: 5px;
             padding: 8px 12px;
             margin: 5px;
             font-family: 'Montserrat', sans-serif;
             font-size: 1.1em;
             font-weight: 600;
-            color: #FFC107; /* Amarillo dorado más vibrante para el texto */
-            box-shadow: 2px 2px 5px rgba(255, 193, 7, 0.3); /* Sombra dorada para un efecto más brillante */
+            color: #FFD700; /* Color dorado para el texto (incluyendo el emoji si es posible) */
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* Sombra suave para un efecto limpio */
             min-width: 70px;
             text-align: center;
         ">
@@ -85,7 +85,7 @@ const sendTicketConfirmationEmail = async (emailTo, nombreComprador, rifa, ticke
                         </p>
 
                         <p style="font-size: 1.1em; margin-top: 25px;">Con los mejores deseos,</p>
-                        <p style="font-size: 1.2em; font-weight: 600; color: #007bff;">El equipo de Roni Rifas</p>
+                        <p style="font-size: 1.2em; font-weight: 600; color: #007bff;">El equipo de Modo Rifa</p>
                     </div>
 
                     <div style="background-color: #f0f8ff; padding: 20px; text-align: center; border-top: 1px solid #e3f2fd; font-size: 0.9em; color: #6c757d;">
