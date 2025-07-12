@@ -16,7 +16,7 @@ function LoginPage() {
 
     try {
       // Realiza la petición POST al backend para iniciar sesión
-      const response = await axios.post('http://localhost:5000/api/admin/login', {
+      const response = await axios.post('/admin/login', {
         email,
         password,
       });

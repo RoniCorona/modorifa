@@ -57,7 +57,7 @@ function RifasPage() {
         setError('');
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await axios.get('http://localhost:5000/api/rifas', {
+            const response = await axios.get('/rifas', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

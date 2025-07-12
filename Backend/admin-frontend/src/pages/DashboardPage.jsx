@@ -94,7 +94,7 @@ function DashboardPage() {
                 };
 
                 // Realiza la petición GET a la API de estadísticas
-                const response = await axios.get('http://localhost:5000/api/dashboard/stats', config);
+                const response = await axios.get('dashboard/stats', config);
                 setStats(response.data); // Guarda las estadísticas en el estado
                 setLoading(false); // Finaliza el estado de carga
             } catch (err) {

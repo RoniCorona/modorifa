@@ -50,7 +50,7 @@ function ManageAdminsPage() {
                 headers: { Authorization: `Bearer ${token}` }
             };
             // Asumimos que tendrás una ruta en tu backend para listar admins
-            const response = await axios.get('http://localhost:5000/api/admin/users', config); // <--- NUEVA RUTA EN BACKEND
+            const response = await axios.get('/admin/users', config); // <--- NUEVA RUTA EN BACKEND
             setAdmins(response.data.admins); // Asegúrate que tu API devuelve un objeto con 'admins'
             setLoading(false);
         } catch (err) {
