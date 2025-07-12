@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosInstance'; // O './api/axiosInstance' si estás en la misma carpeta
+
 import {
     FaBoxes, FaCheckCircle, FaTimesCircle, FaDollarSign, FaMoneyBillWave,
     FaTicketAlt, FaHourglassHalf, FaChartLine, FaSpinner,
@@ -94,7 +95,7 @@ function DashboardPage() {
                 };
 
                 // Realiza la petición GET a la API de estadísticas
-                const response = await axios.get('dashboard/stats', config);
+                const response = await api.get('/dashboard/stats'); // El /api ya está incluido en axiosInstance
                 setStats(response.data); // Guarda las estadísticas en el estado
                 setLoading(false); // Finaliza el estado de carga
             } catch (err) {

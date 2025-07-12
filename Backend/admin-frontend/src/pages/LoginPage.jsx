@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosInstance'; // ✅ Usamos la instancia de Axios correctamente configurada
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,51 +10,40 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario (recargar la página)
-    setError(''); // Limpia cualquier mensaje de error previo
-    setLoading(true); // Activa el estado de carga para el botón
+    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    setError('');
+    setLoading(true);
 
     try {
-      // Realiza la petición POST al backend para iniciar sesión
-      const response = await axios.post('/admin/login', {
-        email,
-        password,
-      });
+      // ✅ Usamos api (axiosInstance) en vez de axios directo
+      const response = await api.post('/admin/login', {
+  email,
+  password,
+});
 
-      // Si el inicio de sesión es exitoso, el backend devolverá un token y la información del admin
       const { token, admin } = response.data;
 
-      // *** CORRECCIÓN CLAVE AQUÍ: Usamos 'adminToken' como clave en localStorage ***
-      // ¡Esta clave debe coincidir exactamente con la que lee tu PrivateRoute.jsx!
-      localStorage.setItem('adminToken', token); // Cambiado de 'token' a 'adminToken'
-      
-      // Guardamos también la información del admin, si es necesaria para el frontend
-      // Es una buena práctica guardar la información como una cadena JSON
-      localStorage.setItem('adminInfo', JSON.stringify(admin)); 
+      // ✅ Guardamos el token e información del admin
+      localStorage.setItem('adminToken', token);
+      localStorage.setItem('adminInfo', JSON.stringify(admin));
 
-      // Redirige al Dashboard (la ruta principal '/')
-      // Una vez que el token se guarda, PrivateRoute.jsx permitirá el acceso a la ruta protegida.
       navigate('/');
-
     } catch (err) {
-      // Si hay un error (ej. credenciales inválidas, error de red), muestra el mensaje de error
       console.error('Error al iniciar sesión:', err);
-      // Intenta obtener un mensaje de error específico del backend si está disponible
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        // Mensaje genérico para otros tipos de errores (ej. red)
         setError('Ocurrió un error inesperado al intentar iniciar sesión. Por favor, inténtalo de nuevo.');
       }
     } finally {
-      setLoading(false); // Desactiva el estado de carga, sin importar si hubo éxito o error
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-container">
       <h2>Iniciar Sesión Administrador</h2>
-      {error && <p className="error-message">{error}</p>} {/* Muestra el error si existe */}
+      {error && <p className="error-message">{error}</p>}
 
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group">
@@ -64,9 +53,9 @@ function LoginPage() {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required // Campo requerido
+            required
             placeholder="Introduce tu email"
-            autoComplete="username" // Sugerencia de autocompletado para el navegador
+            autoComplete="username"
           />
         </div>
         <div className="form-group">
@@ -76,13 +65,13 @@ function LoginPage() {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required // Campo requerido
+            required
             placeholder="Introduce tu contraseña"
-            autoComplete="current-password" // Sugerencia de autocompletado para el navegador
+            autoComplete="current-password"
           />
         </div>
         <button type="submit" disabled={loading}>
-          {loading ? 'Iniciando...' : 'Entrar al Panel'} {/* Cambia el texto del botón según el estado de carga */}
+          {loading ? 'Iniciando...' : 'Entrar al Panel'}
         </button>
       </form>
     </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosInstance'; // Asegúrate de que la ruta sea correcta
 import { FaUserPlus, FaArrowLeft, FaEdit, FaTrashAlt, FaSearch, FaTimesCircle, FaSpinner } from 'react-icons/fa';
 import './ManageAdminsPage.css'; // Crea este CSS para tus estilos
 
@@ -50,7 +50,7 @@ function ManageAdminsPage() {
                 headers: { Authorization: `Bearer ${token}` }
             };
             // Asumimos que tendrás una ruta en tu backend para listar admins
-            const response = await axios.get('/admin/users', config); // <--- NUEVA RUTA EN BACKEND
+            const response = await api.get('/admin/users', config); // Utiliza la instancia configurada 'api'
             setAdmins(response.data.admins); // Asegúrate que tu API devuelve un objeto con 'admins'
             setLoading(false);
         } catch (err) {
@@ -82,7 +82,7 @@ function ManageAdminsPage() {
                 headers: { Authorization: `Bearer ${token}` }
             };
             // Asumimos que tendrás una ruta en tu backend para crear admins
-            const response = await axios.post('http://localhost:5000/api/admin/register-new', formData, config); // <--- NUEVA RUTA EN BACKEND
+        const response = await api.post('/admin/register-new', formData, config); // Usa 'api.post' en lugar de 'axios.post'
             showMessage(response.data.message || 'Administrador creado exitosamente.', 'success');
             setFormData({ nombre: '', email: '', password: '' }); // Limpiar formulario
             fetchAdmins(); // Recargar la lista de administradores

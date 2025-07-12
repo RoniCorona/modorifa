@@ -1,6 +1,6 @@
 // admin-frontend/src/pages/RifasPage.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axiosInstance'; // Asegúrate de que la ruta sea correcta
 import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt } from 'react-icons/fa'; // Importamos FaEdit y FaTrashAlt
 
 // Componente de Toast (simulado, puedes reemplazarlo por una librería real como react-toastify)
@@ -57,7 +57,7 @@ function RifasPage() {
         setError('');
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await axios.get('/rifas', {
+            const response = await api.get('/rifas', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -143,7 +143,7 @@ function RifasPage() {
             let dataToSend = formatNumbersForBackend(formData); 
             dataToSend = formatDatesForBackend(dataToSend); 
             
-            await axios.post('http://localhost:5000/api/rifas', dataToSend, {
+            const response = await api.post('/rifas', dataToSend, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -194,7 +194,7 @@ function RifasPage() {
             let dataToSend = formatNumbersForBackend(formData);
             dataToSend = formatDatesForBackend(dataToSend);
 
-            await axios.patch(`http://localhost:5000/api/rifas/${selectedRifa._id}`, dataToSend, {
+            const response = await api.patch(`/rifas/${selectedRifa._id}`, dataToSend, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -223,7 +223,7 @@ function RifasPage() {
         setError('');
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.delete(`http://localhost:5000/api/rifas/${id}`, {
+            const response = await api.delete(`/rifas/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -246,7 +246,7 @@ function RifasPage() {
         setError('');
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await axios.post(`http://localhost:5000/api/rifas/${rifaId}/sortear`, {
+            const response = await api.post(`/rifas/${rifaId}/sortear`, {
                 numberOfWinners: { "primer_lugar": 1 }
             }, {
                 headers: {
@@ -273,7 +273,7 @@ function RifasPage() {
         setError('');
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.patch(`http://localhost:5000/api/rifas/${rifaId}/toggle-venta-manual`, {
+            await api.patch(`/rifas/${rifaId}/toggle-venta-manual`, {
                 estaAbiertaParaVenta: newStatus
             }, {
                 headers: {
