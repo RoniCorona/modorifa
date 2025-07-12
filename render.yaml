@@ -4,21 +4,22 @@ services:
     env: node
     plan: free
     rootDir: backend
-    buildCommand: |
-      echo "📦 Instalando dependencias de admin-frontend..."
-      npm --prefix admin-frontend install
-
-      echo "🏗️ Ejecutando build del panel admin con Vite..."
-      npm --prefix admin-frontend run build
-
-      echo "📂 Asegurando carpeta destino..."
-      mkdir -p admin
-
-      echo "🧹 Limpiando carpeta admin antigua..."
-      rm -rf admin/*
-
-      echo "📋 Copiando build de dist a backend/admin..."
-      cp -r admin-frontend/dist/* admin/
+    # ⚠️ El buildCommand está comentado porque ya hiciste el build localmente y lo subiste
+    # buildCommand: |
+    #   echo "📦 Instalando dependencias de admin-frontend..."
+    #   npm --prefix admin-frontend install
+    #
+    #   echo "🏗️ Ejecutando build del panel admin con Vite..."
+    #   npm --prefix admin-frontend run build
+    #
+    #   echo "📂 Asegurando carpeta destino..."
+    #   mkdir -p admin
+    #
+    #   echo "🧹 Limpiando carpeta admin antigua..."
+    #   rm -rf admin/*
+    #
+    #   echo "📋 Copiando build de dist a backend/admin..."
+    #   cp -r admin-frontend/dist/* admin/
     startCommand: node server.js
     envVars:
       - key: MONGO_URI
