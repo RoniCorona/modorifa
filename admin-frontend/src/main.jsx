@@ -7,9 +7,9 @@ import './axiosConfig.js'; // ¡Importamos la configuración global de Axios aqu
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* Envuelve tu componente App con BrowserRouter */}
-    <BrowserRouter>
+    {/* ✅ Agregado basename para rutas en /admin */}
+    <BrowserRouter basename="/admin">
       <App />
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
