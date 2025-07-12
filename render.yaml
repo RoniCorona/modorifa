@@ -5,11 +5,20 @@ services:
     plan: free
     rootDir: backend
     buildCommand: |
-      cd ../admin-frontend && \
-      npm install && \
-      npm run build && \
-      mkdir -p ../backend/admin && \
-      rm -rf ../backend/admin/* && \
+      echo "📁 Current directory: $(pwd)"
+      echo "📂 List root contents:"
+      ls -la ..
+      cd ../admin-frontend
+      echo "📦 Instalando dependencias de React..."
+      npm install
+      echo "🏗️ Construyendo el panel admin..."
+      npm run build
+      echo "📂 Verificando archivos en dist:"
+      ls -la dist
+      mkdir -p ../backend/admin
+      echo "🧹 Limpiando carpeta admin..."
+      rm -rf ../backend/admin/*
+      echo "📋 Copiando archivos build a backend/admin..."
       cp -r dist/* ../backend/admin/
     startCommand: node server.js
     envVars:
