@@ -6,17 +6,19 @@ services:
     rootDir: backend
     buildCommand: |
       echo "📦 Instalando dependencias de admin-frontend..."
-      npm --prefix ../admin-frontend install
+      npm --prefix admin-frontend install
 
       echo "🏗️ Ejecutando build del panel admin con Vite..."
-      npm --prefix ../admin-frontend run build
+      npm --prefix admin-frontend run build
+
+      echo "📂 Asegurando carpeta destino..."
+      mkdir -p admin
 
       echo "🧹 Limpiando carpeta admin antigua..."
-      mkdir -p admin
       rm -rf admin/*
 
-      echo "📋 Copiando archivos compilados de dist a backend/admin..."
-      cp -r ../admin-frontend/dist/* admin/
+      echo "📋 Copiando build de dist a backend/admin..."
+      cp -r admin-frontend/dist/* admin/
     startCommand: node server.js
     envVars:
       - key: MONGO_URI
@@ -28,7 +30,6 @@ services:
     buildFilter:
       paths:
         - backend/**
-        - admin-frontend/**
         - index.html
         - rifa.html
         - script.js
