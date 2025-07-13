@@ -1618,4 +1618,22 @@ form button:active {
     transform: translateY(-3px);
 }
 
+.header-img {
+    width: 100%;
+    max-width: 1000px;         /* No crecer más allá en pantallas grandes */
+    height: 160px;             /* Ajustado: ideal entre 140px–180px */
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+@media (max-width: 600px) {
+    .header-img {
+        height: 120px;
+    }
+}
+
+
 /* código final*/
