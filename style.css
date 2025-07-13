@@ -1661,7 +1661,7 @@ form button:active {
     }
 
     .header-images a img {
-        width: 120px;
-        height: 70px;
+        width: 100px;
+        height: 60px;
     }
 }
