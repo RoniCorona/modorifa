@@ -1588,50 +1588,6 @@ form button:active {
     }
 }
 
-
-/* código final*/
-
-
-
-.header-images a img {
-    height: 160px;
-    width: auto;
-    max-width: 45%;
-    object-fit: contain;
-}
-
-@media (max-width: 768px) {
-    .header-images {
-        flex-direction: row;
-        justify-content: space-around;
-    }
-
-    .header-images a img {
-        height: 120px;
-        max-width: 40%;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-images {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .header-images a img {
-        height: 100px;
-        max-width: 70%;
-    }
-}
-
-
-
-    .header-images a img {
-        width: 100px;
-        height: 60px;
-    }
-
-
 /* === HEADER IMAGES CORREGIDAS Y RESPONSIVAS === */
 
 .header-images {
@@ -1646,13 +1602,14 @@ form button:active {
 }
 
 .header-images a img {
-    width: 160px;
-    height: 95px;
+    width: 180px;
+    height: 110px;
     object-fit: contain;
     border-radius: 8px;
     max-width: 100%;
 }
 
+/* Tablet */
 @media (max-width: 768px) {
     .header-images {
         justify-content: space-around;
@@ -1665,6 +1622,7 @@ form button:active {
     }
 }
 
+/* Móvil */
 @media (max-width: 480px) {
     .header-images {
         flex-direction: column;
@@ -1676,3 +1634,5 @@ form button:active {
         height: 70px;
     }
 }
+
+/* código final*/
