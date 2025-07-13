@@ -102,15 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    // --- CAMBIO CLAVE AQUÍ: ORDENAR LAS RIFAS ---
+                    // --- ORDENAR LAS RIFAS: de la más nueva a la más vieja ---
                     // Suponiendo que cada objeto de rifa tiene una propiedad 'fechaCreacion'
-                    // que es una cadena de fecha o un timestamp.
+                    // o 'createdAt' (campo de Mongoose) que es una cadena de fecha o un timestamp.
                     rifas.sort((a, b) => {
-                        const dateA = new Date(a.fechaCreacion || a.createdAt); // Usa 'createdAt' si 'fechaCreacion' no existe
-                        const dateB = new Date(b.fechaCreacion || b.createdAt); // Asegúrate de usar el campo de fecha correcto de tu API
+                        const dateA = new Date(a.fechaCreacion || a.createdAt); 
+                        const dateB = new Date(b.fechaCreacion || b.createdAt); 
                         return dateB - dateA; // Para ordenar de la más nueva a la más vieja
                     });
-                    // --- FIN DEL CAMBIO CLAVE ---
+                    // --- FIN DE ORDENAMIENTO ---
 
 
                     contenedorRifas.innerHTML = '';
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             estadoBoton = 'Rifa Finalizada';
                             isDisabled = 'disabled';
                             hrefLink = '#';
-                        } else if (rifa.estaAbiertaParaVenta === false) { // ¡NUEVO! Si está cerrada manualmente
+                        } else if (rifa.estaAbiertaParaVenta === false) { // Si está cerrada manualmente
                             estadoBoton = 'Rifa Cerrada';
                             isDisabled = 'disabled';
                             hrefLink = '#';
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let rifaPrecioUnitario = 0;
     let rifaTasaCambio = 0; 
 
-    // --- CAMBIOS PARA COMPRA MÍNIMA DE 2 BOLETOS ---
+    // --- COMPRA MÍNIMA DE 2 BOLETOS ---
     const MIN_TICKETS_COMPRA = 2; // Define la compra mínima aquí
 
     // Asegura que el valor inicial del input sea la compra mínima si existe el elemento
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         btnRestar.addEventListener("click", () => {
             const actual = Number(inputCantidad.value);
-            // --- CAMBIO PARA NO BAJAR DE LA COMPRA MÍNIMA ---
+            // --- NO PERMITIR BAJAR DE LA COMPRA MÍNIMA ---
             if (actual > MIN_TICKETS_COMPRA) { // Solo permite restar si es mayor que la compra mínima
                 inputCantidad.value = actual - 1;
             } else {
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         inputCantidad.addEventListener("input", () => {
             let valor = parseInt(inputCantidad.value);
-            // --- CAMBIO PARA MANTENER LA COMPRA MÍNIMA EN EL INPUT DIRECTO ---
+            // --- MANTENER LA COMPRA MÍNIMA EN EL INPUT DIRECTO ---
             if (isNaN(valor) || valor < MIN_TICKETS_COMPRA) { // Si no es un número o es menor que la mínima
                 inputCantidad.value = MIN_TICKETS_COMPRA; // Establece el valor a la mínima
             }
@@ -700,7 +700,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <div class="boletos-consulta-grid">
                             `;
                             rifaData.boletos.sort((a, b) => a - b).forEach(boletoNum => {
-                                htmlResultados += `<span class="boleto-consulta">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`;
+                                // --- RESTAURACIÓN DEL DISEÑO: Asegúrate que esta clase exista en tu CSS para el fondo azul.
+                                // Si tu clase CSS es diferente, cámbiala aquí (ej. 'mi-clase-ticket-azul')
+                                htmlResultados += `<span class="boleto-consulta boleto-azul-estilo">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`; 
                             });
                             htmlResultados += `
                                     </div>
