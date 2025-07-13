@@ -700,9 +700,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <div class="boletos-consulta-grid">
                             `;
                             rifaData.boletos.sort((a, b) => a - b).forEach(boletoNum => {
-                                // --- RESTAURACIÓN DEL DISEÑO: Asegúrate que esta clase exista en tu CSS para el fondo azul.
-                                // Si tu clase CSS es diferente, cámbiala aquí (ej. 'mi-clase-ticket-azul')
-                                htmlResultados += `<span class="boleto-consulta boleto-azul-estilo">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`; 
+                                // Aquí se aplica la clase CSS 'boleto-consulta' para el estilo.
+                                // Si quieres un color específico diferente al de --color-principal,
+                                // deberás añadir una clase CSS adicional aquí o ajustar tus variables CSS.
+                                htmlResultados += `<span class="boleto-consulta">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`; 
                             });
                             htmlResultados += `
                                     </div>
