@@ -1604,9 +1604,9 @@ form button:active {
 .header-images a img {
     width: 180px;
     height: 110px;
+    width: auto;
+    height: auto;
     object-fit: contain;
-    border-radius: 8px;
-    max-width: 100%;
 }
 
 /* Tablet */
