@@ -107,7 +107,7 @@
                 </button>
 
                 <button class="metodo" id="pagoZelle" type="button">
-                    <img src="img/zelle.png" alt="Zelle" /> <span>Zelle</span>
+                    <img src="img/zelle.png" alt="Zelle" />
                     <span>Zelle</span>
                 </button>
             </div>
@@ -174,20 +174,38 @@
             </div>
         </div>
     </div>
+    
     <footer>
         <p>© 2025 Modo Rifa • Todos los derechos reservados</p>
-    </footer>
+        
+        <div class="footer-social-media">
+            <h3>Síguenos en nuestras redes</h3>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/tucuenta" target="_blank" aria-label="Instagram">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram">
+                </a>
+                <a href="https://www.facebook.com/tucuenta" target="_blank" aria-label="Facebook">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+                </a>
+                <a href="https://wa.me/tunumero" target="_blank" aria-label="WhatsApp">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+                </a>
+            </div>
+        </div>
+        </footer>
 
     <div id="modalTickets" class="modal-tickets oculto">
         <div class="modal-contenido">
             <span class="cerrar-modal">&times;</span>
             <h4>Consultar mis tickets</h4>
+            <p>Ingresa tu correo electrónico para ver los tickets asociados a tus compras.</p>
             <form id="formConsultarTickets">
-                <input type="email" id="correoConsulta" placeholder="Ingresa tu correo electrónico" required />
+                <label for="correoConsulta">Correo Electrónico:</label>
+                <input type="email" id="correoConsulta" placeholder="tu@ejemplo.com" required />
                 <button type="submit">Consultar</button>
             </form>
             <div id="resultados-consulta-tickets" class="resultados-consulta">
-                </div>
+            </div>
         </div>
     </div>
 
