@@ -1630,13 +1630,13 @@ form button:active {
     justify-content: center;
     align-items: center;
     gap: 2rem;
-    padding: 1rem 2rem;
+    padding: 2rem 3rem;
     margin: 0 auto;
 }
 
 .header-images a img {
-    width: 280px;
-    height: 170px;
+    width: 320px;
+    height: 220px;
     object-fit: contain;
     border-radius: 8px;
 }
