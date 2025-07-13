@@ -1590,14 +1590,7 @@ form button:active {
 
 /* código final*/
 
-/* === HEADER IMAGES RESPONSIVAS Y ALINEADAS === */
-.header-images {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 0;
-}
+
 
 .header-images a img {
     height: 160px;
@@ -1627,5 +1620,45 @@ form button:active {
     .header-images a img {
         height: 100px;
         max-width: 70%;
+    }
+}
+
+/* === HEADER IMAGES AJUSTADAS: 160x95px FIJOS === */
+.header-images {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.header-images a img {
+    width: 160px;
+    height: 95px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .header-images {
+        justify-content: space-around;
+    }
+
+    .header-images a img {
+        width: 140px;
+        height: 85px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-images {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .header-images a img {
+        width: 120px;
+        height: 70px;
     }
 }
