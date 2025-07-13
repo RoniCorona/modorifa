@@ -53,6 +53,7 @@ header {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    max-height: 180;
 }
 
 header h1 {
