@@ -1635,8 +1635,8 @@ form button:active {
 }
 
 .header-images a img {
-    width: 370px;
-    height: 200px;
+    width: 280px;
+    height: 170px;
     object-fit: cover;
     border-radius: 8px;
 }
