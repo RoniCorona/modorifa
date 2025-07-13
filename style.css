@@ -1624,37 +1624,47 @@ form button:active {
     }
 }
 
-/* === HEADER IMAGES AJUSTADAS: 160x95px FIJOS === */
-/* === HEADER IMAGES RESPONSIVAS Y CENTRADAS === */
+
+
+    .header-images a img {
+        width: 100px;
+        height: 60px;
+    }
+}
+
+/* === HEADER IMAGES CORREGIDAS Y RESPONSIVAS === */
+
 .header-images {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 2rem;
-    padding: 2rem 3rem;
+    padding: 1.5rem 2rem;
     margin: 0 auto;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .header-images a img {
-    width: 320px;
-    height: 220px;
+    width: 160px;
+    height: 95px;
     object-fit: contain;
     border-radius: 8px;
+    max-width: 100%;
 }
 
-/* Tablets */
 @media (max-width: 768px) {
     .header-images {
         justify-content: space-around;
+        flex-wrap: wrap;
     }
 
     .header-images a img {
-        width: 140px;
-        height: 85px;
+        width: 130px;
+        height: 80px;
     }
 }
 
-/* Móviles */
 @media (max-width: 480px) {
     .header-images {
         flex-direction: column;
@@ -1662,7 +1672,7 @@ form button:active {
     }
 
     .header-images a img {
-        width: 100px;
-        height: 60px;
+        width: 120px;
+        height: 70px;
     }
 }
