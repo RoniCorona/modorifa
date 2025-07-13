@@ -200,6 +200,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let rifaPrecioUnitario = 0;
     let rifaTasaCambio = 0; 
 
+    // --- CAMBIOS PARA COMPRA MÍNIMA DE 2 BOLETOS ---
+    const MIN_TICKETS_COMPRA = 2; // Define la compra mínima aquí
+
+    // Asegura que el valor inicial del input sea la compra mínima si existe el elemento
+    if (inputCantidad) {
+        inputCantidad.value = MIN_TICKETS_COMPRA;
+        inputCantidad.min = MIN_TICKETS_COMPRA; // También actualiza el atributo min del HTML
+    }
+    // --- FIN CAMBIOS INICIALES ---
+
+
     function actualizarTotalPagar() {
         if (inputCantidad && totalPagarDisplay && precioTicketDisplaySpan && rifaPrecioUnitario > 0) {
             const cantidad = Number(inputCantidad.value);
@@ -230,19 +241,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
         btnRestar.addEventListener("click", () => {
             const actual = Number(inputCantidad.value);
-            if (actual > 1) inputCantidad.value = actual - 1;
+            // --- CAMBIO PARA NO BAJAR DE LA COMPRA MÍNIMA ---
+            if (actual > MIN_TICKETS_COMPRA) { // Solo permite restar si es mayor que la compra mínima
+                inputCantidad.value = actual - 1;
+            } else {
+                showMessage(`La compra mínima de boletos es ${MIN_TICKETS_COMPRA}.`, 'info');
+            }
+            // --- FIN CAMBIO ---
             actualizarTotalPagar();
         });
 
         inputCantidad.addEventListener("input", () => {
             let valor = parseInt(inputCantidad.value);
-            if (isNaN(valor) || valor < 1) inputCantidad.value = 1;
+            // --- CAMBIO PARA MANTENER LA COMPRA MÍNIMA EN EL INPUT DIRECTO ---
+            if (isNaN(valor) || valor < MIN_TICKETS_COMPRA) { // Si no es un número o es menor que la mínima
+                inputCantidad.value = MIN_TICKETS_COMPRA; // Establece el valor a la mínima
+            }
+            // --- FIN CAMBIO ---
             actualizarTotalPagar();
         });
 
         botonesRapidos.forEach(btn => {
             btn.addEventListener("click", () => {
-                inputCantidad.value = btn.dataset.val;
+                const val = Number(btn.dataset.val);
+                if (val >= MIN_TICKETS_COMPRA) { // Solo permite seleccionar valores rápidos mayores o iguales a la mínima
+                    inputCantidad.value = val;
+                } else {
+                    inputCantidad.value = MIN_TICKETS_COMPRA; // Si el botón es menor, establece la mínima
+                    showMessage(`La compra mínima de boletos es ${MIN_TICKETS_COMPRA}.`, 'info');
+                }
                 actualizarTotalPagar();
             });
         });
@@ -261,6 +288,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const nombreInput = document.querySelector(".formulario-usuario input[name='nombre']");
             const telefonoInput = document.querySelector(".formulario-usuario input[name='telefono']");
             const correoInput = document.querySelector(".formulario-usuario input[name='correo']");
+
+            // --- AÑADIR VALIDACIÓN DE CANTIDAD MÍNIMA ANTES DE AVANZAR ---
+            if (Number(inputCantidad.value) < MIN_TICKETS_COMPRA) {
+                showMessage(`Debes comprar al menos ${MIN_TICKETS_COMPRA} boletos para continuar.`, 'error');
+                return;
+            }
+            // --- FIN VALIDACIÓN ADICIONAL ---
+
 
             if (!nombreInput.value || !telefonoInput.value || !correoInput.value) {
                 showMessage('Por favor, completa todos los campos del formulario de datos personales.', 'error');
@@ -323,6 +358,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let html = "";
 
             if (metodo === "binance") {
+                // --- VALIDACIÓN DE COMPRA MÍNIMA ESPECÍFICA POR MÉTODO DE PAGO ---
+                if (cantidad < 5) {
+                    showMessage('Para pagos con Binance, la compra mínima es de 5 tickets.', 'error');
+                    limpiarSeleccion(); // Limpiar selección si no cumple
+                    return;
+                }
+                // --- FIN VALIDACIÓN ESPECÍFICA ---
                 html = `
                     <h4>Pago vía Binance USDT</h4>
                     <p><strong>Usuario:</strong> Jesus Galindez</p>
@@ -351,6 +393,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 metodoPagoSeleccionado = 'Pago Móvil';
             } else if (metodo === "zelle") {
+                // --- VALIDACIÓN DE COMPRA MÍNIMA ESPECÍFICA POR MÉTODO DE PAGO ---
+                if (cantidad < 10) {
+                    showMessage('Para pagos con Zelle, la compra mínima es de 10 tickets.', 'error');
+                    limpiarSeleccion(); // Limpiar selección si no cumple
+                    return;
+                }
+                // --- FIN VALIDACIÓN ESPECÍFICA ---
                 html = `
                     <h4>Pago vía Zelle</h4>
                     <p><strong>Correo:</strong> modorifa@gmail.com</p>
@@ -605,7 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     resultadosConsultaDiv.innerHTML = `<p class="mensaje-error">Por favor, ingresa un correo electrónico válido.</p>`;
                     return;
                 }
-                resultadosConsultaDiv.innerHTML = `<p>Buscando tickets para: <strong>${correo}</strong>燉... </p>`;
+                resultadosConsultaDiv.innerHTML = `<p>Buscando tickets para: <strong>${correo}</strong>...</p>`;
             }
 
             try {
