@@ -102,6 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
+                    // --- CAMBIO CLAVE AQUÍ: ORDENAR LAS RIFAS ---
+                    // Suponiendo que cada objeto de rifa tiene una propiedad 'fechaCreacion'
+                    // que es una cadena de fecha o un timestamp.
+                    rifas.sort((a, b) => {
+                        const dateA = new Date(a.fechaCreacion || a.createdAt); // Usa 'createdAt' si 'fechaCreacion' no existe
+                        const dateB = new Date(b.fechaCreacion || b.createdAt); // Asegúrate de usar el campo de fecha correcto de tu API
+                        return dateB - dateA; // Para ordenar de la más nueva a la más vieja
+                    });
+                    // --- FIN DEL CAMBIO CLAVE ---
+
+
                     contenedorRifas.innerHTML = '';
 
                     rifas.forEach(rifa => {
@@ -594,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     resultadosConsultaDiv.innerHTML = `<p class="mensaje-error">Por favor, ingresa un correo electrónico válido.</p>`;
                     return;
                 }
-                resultadosConsultaDiv.innerHTML = `<p>Buscando tickets para: <strong>${correo}</strong>...</p>`;
+                resultadosConsultaDiv.innerHTML = `<p>Buscando tickets para: <strong>${correo}</strong>燉... </p>`;
             }
 
             try {
