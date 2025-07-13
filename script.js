@@ -5,17 +5,22 @@ const API_URL = '/api'; // <--- ¡ASEGÚRATE DE QUE ESTA URL SEA LA CORRECTA PAR
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- LÓGICA PARA MODAL DE TÉRMINOS Y CONDICIONES (MODIFICADO) ---
+    // --- LÓGICA PARA MODAL DE TÉRMINOS Y CONDICIONES ---
     const modalTerminos = document.getElementById('modalTerminos');
     const btnAceptarTerminos = document.getElementById('btnAceptarTerminos');
     const btnRechazarTerminos = document.getElementById('btnRechazarTerminos');
 
+    // Referencia a la sección de compra que debe estar oculta hasta aceptar términos
+    const seccionCompra = document.querySelector(".seccion-compra"); // Obtener referencia aquí
+
     if (modalTerminos) {
-        // Comprueba si estamos en la página principal para mostrar el modal.
-        if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
-            modalTerminos.classList.remove('oculto'); // Siempre muestra el modal al cargar.
+        // Muestra el modal de términos solo si estamos en rifa.html
+        if (window.location.pathname.includes('rifa.html')) {
+            modalTerminos.classList.remove('oculto'); 
+            // Oculta la sección de compra inicialmente si estamos en rifa.html
+            if (seccionCompra) seccionCompra.classList.add('oculto');
         } else {
-            // Se asegura de que esté oculto en otras páginas (como rifa.html).
+            // Asegura que esté oculto en otras páginas (como index.html)
             modalTerminos.classList.add('oculto');
         }
     }
@@ -23,16 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener para el botón Aceptar
     if (btnAceptarTerminos) {
         btnAceptarTerminos.addEventListener('click', () => {
-            modalTerminos.classList.add('oculto'); // Simplemente oculta el modal.
-            // No se guarda nada en sessionStorage.
+            modalTerminos.classList.add('oculto'); // Oculta el modal.
+            // Si la sección de compra estaba oculta, la muestra.
+            if (seccionCompra) seccionCompra.classList.remove('oculto');
         });
     }
 
     // Event listener para el botón Rechazar
     if (btnRechazarTerminos) {
         btnRechazarTerminos.addEventListener('click', () => {
-            alert('Debes aceptar los términos y condiciones para participar en las rifas.');
-            window.location.href = 'https://www.google.com'; // Redirige a Google como ejemplo.
+            alert('Debes aceptar los términos y condiciones para participar en esta rifa.');
+            window.location.href = 'index.html'; // Redirige de vuelta al index.
         });
     }
     // --- FIN LÓGICA MODAL ---
@@ -121,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             isDisabled = 'disabled';
                             hrefLink = '#';
                         }
-
 
                         const rifaCard = document.createElement('div');
                         rifaCard.className = 'rifa-card';
@@ -229,8 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === NAVEGACIÓN ENTRE SECCIONES (Compra y Pago en rifa.html) ===
-    const formUsuario = document.querySelector(".formulario-usuario");
-    const seccionCompra = document.querySelector(".seccion-compra");
+    // Las referencias a seccionCompra se obtienen al inicio del script para ser usadas con el modal de términos.
     const seccionPago = document.getElementById("seccion-pago");
     const atrasMetodoBtn = document.getElementById("atrasMetodo");
     const btnAtrasCompra = document.getElementById("btnAtrasCompra");
@@ -399,28 +403,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rifaPrecioElement = document.getElementById('rifaPrecio');
                 if (rifaPrecioElement) rifaPrecioElement.textContent = rifa.precioTicketUSD.toFixed(2);
                 
-                // Elementos que han sido comentados en rifa.html y ahora se omiten en script.js
-                // No se intenta acceder a totalTickets, ticketsVendidos, ticketsDisponibles.
-                // Esto es crucial para evitar el error "Cannot set properties of null".
-
                 const porcentaje = rifa.totalTickets > 0 ? (rifa.ticketsVendidos / rifa.totalTickets) * 100 : 0;
                 const barraProgresoDetalle = document.querySelector('.barra-global-progreso');
                 const porcentajeVentaTexto = document.getElementById('barraProgresoDetalle');
 
                 if (barraProgresoDetalle) barraProgresoDetalle.style.width = `${porcentaje}%`;
                 if (porcentajeVentaTexto) porcentajeVentaTexto.textContent = `${porcentaje.toFixed(0)}% Vendido`;
-
-                // Fecha de sorteo ocultada/comentada en rifa.html, se omite aquí
-                // const rifaSorteoFechaElement = document.getElementById('rifaSorteoFecha');
-                // if (rifaSorteoFechaElement) { // Esta comprobación ya no es necesaria si el elemento está siempre comentado
-                //     if (rifa.fechaSorteo) {
-                //         rifaSorteoFechaElement.textContent = new Date(rifa.fechaSorteo).toLocaleString('es-VE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-                //     } else {
-                //         rifaSorteoFechaElement.textContent = 'Pendiente';
-                //     }
-                // }
                 
-                // Mostrar fecha de inicio y fin (estos no se pidieron ocultar)
+                // Mostrar fecha de inicio y fin
                 const rifaInicioFechaElement = document.getElementById('rifaInicioFecha');
                 if (rifaInicioFechaElement) {
                     if (rifa.fechaInicioSorteo) {
@@ -438,7 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         rifaFinFechaElement.textContent = 'N/A';
                     }
                 }
-
 
                 rifaPrecioUnitario = rifa.precioTicketUSD;
                 if (precioTicketDisplaySpan) precioTicketDisplaySpan.textContent = rifaPrecioUnitario.toFixed(2);
@@ -637,21 +626,27 @@ document.addEventListener('DOMContentLoaded', () => {
                             return acc;
                         }, {});
 
-                        for (const rifaIdIter in ticketsAgrupadosPorRifa) {
-                            const rifaInfo = ticketsAgrupadosPorRifa[rifaIdIter];
+                        // Aquí se construye la parte de resultados agrupados por rifa
+                        for (const rifaId in ticketsAgrupadosPorRifa) {
+                            const rifaData = ticketsAgrupadosPorRifa[rifaId];
                             htmlResultados += `
-                                <div class="rifa-tickets-group">
-                                    <p><strong>Rifa:</strong> ${rifaInfo.nombreProducto}</p>
-                                    <p><strong>Boletos:</strong></p>
-                                    <div class="boletos-list">
-                                        ${rifaInfo.boletos.map(num => `<span class="boleto">🎟️ ${num.toString().padStart(4, '0')}</span>`).join('')}
+                                <div class="rifa-consulta-item">
+                                    <h3>${rifaData.nombreProducto}</h3>
+                                    <div class="boletos-consulta-grid">
+                            `;
+                            rifaData.boletos.sort((a, b) => a - b).forEach(boletoNum => {
+                                htmlResultados += `<span class="boleto-consulta">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`;
+                            });
+                            htmlResultados += `
                                     </div>
                                 </div>
                             `;
                         }
+
                         resultadosConsultaDiv.innerHTML = htmlResultados;
+                        
                     } else {
-                        resultadosConsultaDiv.innerHTML = `<p>No se encontraron tickets para <strong>${correo}</strong> en la rifa seleccionada.</p>`;
+                        resultadosConsultaDiv.innerHTML = `<p class="mensaje-info">No se encontraron tickets asociados a este correo electrónico ${rifaIdConsulta ? `para esta rifa.` : `.`}</p>`;
                     }
                 }
             } catch (error) {
@@ -660,4 +655,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-}); // Fin de DOMContentLoaded
+});

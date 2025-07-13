@@ -65,9 +65,8 @@
             </div>
 
             <p class="total-a-pagar">
-    <span class="total-label">Total a Pagar:</span> <span id="totalPagarDisplay">$0.00 / VES 0.00</span>
-</p>
-
+                <span class="total-label">Total a Pagar:</span> <span id="totalPagarDisplay">$0.00 / VES 0.00</span>
+            </p>
 
             <form class="formulario-usuario">
                 <input type="text" placeholder="Nombre completo" required name="nombre" />
@@ -150,6 +149,27 @@
         </section>
     </main>
 
+    <div id="modalTerminos" class="modal oculto">
+        <div class="modal-contenido terminos">
+            <h2>Términos y Condiciones de la Rifa</h2>
+            <div class="terminos-texto">
+                <p>Bienvenido a nuestras rifas. Al participar, aceptas los siguientes términos y condiciones:</p>
+                <ol>
+                    <li><strong>Edad Mínima:</strong> Debes ser mayor de 18 años para participar.</li>
+                    <li><strong>Validez del Ticket:</strong> Un ticket es válido solo después de que el pago haya sido verificado por nuestro equipo.</li>
+                    <li><strong>Sorteo:</strong> Los ganadores serán seleccionados de forma aleatoria en la fecha del sorteo indicada en la rifa. Los resultados son finales.</li>
+                    <li><strong>Notificación:</strong> Los ganadores serán notificados por correo electrónico y/o teléfono. Es tu responsabilidad proporcionar información de contacto correcta.</li>
+                    <li><strong>No Reembolsable:</strong> La compra de tickets no es reembolsable.</li>
+                    <li><strong>Privacidad:</strong> Nos comprometemos a proteger tu información personal y no la compartiremos con terceros.</li>
+                </ol>
+                <p>Al hacer clic en "Acepto", confirmas que has leído y estás de acuerdo con todos los términos y condiciones.</p>
+            </div>
+            <div class="acciones-modal">
+                <button id="btnAceptarTerminos" class="btn-aceptar">Acepto</button>
+                <button id="btnRechazarTerminos" class="btn-rechazar">No Acepto, Salir</button>
+            </div>
+        </div>
+    </div>
     <footer>
         <p>© 2025 Modo Rifa • Todos los derechos reservados</p>
     </footer>
