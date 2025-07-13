@@ -1604,8 +1604,6 @@ form button:active {
 .header-images a img {
     width: 165px;
     height: 105px;
-    width: auto;
-    height: auto;
     object-fit: contain;
 }
 
