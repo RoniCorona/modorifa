@@ -1625,7 +1625,7 @@ form button:active {
 /* Móvil */
 @media (max-width: 480px) {
     .header-images {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         flex-wrap: wrap;
         gap: 1rem;
