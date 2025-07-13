@@ -1618,6 +1618,22 @@ form button:active {
     transform: translateY(-3px);
 }
 
+.header-imagenes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-light);
+    padding: 1rem 0;
+    gap: 1rem;
+}
+
+.header-imagenes a {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+}
+
 .header-img {
     width: 100%;
     max-width: 1000px;         /* No crecer más allá en pantallas grandes */
@@ -1627,6 +1643,13 @@ form button:active {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+
+.header-img:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
 
 
 @media (max-width: 600px) {
