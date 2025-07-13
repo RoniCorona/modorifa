@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Referencia a la sección de compra que debe estar oculta hasta aceptar términos
     const seccionCompra = document.querySelector(".seccion-compra"); // Obtener referencia aquí
 
+    // DECLARACIÓN DE formUsuario AQUÍ PARA EVITAR EL ERROR "NOT DEFINED"
+    const formUsuario = document.querySelector(".formulario-usuario");
+
+
     if (modalTerminos) {
         // Muestra el modal de términos solo si estamos en rifa.html
         if (window.location.pathname.includes('rifa.html')) {
@@ -239,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const atrasMetodoBtn = document.getElementById("atrasMetodo");
     const btnAtrasCompra = document.getElementById("btnAtrasCompra");
 
+    // Asegúrate de que formUsuario esté definido aquí antes de usarlo
     if (formUsuario && seccionCompra && seccionPago) {
         formUsuario.addEventListener("submit", (e) => {
             e.preventDefault();
