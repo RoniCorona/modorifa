@@ -1624,21 +1624,25 @@ form button:active {
 }
 
 /* === HEADER IMAGES AJUSTADAS: 160x95px FIJOS === */
+/* === HEADER IMAGES RESPONSIVAS Y CENTRADAS === */
 .header-images {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem 0;
+    gap: 2rem;
+    padding: 1rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .header-images a img {
-    width: 230px;
-    height: 110px;
+    width: 350px;
+    height: 150px;
     object-fit: cover;
-    border-radius: 8px;;
+    border-radius: 8px;
 }
 
+/* Tablets */
 @media (max-width: 768px) {
     .header-images {
         justify-content: space-around;
@@ -1650,6 +1654,7 @@ form button:active {
     }
 }
 
+/* Móviles */
 @media (max-width: 480px) {
     .header-images {
         flex-direction: column;
