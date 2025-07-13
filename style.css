@@ -1586,4 +1586,32 @@ form button:active {
         height: 35px;
     }
 }
+
+.header-imagenes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    gap: 1rem;
+    background: var(--bg-light);
+}
+
+.header-imagenes a {
+    display: block;
+    max-width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header-imagenes a:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.header-imagenes img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+}
 /* código final*/
