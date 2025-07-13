@@ -1648,16 +1648,37 @@ form button:active {
 
 .header-img:hover {
     transform: scale(1.01);
+    box-shadow: 0 8px 18px rgba(0, 0, 0.header-imagenes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-light);
+    padding: 1rem 0;
+    gap: 1rem;
+}
+
+.header-imagenes a {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.header-img {
+    width: 100%;
+    height: 250px; /* altura fija */
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    display: block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header-img:hover {
+    transform: scale(1.01);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
 }
 
-
-
-@media (max-width: 600px) {
-    .header-img {
-        height: 120px;
-    }
-}
 
 
 /* código final*/
