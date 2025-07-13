@@ -1593,19 +1593,3 @@ form button:active {
     width: auto; /* Mantiene la relación de aspecto de la imagen */
     vertical-align: middle; /* Ayuda a alinear el logo */
 }
-
-/* Ajuste para el h1 que ahora contiene la imagen */
-header h1 {
-    display: flex; /* Permite alinear el logo verticalmente */
-    align-items: center; /* Centra el logo verticalmente dentro del h1 */
-    height: 100%; /* Asegura que el h1 ocupe la altura disponible */
-    margin: 0; /* Elimina cualquier margen extra del h1 */
-}
-
-/* Remover estilos de texto que ya no aplican al h1 que ahora tiene una imagen */
-header h1 a {
-    text-shadow: none; /* Elimina la sombra de texto si la tenía */
-    color: inherit; /* Asegura que no haya un color de texto residual */
-    text-decoration: none; /* Si antes tenía subrayado */
-}
-/* código final*/
