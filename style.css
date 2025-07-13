@@ -77,7 +77,7 @@ header h1 a:hover {
 
 .header-buttons {
     display: flex;
-    gap: 0.8rem;
+    gap: 1rem;
     align-items: center;
     margin-left: auto;
 }
