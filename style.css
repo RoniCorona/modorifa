@@ -1628,13 +1628,15 @@ form button:active {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem 0;
+    gap: 2rem;
+    padding: 1rem 2rem;
+    max-width: 900px;       /* Límite de ancho */
+    margin: 0 auto;         /* Centrado horizontal */
 }
 
 .header-images a img {
-    width: 160px;
-    height: 95px;
+    width: 230px;
+    height: 110px;
     object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
