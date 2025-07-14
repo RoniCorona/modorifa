@@ -41,19 +41,24 @@ body {
 
 /* --- Header - PROFESIONAL Y MODERNO --- */
 header {
-    background: var(--primary-blue); /* Azul oscuro corporativo */
+    background: var(--primary-blue);
     color: white;
-    padding: 1.2rem 2rem; /* Más padding para una sensación más premium */
+    padding: 1.2rem 2rem;
     text-align: center;
-    position: fixed;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada para profesionalismo */
+
+    /* Remover comportamiento sticky */
+    position: relative;
+    top: unset;
+    z-index: 1;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    max-height: 180;
+
+    max-height: 180px; /* con unidad */
+    overflow: hidden; /* opcional: evita desbordes si el contenido excede */
 }
 
 header h1 {
