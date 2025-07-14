@@ -46,8 +46,8 @@ header {
     padding: 1.2rem 2rem; /* Más padding para una sensación más premium */
     text-align: center;
     position: fixed;
-    top: unset;
-    z-index: auto;
+    top: 0;
+    z-index: 100;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada para profesionalismo */
     display: flex;
     justify-content: space-between;
@@ -320,10 +320,7 @@ form button:active {
 .imagen-rifa img {
     width: 100%;
     height: 100%;
-    aspect-ratio: 3 / 2;
-    object-fit: contain;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    object-fit: cover;
     display: block;
 }
 
