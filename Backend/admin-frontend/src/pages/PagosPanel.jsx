@@ -9,6 +9,7 @@ import { consultarTicketPorNumeroYRifa } from '../api/ticketsApi';
 import { FaFilter, FaSearch, FaDollarSign, FaFileInvoiceDollar, FaArrowLeft, FaSpinner, FaTimesCircle, FaCheckCircle, FaTrash } from 'react-icons/fa';
 
 import './PagosPanel.css'; // Importa los estilos CSS específicos para esta página
+import axios from 'axios';
 
 // Función de utilidad para mostrar un Toast (puedes reemplazarla por una librería real)
 const showToast = (message, type = 'info') => {
