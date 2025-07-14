@@ -280,6 +280,7 @@ form button:active {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 1.5rem;
 }
 
 /* === Tarjetas de Rifa - DISEÑO ORIGINAL (INTACTO) === */
