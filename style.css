@@ -57,7 +57,7 @@ header {
     align-items: center;
     flex-wrap: wrap;
 
-    max-height: 180px; /* con unidad */
+    min-height: 180px; /* con unidad */
     overflow: hidden; /* opcional: evita desbordes si el contenido excede */
 }
 
