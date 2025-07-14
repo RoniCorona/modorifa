@@ -5,12 +5,13 @@ const Pago = require('../models/Pago');
 const Ticket = require('../models/Ticket');
 const Rifa = require('../models/Rifa');
 const TasaCambio = require('../models/TasaCambio');
-// Importar 'fs' y 'path' si la subida de comprobantes se va a re-integrar.
-// Por ahora, no se necesitan para el cambio de rango de números.
-// const fs = require('fs'); 
-// const path = require('path'); 
+// Importar 'fs' y 'path' para manejar el borrado de archivos en el servidor
+const fs = require('fs');
+const path = require('path');
+// Importar el middleware de subida que debes haber configurado
+const upload = require('../utils/upload'); 
 
-const { protect, authorize } = require('../middleware/auth'); 
+const { protect, authorize } = require('../middleware/auth');
 
 const { sendTicketConfirmationEmail } = require('../utils/emailService');
 
@@ -34,9 +35,12 @@ function shuffleArray(array) {
 // @desc    Registrar un nuevo pago (inicialmente "pendiente") con tickets aleatorios
 // @route   POST /api/pagos
 // @access  Public (Debería ser pública si los clientes registran sus pagos)
-router.post('/', async (req, res) => {
+// Agregamos el middleware de subida de archivos aquí. 'comprobante' es el nombre del campo del archivo.
+router.post('/', upload.single('comprobante'), async (req, res) => {
     console.log('--- Recibiendo solicitud POST /api/pagos ---');
     console.log('Body recibido:', req.body);
+    // req.file contiene la información del archivo subido por Multer
+    console.log('Archivo recibido (si aplica):', req.file); 
 
     const {
         rifaId,
@@ -45,7 +49,6 @@ router.post('/', async (req, res) => {
         moneda,     
         metodo,
         referenciaPago,
-        comprobanteUrl, // Este campo vendrá como null si no hay subida de archivos
         nombreComprador,
         emailComprador,
         telefonoComprador,
@@ -54,10 +57,25 @@ router.post('/', async (req, res) => {
         tasaCambioUsada 
     } = req.body;
 
-    // Validaciones básicas de campos obligatorios
+    // La URL del comprobante se obtiene del archivo subido por Multer, no del body.
+    const comprobanteUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Validaciones de negocio mejoradas
     if (!rifaId || !cantidadTickets || !montoTotal || !moneda || !metodo || !nombreComprador || !emailComprador || !telefonoComprador) {
         console.error('ERROR: Faltan campos obligatorios para crear el pago.');
+        // Si el archivo se subió pero faltan datos del body, lo borramos.
+        if (req.file) {
+            fs.unlink(req.file.path, (unlinkErr) => {
+                if (unlinkErr) console.error("Error al eliminar comprobante fallido del servidor:", unlinkErr);
+            });
+        }
         return res.status(400).json({ message: 'Faltan campos obligatorios para registrar el pago y asignar tickets.' });
+    }
+    
+    // Si no hay referencia de pago, se exige un comprobante.
+    if (!referenciaPago && !comprobanteUrl) {
+        console.error('ERROR: Ni referencia de pago ni comprobante proporcionados.');
+        return res.status(400).json({ message: 'Se requiere una referencia de pago o un comprobante.' });
     }
 
     if (parseFloat(montoTotal) <= 0) {
@@ -95,7 +113,7 @@ router.post('/', async (req, res) => {
         console.log('Buscando tickets disponibles para la rifa en la colección Ticket...');
         // Modificación clave: Generar números de 0 a (totalTickets - 1)
         // Ejemplo: Si totalTickets es 10000, los números irán de 0 a 9999.
-        const todosLosNumerosPosibles = Array.from({ length: rifaExistente.totalTickets }, (_, i) => i); // ¡CAMBIO AQUÍ!
+        const todosLosNumerosPosibles = Array.from({ length: rifaExistente.totalTickets }, (_, i) => i);
         
         // Convertir los numerosTicket de la rifa existente a números para una comparación eficiente
         const numerosActualmenteVendidosEnRifa = new Set(rifaExistente.numerosTickets.map(t => parseInt(t.numeroTicket, 10))); 
@@ -174,7 +192,7 @@ router.post('/', async (req, res) => {
             tasaCambioUsada: tasaDeCambioActual.toFixed(2),
             metodo,
             referenciaPago: referenciaPago || null,
-            comprobanteUrl: comprobanteUrl || null, // Se guarda si viene, sino null
+            comprobanteUrl: comprobanteUrl, // Se guarda la URL si se subió el archivo
             comprador: { 
                 nombre: nombreComprador,
                 email: emailComprador,
@@ -251,12 +269,12 @@ router.post('/', async (req, res) => {
         });
 
     } catch (err) {
-        // Si la subida de comprobantes está activa y hay un archivo, elimínalo en caso de error
-        // if (req.file) { 
-        //     fs.unlink(req.file.path, (unlinkErr) => {
-        //         if (unlinkErr) console.error("Error al eliminar comprobante fallido del servidor:", unlinkErr);
-        //     });
-        // }
+        // MANEJO DE ERRORES ROBUSTO: Si la base de datos falla después de la subida del archivo, lo borramos.
+        if (req.file) { 
+            fs.unlink(req.file.path, (unlinkErr) => {
+                if (unlinkErr) console.error("Error al eliminar comprobante fallido del servidor:", unlinkErr);
+            });
+        }
         if (err.code === 11000) { 
             console.error('ERROR: Error de duplicado (11000) - referenciaPago ya existe o problema con tickets asignados.', err);
             return res.status(409).json({ message: 'Ya existe un pago con esta referencia o hay un problema con la asignación de tickets. Por favor, verifica tu información o inténtalo de nuevo.', field: 'referenciaPago' });
@@ -377,7 +395,7 @@ router.patch('/:id/verificar', protect, authorize(['admin']), async (req, res) =
         await Rifa.findByIdAndUpdate(
             pago.rifa,
             { $set: { 'numerosTickets.$[elem].estadoPago': 'pagado' } },
-            { arrayFilters: [{ 'elem.numeroTicket': { $in: pago.numerosTicketsAsignados } }], new: true } 
+            { arrayFilters: [{ 'elem.numeroTicket': { $in: pago.numerosTicketsAsignados } }], new: true }
         );
 
 
@@ -388,7 +406,7 @@ router.patch('/:id/verificar', protect, authorize(['admin']), async (req, res) =
         console.log(`[VERIFY PAYMENT] Finding associated rifa for payment ${pago._id}.`);
         const rifaAsociada = await Rifa.findById(pago.rifa);
         console.log(`[VERIFY PAYMENT] Rifa associated: ${rifaAsociada ? rifaAsociada.nombreProducto : 'Not Found'}`);
-        
+
         console.log(`[VERIFY PAYMENT] Finding paid tickets for payment ${pago._id}.`);
         const ticketsPagadosDelComprador = await Ticket.find({
             rifaId: pago.rifa,
@@ -446,17 +464,17 @@ router.patch('/:id/rechazar', protect, authorize(['admin']), async (req, res) =>
                 numeroTicket: { $in: pago.numerosTicketsAsignados },
                 estado: 'pendiente_pago'
             },
-            { 
-                $set: { 
-                    estado: 'disponible', 
-                    emailComprador: null, 
-                    nombreComprador: null, 
-                    telefonoComprador: null, 
+            {
+                $set: {
+                    estado: 'disponible',
+                    emailComprador: null,
+                    nombreComprador: null,
+                    telefonoComprador: null,
                     tipoIdentificacionComprador: null,
                     numeroIdentificacionComprador: null,
-                    metodoPagoId: null, 
-                    fechaCompra: null 
-                } 
+                    metodoPagoId: null,
+                    fechaCompra: null
+                }
             }
         );
         console.log(`Tickets ${pago.numerosTicketsAsignados.join(', ')} para rifa ${pago.rifa} liberados por rechazo de pago.`);
@@ -464,9 +482,9 @@ router.patch('/:id/rechazar', protect, authorize(['admin']), async (req, res) =>
         console.log(`[REJECT PAYMENT] Pulling tickets from Rifa.numerosTickets for payment ${pago._id}.`);
         await Rifa.findByIdAndUpdate(
             pago.rifa,
-            { 
-                $pull: { 'numerosTickets': { numeroTicket: { $in: pago.numerosTicketsAsignados } } }, // No necesitas .map(String) si ya son strings
-                $inc: { ticketsVendidos: -pago.cantidadTickets } 
+            {
+                $pull: { 'numerosTickets': { numeroTicket: { $in: pago.numerosTicketsAsignados } } },
+                $inc: { ticketsVendidos: -pago.cantidadTickets }
             },
             { new: true }
         );
@@ -474,6 +492,14 @@ router.patch('/:id/rechazar', protect, authorize(['admin']), async (req, res) =>
 
 
         const pagoActualizado = await pago.save();
+
+        // Si el pago tenía un comprobante, eliminarlo también del servidor
+        if (pago.comprobanteUrl) {
+            const filePath = path.join(__dirname, '..', pago.comprobanteUrl);
+            fs.unlink(filePath, (unlinkErr) => {
+                if (unlinkErr) console.error("Error al eliminar el comprobante rechazado del servidor:", unlinkErr);
+            });
+        }
 
         res.json({ message: 'Pago rechazado exitosamente', pago: pagoActualizado });
     } catch (err) {
@@ -500,38 +526,46 @@ router.delete('/:id', protect, authorize(['admin']), async (req, res) => {
                 {
                     rifaId: rifaId,
                     numeroTicket: { $in: pago.numerosTicketsAsignados },
-                    metodoPagoId: pago._id 
+                    metodoPagoId: pago._id
                 },
-                { $set: { 
-                    estado: 'disponible', 
-                    emailComprador: null, 
-                    nombreComprador: null, 
-                    telefonoComprador: null, 
+                { $set: {
+                    estado: 'disponible',
+                    emailComprador: null,
+                    nombreComprador: null,
+                    telefonoComprador: null,
                     tipoIdentificacionComprador: null,
                     numeroIdentificacionComprador: null,
-                    metodoPagoId: null, 
-                    fechaCompra: null 
-                } } 
+                    metodoPagoId: null,
+                    fechaCompra: null
+                } }
             );
             console.log(`Tickets ${pago.numerosTicketsAsignados.join(', ')} para rifa ${rifaId} liberados antes de eliminar el pago.`);
         }
 
-        await Pago.deleteOne({ _id: req.params.id }); 
+        await Pago.deleteOne({ _id: req.params.id });
         console.log(`Pago ${req.params.id} eliminado exitosamente.`);
 
         if (pago.estado === 'verificado' || pago.estado === 'pendiente') {
             console.log(`[DELETE PAYMENT] Pulling tickets from Rifa.numerosTickets for payment ${pago._id}.`);
             const rifaActualizada = await Rifa.findByIdAndUpdate(
                 rifaId,
-                { 
+                {
                     $inc: { ticketsVendidos: -cantidadTicketsEliminados },
-                    $pull: { 'numerosTickets': { numeroTicket: { $in: pago.numerosTicketsAsignados } } } // No necesitas .map(String) si ya son strings
-                }, 
-                { new: true } 
+                    $pull: { 'numerosTickets': { numeroTicket: { $in: pago.numerosTicketsAsignados } } }
+                },
+                { new: true }
             );
             console.log(`Rifa ${rifaId} actualizada después de eliminar pago. Nuevos tickets vendidos: ${rifaActualizada.ticketsVendidos}`);
         } else {
             console.log(`El pago ${pago._id} estaba en estado '${pago.estado}'. No se ajustaron los tickets vendidos en la rifa.`);
+        }
+
+        // Si el pago tenía un comprobante, eliminarlo también del servidor
+        if (pago.comprobanteUrl) {
+            const filePath = path.join(__dirname, '..', pago.comprobanteUrl);
+            fs.unlink(filePath, (unlinkErr) => {
+                if (unlinkErr) console.error("Error al eliminar el comprobante del servidor:", unlinkErr);
+            });
         }
 
         res.json({ message: 'Pago eliminado exitosamente y tickets de rifa revertidos.' });
