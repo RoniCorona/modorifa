@@ -117,7 +117,13 @@
                 </button>
             </div>
 
-            <div id="detalles-pago" class="detalles-pago oculto"></div>
+            <div id="detalles-pago" class="detalles-pago oculto">
+                <div id="formulario-comprobante" class="oculto">
+                    <h4>Subir Comprobante de Pago</h4>
+                    <p>Por favor, sube una imagen o PDF de tu comprobante de pago.</p>
+                    <input type="file" id="comprobantePago" name="comprobante" accept="image/*,application/pdf" />
+                </div>
+            </div>
 
             <div class="botones-form">
                 <button type="button" id="atrasMetodo">⬅️ Atrás</button>
@@ -163,15 +169,15 @@
                     <li><strong>Edad Mínima:</strong> Debe ser mayor de 18 años para participar.</li>
                     <li><strong>Ticket:</strong> La compra mínima es de (2) tickets. Los tickets se asignan de forma aleatoria y serán enviados al correo electrónico proporcionado una vez su compra haya sido aprobada.</li>
                     <li><strong>No Reembolsable:</strong> Debe transferir el monto exacto, no se realizan
-                    reembolsos por montos erróneos, de haber una diferencia se realizará el reembolso solamente con tickets.</li>
+                        reembolsos por montos erróneos, de haber una diferencia se realizará el reembolso solamente con tickets.</li>
                     <li><strong>Sorteo:</strong> Los tickets ganadores serán seleccionados por la Lotería del Táchira “Super Gana” en la fecha y hora correspondiente al sorteo indicado en la rifa.</li>
                     <li><strong>Notificación:</strong> Los ganadores serán notificados por correo electrónico y/o teléfono. Es tu responsabilidad proporcionar información de contacto
-                    correcta.</li>
+                        correcta.</li>
                     <li><strong>Privacidad:</strong> Nos comprometemos a proteger tu información personal y no la compartiremos con terceros.</li>
                     <li><strong>Entrega de premio:</strong> Para realizar la entrega será estipulado previamente según el concurso que corresponda por redes sociales. La persona ganadora tiene un plazo de 72 horas para comunicarse y proporcionar sus datos para la entrega del premio.</li>
                 </ol>
                 <p>Los ganadores aceptan y autorizan la aparición en el material audiovisual del
-                sorteo de MODORIFA.COM, incluyendo su presencia en redes sociales y la entrega del premio. Ésta condición es obligatoria. Al hacer clic en <strong>ACEPTO</strong>, confirmas que has leído y estás de acuerdo con todos los términos y condiciones.</p>
+                    sorteo de MODORIFA.COM, incluyendo su presencia en redes sociales y la entrega del premio. Ésta condición es obligatoria. Al hacer clic en <strong>ACEPTO</strong>, confirmas que has leído y estás de acuerdo con todos los términos y condiciones.</p>
             </div>
             <div class="acciones-modal">
                 <button id="btnAceptarTerminos" class="btn-aceptar">Acepto</button>
@@ -179,10 +185,10 @@
             </div>
         </div>
     </div>
-    
+
     <footer>
         <p>© 2025 Modo Rifa • Todos los derechos reservados</p>
-        
+
         <div class="footer-social-media">
             <h3>Síguenos en nuestras redes</h3>
             <div class="social-icons">
@@ -197,7 +203,7 @@
                 </a>
             </div>
         </div>
-        </footer>
+    </footer>
 
     <div id="modalTickets" class="modal-tickets oculto">
         <div class="modal-contenido">
