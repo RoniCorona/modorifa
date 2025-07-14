@@ -9,7 +9,7 @@ const TasaCambio = require('../models/TasaCambio');
 const fs = require('fs');
 const path = require('path');
 // Importar el middleware de subida que debes haber configurado
-const upload = require('../utils/upload'); 
+const upload = require('../utils/upload');
 
 const { protect, authorize } = require('../middleware/auth');
 
@@ -40,13 +40,13 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
     console.log('--- Recibiendo solicitud POST /api/pagos ---');
     console.log('Body recibido:', req.body);
     // req.file contiene la información del archivo subido por Multer
-    console.log('Archivo recibido (si aplica):', req.file); 
+    console.log('Archivo recibido (si aplica):', req.file);
 
     const {
         rifaId,
         cantidadTickets,
-        montoTotal, 
-        moneda,     
+        montoTotal,
+        moneda,
         metodo,
         referenciaPago,
         nombreComprador,
@@ -54,7 +54,7 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         telefonoComprador,
         tipoIdentificacionComprador,
         numeroIdentificacionComprador,
-        tasaCambioUsada 
+        tasaCambioUsada
     } = req.body;
 
     // La URL del comprobante se obtiene del archivo subido por Multer, no del body.
@@ -71,7 +71,7 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         }
         return res.status(400).json({ message: 'Faltan campos obligatorios para registrar el pago y asignar tickets.' });
     }
-    
+
     // Si no hay referencia de pago, se exige un comprobante.
     if (!referenciaPago && !comprobanteUrl) {
         console.error('ERROR: Ni referencia de pago ni comprobante proporcionados.');
@@ -114,9 +114,9 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         // Modificación clave: Generar números de 0 a (totalTickets - 1)
         // Ejemplo: Si totalTickets es 10000, los números irán de 0 a 9999.
         const todosLosNumerosPosibles = Array.from({ length: rifaExistente.totalTickets }, (_, i) => i);
-        
+
         // Convertir los numerosTicket de la rifa existente a números para una comparación eficiente
-        const numerosActualmenteVendidosEnRifa = new Set(rifaExistente.numerosTickets.map(t => parseInt(t.numeroTicket, 10))); 
+        const numerosActualmenteVendidosEnRifa = new Set(rifaExistente.numerosTickets.map(t => parseInt(t.numeroTicket, 10)));
 
         const numerosDisponiblesParaAsignar = todosLosNumerosPosibles.filter(num => !numerosActualmenteVendidosEnRifa.has(num));
 
@@ -128,13 +128,13 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         }
 
         const numerosTicketsAsignadosRaw = []; // Almacena los números como enteros (0-9999)
-        const ticketsIdsParaActualizar = []; 
-        
+        const ticketsIdsParaActualizar = [];
+
         const numerosMezclados = shuffleArray([...numerosDisponiblesParaAsignar]);
-        
+
         for (let i = 0; i < cantidadTickets; i++) {
-            const numeroAsignado = numerosMezclados.shift(); 
-            numerosTicketsAsignadosRaw.push(numeroAsignado); 
+            const numeroAsignado = numerosMezclados.shift();
+            numerosTicketsAsignadosRaw.push(numeroAsignado);
         }
         console.log('Tickets seleccionados para asignación (raw):', numerosTicketsAsignadosRaw);
 
@@ -159,7 +159,7 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
 
         let montoEnUSD = 0;
         let montoEnVES = 0;
-        let tasaDeCambioActual = rifaExistente.tasaCambio; 
+        let tasaDeCambioActual = rifaExistente.tasaCambio;
 
         if (!tasaDeCambioActual || tasaDeCambioActual <= 0) {
             console.warn('Advertencia: La rifa no tiene una tasa de cambio válida. Intentando obtener la última de TasaCambio.');
@@ -193,7 +193,7 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
             metodo,
             referenciaPago: referenciaPago || null,
             comprobanteUrl: comprobanteUrl, // Se guarda la URL si se subió el archivo
-            comprador: { 
+            comprador: {
                 nombre: nombreComprador,
                 email: emailComprador,
                 telefono: telefonoComprador,
@@ -211,21 +211,21 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         console.log('Actualizando estado de tickets a pendiente_pago en la colección Ticket...');
         const updateResult = await Ticket.updateMany(
             { _id: { $in: ticketsIdsParaActualizar }, estado: 'disponible' },
-            { 
-                $set: { 
-                    estado: 'pendiente_pago', 
-                    emailComprador: emailComprador, 
-                    nombreComprador: nombreComprador, 
-                    telefonoComprador: telefonoComprador, 
+            {
+                $set: {
+                    estado: 'pendiente_pago',
+                    emailComprador: emailComprador,
+                    nombreComprador: nombreComprador,
+                    telefonoComprador: telefonoComprador,
                     tipoIdentificacionComprador: tipoIdentificacionComprador || null,
                     numeroIdentificacionComprador: numeroIdentificacionComprador || null,
                     metodoPagoId: pagoGuardado._id,
-                    fechaCompra: new Date() 
-                } 
+                    fechaCompra: new Date()
+                }
             }
         );
         console.log(`Tickets actualizados: matchedCount=${updateResult.matchedCount}, modifiedCount=${updateResult.modifiedCount}`);
-        
+
         if (updateResult.modifiedCount !== cantidadTickets) {
             console.warn(`Advertencia: No todos los tickets solicitados fueron marcados como 'pendiente_pago'. Se esperaba ${cantidadTickets}, pero se modificaron ${updateResult.modifiedCount}.`);
         }
@@ -233,7 +233,7 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         console.log('Actualizando contador de tickets vendidos y números en la Rifa...');
         const nuevosNumerosParaRifa = numerosTicketsAsignadosRaw.map(num => ({ // Usar raw numbers para mapeo
             numeroTicket: formatTicketNumber(num), // Formatear el número a String
-            comprador: null, 
+            comprador: null,
             nombreComprador: nombreComprador,
             fechaCompra: new Date(),
             estadoPago: 'pendiente',
@@ -241,11 +241,11 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
 
         const rifaActualizada = await Rifa.findByIdAndUpdate(
             rifaId,
-            { 
+            {
                 $inc: { ticketsVendidos: cantidadTickets },
                 $push: { numerosTickets: { $each: nuevosNumerosParaRifa } }
             },
-            { new: true } 
+            { new: true }
         );
         console.log(`Rifa ${rifaId} actualizada. Tickets vendidos: ${rifaActualizada.ticketsVendidos}`);
 
@@ -254,12 +254,12 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
             message: 'Pago registrado y tickets asignados exitosamente.',
             pago: pagoGuardado,
             // Aseguramos que los números se envían formateados y ordenados numéricamente
-            numerosTicketsAsignados: pagoGuardado.numerosTicketsAsignados.sort((a, b) => parseInt(a, 10) - parseInt(b, 10)), 
+            numerosTicketsAsignados: pagoGuardado.numerosTicketsAsignados.sort((a, b) => parseInt(a, 10) - parseInt(b, 10)),
             nombreComprador: pagoGuardado.comprador.nombre,
             emailComprador: pagoGuardado.comprador.email,
             telefonoComprador: pagoGuardado.comprador.telefono,
-            tipoIdentificacionComprador: pagoGuardado.comprador.tipoIdentificacion, 
-            numeroIdentificacionComprador: pagoGuardado.comprador.numeroIdentificacion, 
+            tipoIdentificacionComprador: pagoGuardado.comprador.tipoIdentificacion,
+            numeroIdentificacionComprador: pagoGuardado.comprador.numeroIdentificacion,
             metodo: pagoGuardado.metodo,
             cantidadTickets: pagoGuardado.cantidadTickets,
             rifaActualizada: {
@@ -270,12 +270,12 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
 
     } catch (err) {
         // MANEJO DE ERRORES ROBUSTO: Si la base de datos falla después de la subida del archivo, lo borramos.
-        if (req.file) { 
+        if (req.file) {
             fs.unlink(req.file.path, (unlinkErr) => {
                 if (unlinkErr) console.error("Error al eliminar comprobante fallido del servidor:", unlinkErr);
             });
         }
-        if (err.code === 11000) { 
+        if (err.code === 11000) {
             console.error('ERROR: Error de duplicado (11000) - referenciaPago ya existe o problema con tickets asignados.', err);
             return res.status(409).json({ message: 'Ya existe un pago con esta referencia o hay un problema con la asignación de tickets. Por favor, verifica tu información o inténtalo de nuevo.', field: 'referenciaPago' });
         }
