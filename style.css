@@ -318,14 +318,14 @@ form button:active {
 }
 
 .imagen-rifa {
-    height: 450px;
+    height: 350px;
     overflow: hidden;
 }
 
 .imagen-rifa img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
 }
 
