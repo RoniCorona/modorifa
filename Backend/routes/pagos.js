@@ -108,55 +108,28 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
             console.error('ERROR: No hay suficientes tickets disponibles.');
             return res.status(400).json({ message: `Solo quedan ${ticketsDisponiblesParaComprar} tickets disponibles para esta rifa.` });
         }
-
+        
         // 3. Generar y asignar números de tickets
         console.log('Buscando tickets disponibles para la rifa en la colección Ticket...');
-        // Modificación clave: Generar números de 0 a (totalTickets - 1)
-        // Ejemplo: Si totalTickets es 10000, los números irán de 0 a 9999.
-        const todosLosNumerosPosibles = Array.from({ length: rifaExistente.totalTickets }, (_, i) => i);
 
-        // Convertir los numerosTicket de la rifa existente a números para una comparación eficiente
-        const numerosActualmenteVendidosEnRifa = new Set(rifaExistente.numerosTickets.map(t => parseInt(t.numeroTicket, 10)));
-
-        const numerosDisponiblesParaAsignar = todosLosNumerosPosibles.filter(num => !numerosActualmenteVendidosEnRifa.has(num));
-
-        console.log(`Numeros disponibles para asignar (calculado): ${numerosDisponiblesParaAsignar.length}`);
-
-        if (numerosDisponiblesParaAsignar.length < cantidadTickets) {
-            console.error('ERROR: No hay suficientes tickets disponibles (al generar lista).');
-            return res.status(400).json({ message: `No hay suficientes tickets disponibles para la cantidad solicitada. Solo quedan ${numerosDisponiblesParaAsignar.length}.` });
-        }
-
-        const numerosTicketsAsignadosRaw = []; // Almacena los números como enteros (0-9999)
-        const ticketsIdsParaActualizar = [];
-
-        const numerosMezclados = shuffleArray([...numerosDisponiblesParaAsignar]);
-
-        for (let i = 0; i < cantidadTickets; i++) {
-            const numeroAsignado = numerosMezclados.shift();
-            numerosTicketsAsignadosRaw.push(numeroAsignado);
-        }
-        console.log('Tickets seleccionados para asignación (raw):', numerosTicketsAsignadosRaw);
-
-        // Formatear los números asignados a strings "0000" para la base de datos
-        const numerosTicketsAsignadosFormatted = numerosTicketsAsignadosRaw.map(formatTicketNumber);
-        console.log('Tickets seleccionados para asignación (formatted):', numerosTicketsAsignadosFormatted);
-
-        // Fetch _ids of these specific ticket numbers from the database
-        const ticketsFoundInDb = await Ticket.find({
+        // La estrategia mejorada: encontrar y actualizar en una sola operación atómica.
+        // Se buscan tickets disponibles y se limitan a la cantidad solicitada.
+        const ticketsParaAsignar = await Ticket.find({
             rifaId: rifaId,
-            numeroTicket: { $in: numerosTicketsAsignadosFormatted }, // Buscar por el formato de string
             estado: 'disponible'
-        }).select('_id numeroTicket');
+        }).limit(cantidadTickets).select('_id numeroTicket');
+        
+        console.log(`Encontrados ${ticketsParaAsignar.length} tickets para asignar.`);
 
-        if (ticketsFoundInDb.length !== cantidadTickets) {
-            console.error(`ERROR: La cantidad de tickets encontrados en DB (${ticketsFoundInDb.length}) no coincide con la cantidad solicitada (${cantidadTickets}).`);
-            return res.status(500).json({ message: 'Error de consistencia al asignar tickets. Por favor, inténtalo de nuevo.' });
+        if (ticketsParaAsignar.length < cantidadTickets) {
+            console.error('ERROR: No hay suficientes tickets disponibles en DB.');
+            return res.status(400).json({ message: `No hay suficientes tickets disponibles en esta rifa. Solo se pudieron reservar ${ticketsParaAsignar.length}.` });
         }
 
-        ticketsIdsParaActualizar.push(...ticketsFoundInDb.map(t => t._id));
+        const ticketsIdsParaActualizar = ticketsParaAsignar.map(t => t._id);
+        const numerosTicketsAsignados = ticketsParaAsignar.map(t => t.numeroTicket);
 
-
+        // 4. Lógica para calcular y almacenar montos y tasa de cambio
         let montoEnUSD = 0;
         let montoEnVES = 0;
         let tasaDeCambioActual = rifaExistente.tasaCambio;
@@ -181,6 +154,7 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         }
         console.log(`Monto Original: ${montoTotal} ${moneda}, Monto USD: ${montoEnUSD.toFixed(2)}, Monto VES: ${montoEnVES.toFixed(2)}`);
 
+        // 5. Crear el nuevo pago
         console.log('Creando nuevo documento de Pago...');
         const nuevoPago = new Pago({
             rifa: rifaId,
@@ -200,7 +174,7 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
                 tipoIdentificacion: tipoIdentificacionComprador || null,
                 numeroIdentificacion: numeroIdentificacionComprador || null,
             },
-            numerosTicketsAsignados: numerosTicketsAsignadosFormatted, // Guardar los números formateados
+            numerosTicketsAsignados: numerosTicketsAsignados, // Guardar los números asignados
             fechaPago: new Date(),
             estado: 'pendiente'
         });
@@ -208,8 +182,8 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         const pagoGuardado = await nuevoPago.save();
         console.log('Pago guardado exitosamente con ID:', pagoGuardado._id);
 
-        console.log('Actualizando estado de tickets a pendiente_pago en la colección Ticket...');
-        const updateResult = await Ticket.updateMany(
+        // 6. Actualizar el estado de los tickets y la rifa
+        await Ticket.updateMany(
             { _id: { $in: ticketsIdsParaActualizar }, estado: 'disponible' },
             {
                 $set: {
@@ -224,31 +198,27 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
                 }
             }
         );
-        console.log(`Tickets actualizados: matchedCount=${updateResult.matchedCount}, modifiedCount=${updateResult.modifiedCount}`);
 
-        if (updateResult.modifiedCount !== cantidadTickets) {
-            console.warn(`Advertencia: No todos los tickets solicitados fueron marcados como 'pendiente_pago'. Se esperaba ${cantidadTickets}, pero se modificaron ${updateResult.modifiedCount}.`);
-        }
-
-        console.log('Actualizando contador de tickets vendidos y números en la Rifa...');
-        const nuevosNumerosParaRifa = numerosTicketsAsignadosRaw.map(num => ({ // Usar raw numbers para mapeo
-            numeroTicket: formatTicketNumber(num), // Formatear el número a String
-            comprador: null,
-            nombreComprador: nombreComprador,
-            fechaCompra: new Date(),
-            estadoPago: 'pendiente',
-        }));
-
-        const rifaActualizada = await Rifa.findByIdAndUpdate(
+        await Rifa.findByIdAndUpdate(
             rifaId,
             {
                 $inc: { ticketsVendidos: cantidadTickets },
-                $push: { numerosTickets: { $each: nuevosNumerosParaRifa } }
+                $push: {
+                    numerosTickets: {
+                        $each: ticketsParaAsignar.map(ticket => ({
+                            numeroTicket: ticket.numeroTicket,
+                            comprador: null,
+                            nombreComprador: nombreComprador,
+                            fechaCompra: new Date(),
+                            estadoPago: 'pendiente',
+                        }))
+                    }
+                }
             },
             { new: true }
         );
-        console.log(`Rifa ${rifaId} actualizada. Tickets vendidos: ${rifaActualizada.ticketsVendidos}`);
 
+        // Respuesta para el frontend
         console.log('Enviando respuesta exitosa al frontend.');
         res.status(201).json({
             message: 'Pago registrado y tickets asignados exitosamente.',
@@ -262,10 +232,6 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
             numeroIdentificacionComprador: pagoGuardado.comprador.numeroIdentificacion,
             metodo: pagoGuardado.metodo,
             cantidadTickets: pagoGuardado.cantidadTickets,
-            rifaActualizada: {
-                ticketsVendidos: rifaActualizada.ticketsVendidos,
-                porcentajeVendido: (rifaActualizada.ticketsVendidos / rifaActualizada.totalTickets) * 100
-            }
         });
 
     } catch (err) {
