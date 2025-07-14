@@ -108,26 +108,33 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
             console.error('ERROR: No hay suficientes tickets disponibles.');
             return res.status(400).json({ message: `Solo quedan ${ticketsDisponiblesParaComprar} tickets disponibles para esta rifa.` });
         }
-        
-        // 3. Generar y asignar números de tickets
+
+        // 3. Generar y asignar números de tickets de forma aleatoria
         console.log('Buscando tickets disponibles para la rifa en la colección Ticket...');
 
-        // La estrategia mejorada: encontrar y actualizar en una sola operación atómica.
-        // Se buscan tickets disponibles y se limitan a la cantidad solicitada.
-        const ticketsParaAsignar = await Ticket.find({
+        // Paso A: Obtener todos los tickets disponibles
+        const todosLosTicketsDisponibles = await Ticket.find({
             rifaId: rifaId,
             estado: 'disponible'
-        }).limit(cantidadTickets).select('_id numeroTicket');
-        
-        console.log(`Encontrados ${ticketsParaAsignar.length} tickets para asignar.`);
+        }).select('_id numeroTicket');
 
-        if (ticketsParaAsignar.length < cantidadTickets) {
+        console.log(`Encontrados ${todosLosTicketsDisponibles.length} tickets en estado 'disponible'.`);
+
+        if (todosLosTicketsDisponibles.length < cantidadTickets) {
             console.error('ERROR: No hay suficientes tickets disponibles en DB.');
-            return res.status(400).json({ message: `No hay suficientes tickets disponibles en esta rifa. Solo se pudieron reservar ${ticketsParaAsignar.length}.` });
+            return res.status(400).json({ message: `No hay suficientes tickets disponibles en esta rifa. Solo se pudieron reservar ${todosLosTicketsDisponibles.length}.` });
         }
+        
+        // Paso B: Mezclar aleatoriamente el array de tickets disponibles
+        const ticketsMezclados = shuffleArray(todosLosTicketsDisponibles);
+
+        // Paso C: Tomar solo la cantidad de tickets solicitada del array mezclado
+        const ticketsParaAsignar = ticketsMezclados.slice(0, cantidadTickets);
 
         const ticketsIdsParaActualizar = ticketsParaAsignar.map(t => t._id);
         const numerosTicketsAsignados = ticketsParaAsignar.map(t => t.numeroTicket);
+
+        console.log('Tickets seleccionados para asignación:', numerosTicketsAsignados);
 
         // 4. Lógica para calcular y almacenar montos y tasa de cambio
         let montoEnUSD = 0;
