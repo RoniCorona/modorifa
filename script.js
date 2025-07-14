@@ -724,3 +724,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
+// === SUBIDA DE COMPROBANTE DE PAGO ===
+    const formComprobante = document.getElementById("formComprobantePago");
+    const inputEmailComprobante = document.getElementById("correoComprobante");
+    const inputFileComprobante = document.getElementById("archivoComprobante");
+
+    if (formComprobante) {
+        formComprobante.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = inputEmailComprobante?.value?.trim();
+            const file = inputFileComprobante?.files[0];
+
+            if (!email || !email.includes("@")) {
+                showMessage("Por favor, ingresa un correo válido.", "error");
+                return;
+            }
+            if (!file) {
+                showMessage("Por favor, selecciona un archivo para subir.", "error");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("email", email);
+            formData.append("comprobante", file);
+
+            try {
+                showMessage("Subiendo comprobante...", "info");
+                const response = await fetch(`${API_URL}/comprobantes`, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || "Error al subir el comprobante.");
+
+                showMessage("✅ Comprobante subido exitosamente. Será verificado en breve.", "success");
+                formComprobante.reset();
+            } catch (error) {
+                showMessage(`Error al subir comprobante: ${error.message}`, "error");
+            }
+        });
+    }
