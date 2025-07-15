@@ -50,6 +50,7 @@ header {
     z-index: 1;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     display: flex;
+    flex-direction: row; /* CORREGIDO: Asegura que el contenido se mantenga en una fila */
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
@@ -702,10 +703,10 @@ form button:active {
 
 .mensaje-error {
     color: #E53E3E;
-    margin-top: 10px;
-    font-size: 0.9rem;
-    text-align: center;
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
     font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
 }
 
 /* === Estilos para página de detalles de rifa (rifa.html) === */
@@ -1364,7 +1365,7 @@ form button:active {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* CORREGIDO: Evita que los elementos se apilen */
     gap: 2rem;
     padding: 1.5rem 1rem;
     margin: 0 auto;
