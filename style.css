@@ -690,16 +690,26 @@ form button:active {
 }
 
 .boletos-list .boleto {
-    background: #f4f1ff;
-    border: 2px solid #4b0082;
+    background: #ebf8ff; /* Un azul muy claro, consistente con el diseño general */
+    border: 2px solid var(--secondary-blue);
     padding: 0.8rem 1.2rem;
     border-radius: 12px;
     font-weight: bold;
-    color: #4b0082;
+    color: var(--primary-blue);
     font-size: 1.1rem;
     min-width: 80px;
     animation: fadeIn 0.5s ease forwards;
     white-space: nowrap;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+    box-shadow: var(--shadow-subtle);
+}
+
+.boletos-list .boleto:hover {
+    background: var(--light-blue);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(42, 82, 138, 0.2);
 }
 
 /* === FIN BOLETOS INDIVIDUALES === */
