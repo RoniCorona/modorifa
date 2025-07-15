@@ -82,39 +82,12 @@ router.post('/', upload.single('comprobante'), async (req, res) => {
         console.error('ERROR: El monto total debe ser un valor positivo.');
         return res.status(400).json({ message: 'El monto total debe ser un valor positivo.' });
     }
-if (parseInt(cantidadTickets) <= 0) {
-    console.error('ERROR: La cantidad de tickets debe ser al menos 1.');
-    return res.status(400).json({ message: 'La cantidad de tickets debe ser al menos 1.' });
-}
-
-// Validar si ya existe un pago con la misma referencia en esta rifa
-const referenciaNormalizada = referenciaPago ? referenciaPago.trim() : '';
-const referenciaDuplicada = await Pago.findOne({
-    referenciaPago: referenciaNormalizada,
-    rifa: rifaId,
-});
-
-if (referenciaDuplicada) {
-    return res.status(409).json({
-        message: 'Ya existe un pago registrado con esta referencia para esta rifa.'
-    });
-}
-
-// Validar si ya existe un comprobante con el mismo nombre de archivo en esta rifa
-if (req.file && req.file.filename) {
-    const comprobanteDuplicado = await Pago.findOne({
-        comprobante: req.file.filename,
-        rifa: rifaId,
-    });
-
-    if (comprobanteDuplicado) {
-        return res.status(409).json({
-            message: 'Ya se ha subido un comprobante con este archivo para esta rifa.'
-        });
+    if (parseInt(cantidadTickets) <= 0) {
+        console.error('ERROR: La cantidad de tickets debe ser al menos 1.');
+        return res.status(400).json({ message: 'La cantidad de tickets debe ser al menos 1.' });
     }
-}
 
-try {
+    try {
         // 1. Buscar la rifa
         console.log(`Buscando rifa con ID: ${rifaId}`);
         const rifaExistente = await Rifa.findById(rifaId);

@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         messageContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
         messageContainer.classList.remove('oculto');
-            setTimeout(() => {
+        setTimeout(() => {
             messageContainer.classList.add('oculto');
             messageContainer.innerHTML = '';
         }, 5000);
@@ -177,8 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                 } catch (error) {
-    btnFinalizarPago.disabled = false;
-    btnFinalizarPago.textContent = "Finalizar pago";
                     console.error('Error al cargar las rifas en el frontend (index.html):', error);
                     contenedorRifas.innerHTML = '<p class="mensaje-error">Error al cargar las rifas. Por favor, inténtalo de nuevo más tarde.</p>';
                     showMessage('Error al cargar las rifas. Por favor, inténtalo de nuevo.', 'error');
@@ -523,8 +521,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 actualizarTotalPagar();
 
             } catch (error) {
-    btnFinalizarPago.disabled = false;
-    btnFinalizarPago.textContent = "Finalizar pago";
                 console.error('Error al cargar los detalles de la rifa en rifa.html:', error);
                 showMessage('Error al cargar los detalles de la rifa. Por favor, inténtalo de nuevo.', 'error');
             }
@@ -559,48 +555,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // La validación solo se activa si el formulario de comprobante está visible
             if (formularioComprobanteVisible) {
-// Asegura que existan los elementos para mostrar errores individuales
-const errorReferencia = document.querySelector('#error-referencia') || document.createElement('div');
-errorReferencia.id = 'error-referencia';
-errorReferencia.className = 'error-campo';
-referenciaPagoInput.parentNode.insertBefore(errorReferencia, referenciaPagoInput.nextSibling);
-
-const errorComprobante = document.querySelector('#error-comprobante') || document.createElement('div');
-errorComprobante.id = 'error-comprobante';
-errorComprobante.className = 'error-campo';
-comprobantePagoInput.parentNode.insertBefore(errorComprobante, comprobantePagoInput.nextSibling);
-                // Elimina errores anteriores
-if (referenciaPagoInput) {
-    referenciaPagoInput.classList.remove('campo-requerido');
-    const err = document.querySelector('#error-referencia');
-    if (err) err.textContent = '';
-}
-if (comprobantePagoInput) {
-    comprobantePagoInput.classList.remove('campo-requerido');
-    const err = document.querySelector('#error-comprobante');
-    if (err) err.textContent = '';
-}
-
-if (!tieneReferencia && !tieneComprobante) {
-    if (referenciaPagoInput) referenciaPagoInput.classList.add('campo-requerido');
-    errorReferencia.textContent = 'Este campo es obligatorio';
-    if (comprobantePagoInput) comprobantePagoInput.classList.add('campo-requerido');
-    errorComprobante.textContent = 'Este campo es obligatorio';
-    showMessage('Debes ingresar la referencia de pago y subir el comprobante.', 'error');
-    return;
-}
-if (!tieneReferencia) {
-    if (referenciaPagoInput) referenciaPagoInput.classList.add('campo-requerido');
-    errorReferencia.textContent = 'Este campo es obligatorio';
-    showMessage('Por favor, ingresa la referencia de pago.', 'error');
-    return;
-}
-if (!tieneComprobante) {
-    if (comprobantePagoInput) comprobantePagoInput.classList.add('campo-requerido');
-    errorComprobante.textContent = 'Este campo es obligatorio';
-    showMessage('Por favor, sube el comprobante de pago.', 'error');
-    return;
-}
+                if (!tieneReferencia && !tieneComprobante) {
+                    showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
+                    return;
+                }
+                if (!tieneReferencia) {
+                    showMessage('Por favor, ingresa la referencia de pago.', 'error');
+                    return;
+                }
+                if (!tieneComprobante) {
+                    showMessage('Por favor, sube el comprobante de pago.', 'error');
+                    return;
+                }
             }
 
 
@@ -684,8 +650,6 @@ if (!tieneComprobante) {
                 }
 
             } catch (error) {
-    btnFinalizarPago.disabled = false;
-    btnFinalizarPago.textContent = "Finalizar pago";
                 showMessage(`Error al registrar el pago: ${error.message}`, 'error');
                 seccionPago.classList.remove("oculto");
                 seccionFinal.classList.add("oculto");
@@ -793,8 +757,6 @@ if (!tieneComprobante) {
                     }
                 }
             } catch (error) {
-    btnFinalizarPago.disabled = false;
-    btnFinalizarPago.textContent = "Finalizar pago";
                 if (resultadosConsultaDiv) resultadosConsultaDiv.innerHTML = `<p class="mensaje-error">Error al consultar tickets: ${error.message}</p>`;
             }
         });
