@@ -689,16 +689,19 @@ form button:active {
     justify-content: flex-start;
 }
 
-.boletos-list span.boleto {
-    background: linear-gradient(90deg, #3182ce, #63b3ed);
-    color: white;
-    padding: 6px 10px;
-    border-radius: 5px;
-    font-size: 0.85em;
-    font-weight: 600;
+.boletos-list .boleto {
+    background: #f4f1ff;
+    border: 2px solid #4b0082;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #4b0082;
+    font-size: 1.1rem;
+    min-width: 80px;
+    animation: fadeIn 0.5s ease forwards;
     white-space: nowrap;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
 /* === FIN BOLETOS INDIVIDUALES === */
 
 .mensaje-error {
