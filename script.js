@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Asegura que el valor inicial del input sea la compra mínima si existe el elemento
     if (inputCantidad) {
-        inputCantidad.value = MIN_TICKets_COMPRA;
+        inputCantidad.value = MIN_TICKETS_COMPRA;
         inputCantidad.min = MIN_TICKETS_COMPRA; // También actualiza el atributo min del HTML
     }
     // --- FIN CAMBIOS INICIALES ---

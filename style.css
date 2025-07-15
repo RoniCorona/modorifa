@@ -19,21 +19,21 @@
     --button-padding-x: 1.6rem; /* Padding horizontal base para botones */
 }
 
-/* === Estilo Global === */
+/* === Estilo Global (MOBILE-FIRST) === */
 *, *::before, *::after {
     box-sizing: border-box;
 }
 
 html {
-    font-size: 16px; /* Base para rem */
+    font-size: 14px; /* Base para rem en móviles */
     scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Montserrat', sans-serif; /* ¡Nueva tipografía! */
+    font-family: 'Montserrat', sans-serif;
     margin: 0;
-    background: linear-gradient(to bottom right, var(--bg-light), #edf2f7); /* Gris claro */
-    color: var(--text-dark); /* Gris oscuro */
+    background: linear-gradient(to bottom right, var(--bg-light), #edf2f7);
+    color: var(--text-dark);
     line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -43,32 +43,30 @@ body {
 header {
     background: var(--primary-blue);
     color: white;
-    padding: 1.2rem 2rem;
+    padding: 1.2rem 1rem;
     text-align: center;
-
-    /* Remover comportamiento sticky */
     position: relative;
     top: unset;
     z-index: 1;
-
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-
-    min-height: 180px; /* con unidad */
-    overflow: hidden; /* opcional: evita desbordes si el contenido excede */
+    min-height: 180px;
+    overflow: hidden;
 }
 
 header h1 {
     margin: 0;
-    font-size: 2.1rem;
+    font-size: 1.8rem;
     font-weight: 700;
     letter-spacing: -0.04em;
     color: white;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    margin-bottom: 1rem;
 }
 
 header h1 a {
@@ -86,6 +84,8 @@ header h1 a:hover {
     gap: 0.8rem;
     align-items: center;
     margin-left: auto;
+    width: 100%;
+    justify-content: center;
 }
 
 /* --- Botones del Header - MEJORADOS --- */
@@ -93,7 +93,7 @@ header h1 a:hover {
     background-color: var(--light-blue);
     color: white;
     border: none;
-    padding: 0.75rem 1.4rem; /* Ajustado padding */
+    padding: 0.75rem 1.4rem;
     border-radius: var(--button-radius);
     font-size: 0.95rem;
     font-weight: 600;
@@ -103,17 +103,17 @@ header h1 a:hover {
     text-transform: uppercase;
     letter-spacing: 0.03em;
     font-family: 'Montserrat', sans-serif;
-    outline: none; /* Eliminar outline en focus */
+    outline: none;
 }
 
 .header-buttons button:hover {
     background-color: #3182ce;
     transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(49, 130, 206, 0.35); /* Sombra más pronunciada al hover */
+    box-shadow: 0 6px 14px rgba(49, 130, 206, 0.35);
 }
 
 .header-buttons button:active {
-    transform: translateY(0); /* Efecto de "presionado" */
+    transform: translateY(0);
     box-shadow: 0 2px 5px rgba(49, 130, 206, 0.2);
 }
 
@@ -121,7 +121,7 @@ header h1 a:hover {
 footer {
     background: var(--primary-blue);
     color: white;
-    padding: 2rem 2rem;
+    padding: 2rem 1rem;
     text-align: center;
     font-size: 0.85rem;
     border-top: 4px solid var(--secondary-blue);
@@ -130,7 +130,7 @@ footer {
     flex-direction: column;
     align-items: center;
     gap: 0.8rem;
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 footer p {
@@ -140,9 +140,9 @@ footer p {
 
 .footer-links {
     margin-top: 0.5rem;
-    display: flex; /* Para controlar el espaciado de los enlaces */
-    flex-wrap: wrap; /* Permitir que los enlaces se envuelvan */
-    justify-content: center; /* Centrar los enlaces */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .footer-links a {
@@ -176,28 +176,70 @@ footer p {
     transform: translateY(-2px);
 }
 
+/* --- FOOTER SOCIAL MEDIA (Nuevos estilos para redes sociales) --- */
+.footer-social-media {
+    text-align: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--secondary-blue);
+    width: 100%;
+}
+
+.footer-social-media h3 {
+    margin-bottom: 0.8rem;
+    font-size: 1.1em;
+    color: white;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0;
+}
+
+.social-icons a {
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
+    line-height: 1;
+    color: white;
+    font-size: 1.4rem;
+}
+
+.social-icons a:hover {
+    transform: translateY(-3px);
+    color: var(--accent-gold);
+}
+
+.social-icons img {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    border-radius: 5px;
+}
+
 /* === Títulos y Párrafos === */
 h1, h2, h3, h4 {
     margin-bottom: 0.6rem;
     color: var(--primary-blue);
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     line-height: 1.2;
     animation: fadeIn 1s ease-out forwards;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; margin-bottom: 1.2rem; }
-h3 { font-size: 1.6rem; }
+h1 { font-size: 2.2rem; }
+h2 { font-size: 1.8rem; margin-bottom: 1rem; }
+h3 { font-size: 1.5rem; }
 h4 { font-size: 1.2rem; }
 
 p {
     opacity: 0.9;
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 main {
-    padding: 2.5rem 2rem;
+    padding: 2.5rem 1rem;
     max-width: 1200px;
     margin: auto;
     width: 100%;
@@ -207,14 +249,14 @@ main {
 form input,
 form button,
 form select {
-    padding: var(--button-padding-y) var(--button-padding-x); /* Usar variables para padding */
+    padding: var(--button-padding-y) var(--button-padding-x);
     font-size: 0.95rem;
     margin: 0.4rem 0;
     border-radius: var(--button-radius);
     border: 1px solid var(--border-light);
     transition: all var(--transition-fast);
     width: 100%;
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 form input:focus,
@@ -252,7 +294,7 @@ form button:active {
 
 /* === Sección de Rifas (index.html) === */
 #rifas-disponibles {
-    padding: 2.5rem 2rem;
+    padding: 2rem 1rem;
     background: var(--bg-white);
     border-radius: 12px;
     box-shadow: var(--shadow-medium);
@@ -260,8 +302,8 @@ form button:active {
 
 #rifas-disponibles h2 {
     text-align: center;
-    margin-bottom: 2rem;
-    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
     color: var(--primary-blue);
     position: relative;
 }
@@ -285,8 +327,7 @@ form button:active {
 
 /* === Tarjetas de Rifa - DISEÑO ORIGINAL (INTACTO) === */
 .rifa-card {
-    width: calc(33.333% - 1.5rem);
-    min-width: 280px;
+    width: 100%;
     max-width: 350px;
     border-radius: 14px;
     background: white;
@@ -385,25 +426,25 @@ form button:active {
 /* --- Contenedor de Acciones de la Tarjeta - ¡AHORA LOS BOTONES SE APILAN! --- */
 .acciones {
     display: flex;
-    flex-direction: column; /* Cambiado a columna para apilar botones */
-    justify-content: center; /* Centra los botones */
-    align-items: center; /* Alinea los botones al centro horizontalmente */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 1rem;
-    gap: 0.8rem; /* Espaciado entre los botones apilados */
+    gap: 0.8rem;
 }
 
 /* --- Botón Comprar de la tarjeta - MEJORADO --- */
 .btn-comprar {
-    display: block; /* Asegura que ocupe todo el ancho disponible */
-    width: 100%; /* Ocupa el 100% del ancho del contenedor .acciones */
-    max-width: 200px; /* Limita el ancho máximo para que no sea demasiado grande */
+    display: block;
+    width: 100%;
+    max-width: 200px;
     text-align: center;
     background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
     color: white;
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     font-weight: 600;
-    padding: 0.8rem 1.2rem; /* Ajustado padding */
+    padding: 0.8rem 1.2rem;
     border: none;
     border-radius: var(--button-radius);
     text-decoration: none;
@@ -414,8 +455,8 @@ form button:active {
 }
 
 .btn-comprar:hover {
-    transform: translateY(-3px); /* Mayor elevación */
-    box-shadow: 0 8px 16px rgba(26, 54, 93, 0.35); /* Sombra más pronunciada */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(26, 54, 93, 0.35);
     background: linear-gradient(to right, var(--secondary-blue), var(--light-blue));
 }
 
@@ -435,12 +476,12 @@ form button:active {
 /* --- Botón Ver Tickets de la tarjeta - MEJORADO --- */
 .ver-tickets {
     background: var(--bg-light);
-    display: block; /* Asegura que ocupe todo el ancho disponible */
-    width: 100%; /* Ocupa el 100% del ancho del contenedor .acciones */
-    max-width: 200px; /* Limita el ancho máximo para que no sea demasiado grande */
+    display: block;
+    width: 100%;
+    max-width: 200px;
     color: var(--text-dark);
     border: 1px solid var(--border-light);
-    padding: 0.7rem 1.1rem; /* Ajustado padding */
+    padding: 0.7rem 1.1rem;
     border-radius: var(--button-radius);
     font-weight: 600;
     cursor: pointer;
@@ -465,7 +506,7 @@ form button:active {
 }
 
 /* === ESTILOS DEL OVERLAY DEL MODAL (GENÉRICO Y CORREGIDO) === */
-.modal { 
+.modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -669,7 +710,7 @@ form button:active {
 
 /* === Estilos para página de detalles de rifa (rifa.html) === */
 .contenedor-rifa-detalle {
-    padding: 2.5rem 2rem;
+    padding: 2.5rem 1rem;
     text-align: center;
     max-width: 900px;
     margin: auto;
@@ -735,8 +776,8 @@ form button:active {
     font-weight: bold;
     color: #2d3748;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    flex: 1 1 calc(33% - 1rem);
-    min-width: 150px;
+    flex: 1 1 calc(50% - 1rem); /* 2 columnas en móviles */
+    min-width: 140px;
 }
 
 .descripcion-rifa {
@@ -790,8 +831,8 @@ form button:active {
     font-weight: bold;
     cursor: default;
     flex: 1 1 auto;
-    min-width: 150px;
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    min-width: 140px;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .botones-precio button span {
@@ -802,7 +843,7 @@ form button:active {
 
 /* Contenedor de mensajes (éxito/error) */
 #message-container {
-    max-width: 600px;
+    max-width: 90%;
     margin: 1.5rem auto;
     padding: 1rem;
     border-radius: var(--button-radius);
@@ -850,7 +891,7 @@ form button:active {
     align-items: center;
     gap: 8px;
     flex-wrap: nowrap;
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 .total-a-pagar .total-label,
@@ -983,11 +1024,11 @@ form button:active {
 /* --- Botones de formulario (p. ej., "Continuar", "Pagar") - MEJORADOS y APILADOS --- */
 .botones-form {
     display: flex;
-    flex-direction: column; /* ¡APILADOS! */
-    justify-content: center; /* Centra los botones */
-    align-items: center; /* Alinea los botones al centro horizontalmente */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin-top: 1rem;
-    gap: 0.8rem; /* Espacio entre ellos */
+    gap: 0.8rem;
 }
 
 .botones-form button {
@@ -998,8 +1039,8 @@ form button:active {
     background: var(--secondary-blue);
     color: white;
     cursor: pointer;
-    width: 100%; /* Ocupa el 100% del ancho del contenedor */
-    max-width: 250px; /* Limita el ancho máximo */
+    width: 100%;
+    max-width: 250px;
     box-shadow: 0 4px 10px rgba(42, 82, 138, 0.2);
     transition: all var(--transition-fast);
     font-family: 'Montserrat', sans-serif;
@@ -1042,12 +1083,12 @@ form button:active {
     background: #fdfefe;
     padding: 1.2rem;
     border-radius: 12px;
-    width: 200px;
+    width: 100%; /* Ahora son 100% en móviles por defecto */
+    max-width: 250px;
     cursor: pointer;
     transition: all var(--transition-fast);
     text-align: center;
-    flex: 1 1 calc(33% - 1.2rem);
-    max-width: 250px;
+    flex: 1 1 auto;
     box-shadow: var(--shadow-subtle);
 }
 
@@ -1090,7 +1131,7 @@ form button:active {
     border: 1px solid var(--border-light);
     background-color: #ffffff;
     transition: border var(--transition-fast);
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 .detalles-pago input:focus {
@@ -1106,7 +1147,7 @@ form button:active {
     font-weight: 600;
     color: var(--primary-blue);
     font-size: 1rem;
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 .vista-previa {
@@ -1128,12 +1169,12 @@ form button:active {
     margin-top: 0.6rem;
     font-size: 0.95rem;
     font-weight: 500;
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 #seccion-final {
     background: radial-gradient(circle at top left, #f8fafc, #edf2f7);
-    padding: 3rem 2rem;
+    padding: 3rem 1rem;
     text-align: center;
 }
 
@@ -1164,7 +1205,7 @@ form button:active {
     padding: 1.2rem;
     border-radius: 10px;
     box-shadow: 0 0 4px rgba(0,0,0,0.05);
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 /* === BOLETOS ASIGNADOS - VUELTA A ORIGINAL === */
@@ -1194,7 +1235,7 @@ form button:active {
     font-size: 1.1rem;
     margin-top: 1rem;
     color: #4a5568;
-    font-family: 'Montserrat', sans-serif; /* Usar la nueva tipografía */
+    font-family: 'Montserrat', sans-serif;
 }
 
 /* --- Botón Volver al Inicio - MEJORADO --- */
@@ -1202,7 +1243,7 @@ form button:active {
     display: inline-block;
     background: linear-gradient(to right, var(--accent-gold), var(--light-gold));
     color: var(--primary-blue);
-    padding: var(--button-padding-y) 2rem; /* Usar variable para padding vertical */
+    padding: var(--button-padding-y) 2rem;
     border-radius: var(--button-radius);
     text-decoration: none;
     font-weight: 700;
@@ -1241,222 +1282,10 @@ form button:active {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* Media Queries para Responsividad General */
-
-/* Tablet y dispositivos medianos (hasta 768px) */
-@media (max-width: 768px) {
-    html {
-        font-size: 15px;
-    }
-    main {
-        padding: 1.5rem;
-    }
-
-    .rifa-card {
-        width: calc(50% - 1.5rem);
-    }
-
-    .seccion-compra,
-    #seccion-pago,
-    #seccion-final .final-card {
-        padding: 1.5rem;
-        margin: 1rem auto;
-    }
-
-    /* Ajustes específicos para el modal de tickets en tablet */
-    #modalTickets .modal-contenido {
-        padding: 1.2rem;
-        max-width: 500px;
-    }
-    #modalTickets .modal-contenido h2 {
-        font-size: 1.3rem;
-        margin-bottom: 0.8rem;
-    }
-
-    .cerrar-modal {
-        font-size: 1.8rem;
-        top: 0.8rem;
-        right: 1rem;
-    }
-
-    #modalTickets #formConsultarTickets button {
-        padding: 0.8rem 1rem;
-        font-size: 1rem;
-        max-width: 250px;
-    }
-
-    #modalTickets #formConsultarTickets input {
-        width: 100%;
-        max-width: 250px;
-    }
-
-    #resultados-consulta-tickets {
-        padding: 12px;
-    }
-
-    .boletos-list {
-        gap: 0.4rem;
-    }
-
-    .boletos-list span.boleto {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.6rem;
-    }
-
-    /* Ajuste para el total a pagar en tablets */
-    .total-a-pagar {
-        font-size: 0.85rem;
-        padding: 0.6rem 1rem;
-        max-width: 350px;
-    }
-    .total-a-pagar .total-label,
-    .total-a-pagar #totalPagarDisplay {
-        font-size: 1.05em;
-    }
-
-    .datos-premio .dato {
-        flex: 1 1 calc(50% - 1rem);
-        font-size: 0.9rem;
-        padding: 0.8rem 1rem;
-    }
-    /* Los botones de formulario ya están en columna por defecto ahora */
-    .botones-form button {
-        max-width: 200px; /* Ajusta el ancho para tablet */
-    }
-}
-
-/* Teléfonos móviles pequeños (hasta 480px) */
-@media (max-width: 480px) {
-    html {
-        font-size: 14px;
-    }
-    header, footer {
-        padding: 1rem;
-    }
-
-    h1 {
-        font-size: 1.6rem;
-    }
-
-    h2 {
-        font-size: 1.3rem;
-    }
-
-    .rifa-card {
-        width: 100%;
-        max-width: 320px;
-    }
-
-    .titulo-producto-rifa {
-        font-size: 1.1rem;
-    }
-
-    .acciones {
-        gap: 0.6rem; /* Ajusta el espacio para móviles */
-    }
-
-    .btn-comprar, .ver-tickets {
-        width: 100%;
-        max-width: none; /* Que ocupen todo el ancho disponible en móvil */
-    }
-
-    .cantidad-comprar input {
-        width: 60px;
-        font-size: 1rem;
-    }
-
-    .botones-cantidad-rapida button {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.9rem;
-        max-width: 50px;
-    }
-
-    .metodo {
-        width: 100%;
-        max-width: 250px;
-    }
-
-    .detalles-pago label {
-        margin-top: 1rem;
-    }
-
-    .btn-volver-inicio {
-        font-size: 1rem;
-        padding: 0.7rem 1.4rem;
-        width: 100%;
-        max-width: 250px;
-    }
-
-    /* Ajustes específicos para el modal de tickets en móvil */
-    #modalTickets .modal-contenido {
-        padding: 1rem;
-        width: 95%;
-        max-width: 350px;
-    }
-    #modalTickets .modal-contenido h2 {
-        font-size: 1.1rem;
-        margin-bottom: 0.6rem;
-    }
-    #modalTickets #formConsultarTickets button {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.9rem;
-        max-width: 100%;
-    }
-    #modalTickets #formConsultarTickets input {
-        width: 100%;
-        max-width: 100%;
-    }
-    #resultados-consulta-tickets {
-        padding: 10px;
-    }
-    .consulta-header h2 {
-        font-size: 1.3rem;
-    }
-    .buyer-details p {
-        font-size: 0.85rem;
-    }
-    .rifa-tickets-group p {
-        font-size: 0.85em;
-    }
-    .boletos-list span.boleto {
-        font-size: 0.75em;
-        padding: 4px 6px;
-    }
-
-    /* Ajuste para el total a pagar en móviles pequeños */
-    .total-a-pagar {
-        font-size: 0.75rem;
-        padding: 0.4rem 0.6rem;
-        max-width: 280px;
-    }
-    .total-a-pagar .total-label,
-    .total-a-pagar #totalPagarDisplay {
-        font-size: 0.9em;
-    }
-
-    .datos-premio .dato {
-        flex: 1 1 100%;
-        font-size: 0.85rem;
-    }
-
-    .cedula-grupo {
-        flex-direction: column;
-        gap: 0.3rem;
-    }
-    .cedula-grupo select,
-    .cedula-grupo input {
-        width: 100%;
-        max-width: none;
-    }
-    .botones-form button {
-        max-width: 100%; /* Ocupa todo el ancho disponible en móvil */
-    }
-}
-
 /* === ESTILOS PARA MODAL DE TÉRMINOS Y CONDICIONES === */
 
 #modalTerminos .modal-contenido.terminos {
-    max-width: 650px; /* Un poco más ancho para los términos */
+    max-width: 650px;
     text-align: left;
 }
 
@@ -1467,8 +1296,8 @@ form button:active {
 }
 
 .terminos-texto {
-    max-height: 40vh; /* Altura máxima para el texto */
-    overflow-y: auto; /* Scroll si el contenido es muy largo */
+    max-height: 40vh;
+    overflow-y: auto;
     border: 1px solid var(--border-light);
     padding: 1rem;
     border-radius: 8px;
@@ -1488,8 +1317,8 @@ form button:active {
 
 .acciones-modal {
     display: flex;
-    justify-content: center; /* Centrar botones */
-    gap: 1rem; /* Espacio entre botones */
+    justify-content: center;
+    gap: 1rem;
     margin-top: 1rem;
 }
 
@@ -1519,7 +1348,7 @@ form button:active {
 
 /* Botón Rechazar - Estilo de "peligro" o secundario */
 .btn-rechazar {
-    background-color: #E53E3E; /* Rojo */
+    background-color: #E53E3E;
     color: white;
     box-shadow: 0 4px 10px rgba(229, 62, 62, 0.2);
 }
@@ -1530,77 +1359,14 @@ form button:active {
     box-shadow: 0 6px 14px rgba(229, 62, 62, 0.3);
 }
 
-/* --- FOOTER SOCIAL MEDIA (Nuevos estilos para redes sociales) --- */
-.footer-social-media {
-    text-align: center;
-    margin-top: 1rem; /* Ajustado para la estructura de tu footer */
-    padding-top: 1rem;
-    border-top: 1px solid var(--secondary-blue); /* Ligeramente más oscuro para separar */
-    width: 100%; /* Asegura que ocupe todo el ancho disponible */
-}
-
-.footer-social-media h3 {
-    margin-bottom: 0.8rem;
-    font-size: 1.1em;
-    color: white; /* Color para el título de redes sociales */
-}
-
-.social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem; /* Espaciado entre los iconos */
-    margin-top: 0; /* Ya lo maneja el h3 */
-}
-
-.social-icons a {
-    display: inline-block; /* Asegura que cada icono sea un bloque para el tamaño */
-    transition: transform 0.2s ease-in-out; /* Animación al pasar el ratón */
-    line-height: 1; /* Asegura que no haya espacio extra */
-    color: white; /* Color del icono, si es font-awesome por ejemplo */
-    font-size: 1.4rem; /* Tamaño del icono si es font-awesome */
-}
-
-.social-icons a:hover {
-    transform: translateY(-3px); /* Pequeño efecto al pasar el ratón */
-    color: var(--accent-gold); /* Cambio de color al pasar el ratón */
-}
-
-.social-icons img {
-    width: 40px; /* Tamaño de los iconos de imagen */
-    height: 40px;
-    vertical-align: middle; /* Alinea bien la imagen */
-    border-radius: 5px; /* Ligeros bordes redondeados para las imágenes */
-}
-
-/* Media Queries para Responsive Design de Redes Sociales */
-@media (max-width: 768px) {
-    .social-icons {
-        gap: 15px; /* Menos espacio entre iconos en móvil */
-    }
-    .social-icons img {
-        width: 35px; /* Iconos un poco más pequeños en móvil */
-        height: 35px;
-    }
-}
-
-@media (max-width: 480px) {
-    .social-icons {
-        gap: 15px; /* Menos espacio entre iconos en móvil */
-    }
-    .social-icons img {
-        width: 35px; /* Iconos un poco más pequeños en móvil */
-        height: 35px;
-    }
-}
-
 /* === HEADER IMAGES CORREGIDAS Y RESPONSIVAS === */
-
 .header-images {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     gap: 2rem;
-    padding: 1.5rem 2rem;
+    padding: 1.5rem 1rem;
     margin: 0 auto;
     max-width: 100%;
     overflow: hidden;
@@ -1610,34 +1376,87 @@ form button:active {
     width: 165px;
     height: 105px;
     object-fit: contain;
+    flex-shrink: 0;
 }
 
-/* Tablet */
-@media (max-width: 768px) {
-    .header-images {
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
+/* === Media Queries para Responsividad === */
 
+/* Para tabletas y dispositivos medianos (min-width 481px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    html { font-size: 15px; }
+    main { padding: 1.5rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.6rem; }
+    .rifa-card {
+        width: calc(50% - 1.5rem);
+        max-width: none;
+    }
+    .datos-premio .dato {
+        flex: 1 1 calc(50% - 1rem);
+    }
+    .botones-precio button {
+        min-width: 180px;
+    }
+    .metodo {
+        flex-basis: calc(50% - 1rem);
+    }
+    .header-images {
+        gap: 1.5rem;
+    }
     .header-images a img {
         width: 130px;
         height: 80px;
     }
-}
-
-/* Móvil */
-@media (max-width: 480px) {
-    .header-images {
+    .cedula-grupo {
         flex-direction: row;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
+        gap: 0.6rem;
     }
-
-    .header-images a img {
-        width: 115px;
-        height: 65px;
+    .cedula-grupo select {
+        width: auto;
+    }
+    .cedula-grupo input {
+        flex-grow: 1;
+    }
+    .botones-form button {
+        max-width: 250px;
     }
 }
 
-/* código final*/
+/* Para escritorios y pantallas grandes (min-width 769px) */
+@media (min-width: 769px) {
+    html { font-size: 16px; }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2.2rem; }
+    main { padding: 2.5rem 2rem; }
+    .rifa-card {
+        width: calc(33.333% - 1.5rem);
+        max-width: none;
+    }
+    .datos-premio .dato {
+        flex: 1 1 calc(33.333% - 1rem);
+    }
+    .metodo {
+        flex-basis: calc(33.333% - 1rem);
+    }
+    header h1 {
+        width: auto;
+        margin-bottom: 0;
+    }
+    .header-buttons {
+        width: auto;
+    }
+    .header-images {
+        gap: 2rem;
+    }
+    .header-images a img {
+        width: 165px;
+        height: 105px;
+    }
+    .botones-form {
+        flex-direction: row;
+        justify-content: center;
+    }
+    .botones-form button {
+        max-width: 200px;
+    }
+}
