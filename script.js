@@ -395,8 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h4>Pago Móvil</h4>
                     <p><strong>Banco:</strong> Venezuela</p>
                     <p><strong>Teléfono:</strong> 0414-3548533</p>
-                    <p><strong>CI:</strong> V-24771856</p>
-                    <p><strong>Nombre:</strong> Jesus Galindez</p>
+                    <p><strong>CI:</strong> V-24771856</p>>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
                     <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
