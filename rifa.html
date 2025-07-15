@@ -123,7 +123,13 @@
                 <div id="formulario-comprobante" class="oculto">
                     <h4>Subir Comprobante de Pago</h4>
                     <p>Por favor, sube una imagen o PDF de tu comprobante de pago.</p>
-                    <input type="file" id="comprobantePago" name="comprobante" accept="image/*,application/pdf" />
+                    <input
+                    type="file"
+                    id="comprobantePago"
+                    name="comprobante"
+                    accept="image/*"
+                    capture="environment"
+                    />
                 </div>
             </div>
 
