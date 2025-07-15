@@ -177,6 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                 } catch (error) {
+    btnFinalizarPago.disabled = false;
+    btnFinalizarPago.textContent = "Finalizar pago";
                     console.error('Error al cargar las rifas en el frontend (index.html):', error);
                     contenedorRifas.innerHTML = '<p class="mensaje-error">Error al cargar las rifas. Por favor, inténtalo de nuevo más tarde.</p>';
                     showMessage('Error al cargar las rifas. Por favor, inténtalo de nuevo.', 'error');
@@ -521,6 +523,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 actualizarTotalPagar();
 
             } catch (error) {
+    btnFinalizarPago.disabled = false;
+    btnFinalizarPago.textContent = "Finalizar pago";
                 console.error('Error al cargar los detalles de la rifa en rifa.html:', error);
                 showMessage('Error al cargar los detalles de la rifa. Por favor, inténtalo de nuevo.', 'error');
             }
@@ -680,6 +684,8 @@ if (!tieneComprobante) {
                 }
 
             } catch (error) {
+    btnFinalizarPago.disabled = false;
+    btnFinalizarPago.textContent = "Finalizar pago";
                 showMessage(`Error al registrar el pago: ${error.message}`, 'error');
                 seccionPago.classList.remove("oculto");
                 seccionFinal.classList.add("oculto");
@@ -787,6 +793,8 @@ if (!tieneComprobante) {
                     }
                 }
             } catch (error) {
+    btnFinalizarPago.disabled = false;
+    btnFinalizarPago.textContent = "Finalizar pago";
                 if (resultadosConsultaDiv) resultadosConsultaDiv.innerHTML = `<p class="mensaje-error">Error al consultar tickets: ${error.message}</p>`;
             }
         });
