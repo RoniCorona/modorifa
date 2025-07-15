@@ -712,6 +712,30 @@ form button:active {
     box-shadow: 0 4px 8px rgba(42, 82, 138, 0.2);
 }
 
+.boleto-consulta {
+  background: #ebf8ff;
+  border: 2px solid var(--secondary-blue);
+  color: var(--primary-blue);
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  min-width: 80px;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  margin: 4px;
+  box-shadow: var(--shadow-subtle);
+  transition: all 0.2s ease-in-out;
+}
+
+.boleto-consulta:hover {
+  background: var(--light-blue);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(42, 82, 138, 0.2);
+}
+
 /* === FIN BOLETOS INDIVIDUALES === */
 
 .mensaje-error {
