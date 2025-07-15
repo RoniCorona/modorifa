@@ -1513,35 +1513,43 @@ form button:active {
 }
 
 
-/* Loader visual y animación */
-#loader-pago {
-  display: none;
-  margin-top: 1.5rem;
-  text-align: center;
-  font-weight: bold;
-  font-size: 1rem;
-  color: #333;
-  position: relative;
-  padding-left: 2rem;
+/* --- ESTILOS PARA EL LOADER --- */
+#siguienteMetodo {
+    position: relative;
+    overflow: hidden;
 }
 
-#loader-pago::before {
-  content: "";
-  display: inline-block;
-  width: 1.2rem;
-  height: 1.2rem;
-  border: 3px solid #999;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  position: absolute;
-  left: 0;
-  top: 0.1rem;
+#siguienteMetodo.is-loading span:first-of-type {
+    visibility: hidden;
 }
 
-/* Animación de giro */
+#siguienteMetodo .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#siguienteMetodo.is-loading .spinner {
+    opacity: 1;
+}
+
+/* Animación para el spinner */
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Estilo base para el botón deshabilitado */
+#siguienteMetodo:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }

@@ -551,12 +551,9 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('tasaCambioUsada', rifaTasaCambio);
 
             // --- Lógica del Loader y el Botón ---
-            const btn = siguienteMetodoBtn;
-            const originalText = btn.textContent;
-            
-            btn.textContent = 'Procesando...';
-            btn.disabled = true;
-            showMessage('Registrando tu pago...', 'info');
+            siguienteMetodoBtn.disabled = true;
+            siguienteMetodoBtn.classList.add('is-loading');
+            showMessage('Registrando tu pago, por favor espera...', 'info');
 
             try {
                 const response = await fetch(`${API_URL}/pagos`, {
@@ -596,8 +593,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 seccionFinal.classList.add("oculto");
             } finally {
                 // Restaura el botón a su estado original
-                btn.textContent = originalText;
-                btn.disabled = false;
+                siguienteMetodoBtn.classList.remove('is-loading');
+                siguienteMetodoBtn.disabled = false;
             }
         });
     }
@@ -693,7 +690,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                             `;
                         }
-
                         resultadosConsultaDiv.innerHTML = htmlResultados;
                     } else {
                         resultadosConsultaDiv.innerHTML = `<p class="mensaje-info">No se encontraron tickets asociados a este correo electrónico ${rifaIdConsulta ? `para esta rifa.` : `.`}</p>`;
