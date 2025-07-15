@@ -373,13 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let html = "";
 
             if (metodo === "binance") {
-                // --- VALIDACIÓN DE COMPRA MÍNIMA ESPECÍFICA POR MÉTODO DE PAGO ---
-                if (cantidad < 5) {
-                    showMessage('Para pagos con Binance, la compra mínima es de 5 tickets.', 'error');
-                    limpiarSeleccion(); // Limpiar selección si no cumple
-                    return;
-                }
-                // --- FIN VALIDACIÓN ESPECÍFICA ---
                 html = `
                     <h4>Pago vía Binance USDT</h4>
                     <p><strong>Usuario:</strong> Jesus Galindez</p>
@@ -391,6 +384,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 metodoPagoSeleccionado = 'Binance';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto'); // Mostrar comprobante para Binance
+                // AÑADIR ALERTA AQUÍ
+                if (cantidad < 5) {
+                    showMessage('Para pagos con Binance, la compra mínima es de 5 tickets. Por favor, ajusta la cantidad o selecciona otro método.', 'error');
+                }
             } else if (metodo === "pagomovil") {
                 if (rifaTasaCambio === 0) {
                     showMessage('La tasa de cambio no está disponible para este método de pago.', 'error');
@@ -409,13 +406,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 metodoPagoSeleccionado = 'Pago Móvil';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto'); // Mostrar comprobante para Pago Móvil
             } else if (metodo === "zelle") {
-                // --- VALIDACIÓN DE COMPRA MÍNIMA ESPECÍFICA POR MÉTODO DE PAGO ---
-                if (cantidad < 10) {
-                    showMessage('Para pagos con Zelle, la compra mínima es de 10 tickets.', 'error');
-                    limpiarSeleccion(); // Limpiar selección si no cumple
-                    return;
-                }
-                // --- FIN VALIDACIÓN ESPECÍFICA ---
                 html = `
                     <h4>Pago vía Zelle</h4>
                     <p><strong>Correo:</strong> modorifa@gmail.com</p>
@@ -427,6 +417,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 metodoPagoSeleccionado = 'Zelle';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto'); // Mostrar comprobante para Zelle
+                // AÑADIR ALERTA AQUÍ
+                if (cantidad < 10) {
+                    showMessage('Para pagos con Zelle, la compra mínima es de 10 tickets. Por favor, ajusta la cantidad o selecciona otro método.', 'error');
+                }
             }
             
             // CORRECCIÓN: Inyectar el HTML en el contenedor dinámico para no borrar el formulario de comprobante
