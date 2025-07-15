@@ -1498,3 +1498,10 @@ form button:active {
         max-width: 200px;
     }
 }
+
+/* Estilo para campos requeridos no completados */
+.campo-requerido {
+  border: 2px solid #E53E3E !important; /* rojo alerta */
+  background-color: #fff5f5;             /* fondo ligeramente rosado */
+  transition: border-color 0.3s, background-color 0.3s;
+}

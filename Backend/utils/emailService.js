@@ -88,7 +88,7 @@ const sendTicketConfirmationEmail = async (emailTo, nombreComprador, rifa, ticke
                     </div>
 
                     <div style="background-color: #f0f8ff; padding: 20px; text-align: center; border-top: 1px solid #e3f2fd; font-size: 0.9em; color: #6c757d;">
-                        <p style="margin: 0;">© 2025 Roni Rifas • Todos los derechos reservados.</p>
+                        <p style="margin: 0;">© 2025 Modo Rifa • Todos los derechos reservados.</p>
                         <p style="margin: 5px 0 0;">Este es un mensaje automático, por favor no respondas a esta dirección de correo.</p>
                     </div>
 

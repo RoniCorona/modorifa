@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         messageContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
         messageContainer.classList.remove('oculto');
+    messageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setTimeout(() => {
             messageContainer.classList.add('oculto');
             messageContainer.innerHTML = '';
@@ -555,18 +556,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // La validación solo se activa si el formulario de comprobante está visible
             if (formularioComprobanteVisible) {
-                if (!tieneReferencia && !tieneComprobante) {
-                    showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
-                    return;
-                }
-                if (!tieneReferencia) {
-                    showMessage('Por favor, ingresa la referencia de pago.', 'error');
-                    return;
-                }
-                if (!tieneComprobante) {
-                    showMessage('Por favor, sube el comprobante de pago.', 'error');
-                    return;
-                }
+                // Elimina errores anteriores
+if (referenciaPagoInput) referenciaPagoInput.classList.remove('campo-requerido');
+if (comprobantePagoInput) comprobantePagoInput.classList.remove('campo-requerido');
+
+if (!tieneReferencia && !tieneComprobante) {
+    if (referenciaPagoInput) referenciaPagoInput.classList.add('campo-requerido');
+    if (comprobantePagoInput) comprobantePagoInput.classList.add('campo-requerido');
+    showMessage('Debes ingresar la referencia de pago y subir el comprobante.', 'error');
+    return;
+}
+if (!tieneReferencia) {
+    if (referenciaPagoInput) referenciaPagoInput.classList.add('campo-requerido');
+    showMessage('Por favor, ingresa la referencia de pago.', 'error');
+    return;
+}
+if (!tieneComprobante) {
+    if (comprobantePagoInput) comprobantePagoInput.classList.add('campo-requerido');
+    showMessage('Por favor, sube el comprobante de pago.', 'error');
+    return;
+}
             }
 
 
