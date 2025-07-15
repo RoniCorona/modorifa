@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnZelle = document.getElementById("pagoZelle");
     const detallesPago = document.getElementById("detalles-pago");
     const tasaBCVDisplay = document.getElementById("tasaBCVDisplay");
-    
+
     // --- Referencias a los nuevos elementos de la corrección del HTML ---
     const detallesDinamicosPago = document.getElementById('detalles-dinamicos-pago');
     const formularioComprobante = document.getElementById('formulario-comprobante');
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     showMessage('Para pagos con Zelle, la compra mínima es de 10 tickets. Por favor, ajusta la cantidad o selecciona otro método.', 'error');
                 }
             }
-            
+
             // CORRECCIÓN: Inyectar el HTML en el contenedor dinámico para no borrar el formulario de comprobante
             if (detallesDinamicosPago) {
                 detallesDinamicosPago.innerHTML = html;
@@ -541,24 +541,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (siguienteMetodoBtn) {
         siguienteMetodoBtn.addEventListener("click", async () => {
+
+            // --- 1. VALIDACIÓN BÁSICA DEL MÉTODO DE PAGO ---
             if (!metodoPagoSeleccionado) {
                 showMessage('Por favor, selecciona un método de pago.', 'error');
                 return;
             }
 
+            // --- 2. VALIDACIÓN DE CAMPOS DINÁMICOS (REFERENCIA Y COMPROBANTE) ---
             const referenciaPagoInput = detallesPago.querySelector('input[name="referenciaPago"]');
-            // Validar la referencia si el método de pago lo requiere
-            if (referenciaPagoInput && !referenciaPagoInput.value) {
-                showMessage('Por favor, ingresa la referencia de pago.', 'error');
-                return;
+            const tieneReferencia = referenciaPagoInput && referenciaPagoInput.value.trim() !== '';
+            const tieneComprobante = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
+
+            if (!formularioComprobante.classList.contains('oculto')) {
+                if (!tieneReferencia && !tieneComprobante) {
+                    showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
+                    return;
+                }
+
+                if (!tieneReferencia) {
+                    showMessage('Por favor, ingresa la referencia de pago.', 'error');
+                    return;
+                }
+
+                if (!tieneComprobante) {
+                    showMessage('Por favor, sube el comprobante de pago.', 'error');
+                    return;
+                }
             }
 
-            // Validar que se haya subido un comprobante si el formulario de comprobante está visible
-            if (!formularioComprobante.classList.contains('oculto') && (!comprobantePagoInput || !comprobantePagoInput.files || comprobantePagoInput.files.length === 0)) {
-                showMessage('Por favor, sube el comprobante de pago.', 'error');
-                return;
-            }
 
+            // --- 3. SI LAS VALIDACIONES PASAN, CONTINÚA CON LA LÓGICA DE ENVÍO ---
             const nombreInput = document.querySelector(".formulario-usuario input[name='nombre']");
             const telefonoInput = document.querySelector(".formulario-usuario input[name='telefono']");
             const correoInput = document.querySelector(".formulario-usuario input[name='correo']");
@@ -738,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             htmlResultados += `
                                         </div>
                                     </div>
-                            `;
+                                `;
                         }
 
                         resultadosConsultaDiv.innerHTML = htmlResultados;
