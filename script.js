@@ -359,7 +359,6 @@ document.addEventListener('DOMContentLoaded', () => {
             metodoPagoSeleccionado = '';
             // Asegúrate de ocultar el formulario de comprobante también al limpiar
             if (formularioComprobante) formularioComprobante.classList.add('oculto');
-            if (comprobantePagoInput) comprobantePagoInput.value = ''; // Limpiar el input file
         }
 
         function mostrarDetalles(metodo) {
