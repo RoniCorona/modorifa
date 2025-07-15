@@ -733,19 +733,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             return acc;
                         }, {});
 
-                        // Aquí se construye la parte de resultados agrupados por rifa
+                        // Se construye la parte de resultados agrupados por rifa
                         for (const rifaId in ticketsAgrupadosPorRifa) {
                             const rifaData = ticketsAgrupadosPorRifa[rifaId];
                             htmlResultados += `
-                                <div class="rifa-consulta-item">
-                                    <h3>${rifaData.nombreProducto}</h3>
-                                    <div class="boletos-consulta-grid">
+                                <div class="rifa-tickets-group">
+                                    <p><strong>Rifa:</strong> ${rifaData.nombreProducto}</p>
+                                    <div class="boletos-list">
                             `;
                             rifaData.boletos.sort((a, b) => a - b).forEach(boletoNum => {
-                                // Aquí se aplica la clase CSS 'boleto-consulta' para el estilo.
-                                // Si quieres un color específico diferente al de --color-principal,
-                                // deberás añadir una clase CSS adicional aquí o ajustar tus variables CSS.
-                                htmlResultados += `<span class="boleto-consulta">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`;
+                                htmlResultados += `<span class="boleto">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`;
                             });
                             htmlResultados += `
                                         </div>
