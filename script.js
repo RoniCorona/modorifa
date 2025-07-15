@@ -548,7 +548,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // --- 2. VALIDACIÓN DE CAMPOS DINÁMICOS (REFERENCIA Y COMPROBANTE) ---
-            const referenciaPagoInput = document.getElementById('referenciaPago');
+            // CORRECCIÓN: Obtener el input de la referencia directamente del DOM
+            const referenciaPagoInput = document.querySelector('input[name="referenciaPago"]');
             const tieneReferencia = referenciaPagoInput && referenciaPagoInput.value.trim() !== '';
             const tieneComprobante = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
             const formularioComprobanteVisible = formularioComprobante && !formularioComprobante.classList.contains('oculto');
