@@ -336,10 +336,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnZelle = document.getElementById("pagoZelle");
     const detallesPago = document.getElementById("detalles-pago");
     const tasaBCVDisplay = document.getElementById("tasaBCVDisplay");
-
+    
+    // --- Referencias a los nuevos elementos de la corrección del HTML ---
+    const detallesDinamicosPago = document.getElementById('detalles-dinamicos-pago');
     const formularioComprobante = document.getElementById('formulario-comprobante');
     const comprobantePagoInput = document.getElementById('comprobantePago');
-    
+    // --- FIN de Referencias ---
+
     let metodoPagoSeleccionado = '';
 
     if (detallesPago && inputCantidad) {
@@ -348,7 +351,8 @@ document.addEventListener('DOMContentLoaded', () => {
             allPaymentButtons.forEach(btn => {
                 btn.classList.remove("seleccionado");
             });
-            detallesPago.innerHTML = "";
+            // Limpiar solo el contenido dinámico
+            if (detallesDinamicosPago) detallesDinamicosPago.innerHTML = "";
             detallesPago.classList.add("oculto");
             metodoPagoSeleccionado = '';
             // Asegúrate de ocultar el formulario de comprobante también al limpiar
@@ -395,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h4>Pago Móvil</h4>
                     <p><strong>Banco:</strong> Venezuela</p>
                     <p><strong>Teléfono:</strong> 0414-3548533</p>
-                    <p><strong>CI:</strong> V-24771856</p>>
+                    <p><strong>CI:</strong> V-24771856</p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
                     <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
@@ -422,14 +426,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 metodoPagoSeleccionado = 'Zelle';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto'); // Mostrar comprobante para Zelle
             }
-
-            // Insertar el HTML de los detalles del pago
-            detallesPago.innerHTML = html;
-            detallesPago.classList.remove("oculto");
-
-            // Mover el formulario de comprobante al final de los detalles (si existe y no está ya allí)
-            if (formularioComprobante && !detallesPago.contains(formularioComprobante)) {
-                detallesPago.appendChild(formularioComprobante);
+            
+            // CORRECCIÓN: Inyectar el HTML en el contenedor dinámico para no borrar el formulario de comprobante
+            if (detallesDinamicosPago) {
+                detallesDinamicosPago.innerHTML = html;
+                detallesPago.classList.remove("oculto");
             }
         }
 
