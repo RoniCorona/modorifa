@@ -311,7 +311,9 @@ document.addEventListener('DOMContentLoaded', () => {
         atrasMetodoBtn.addEventListener("click", () => {
             seccionPago.classList.add("oculto");
             seccionCompra.classList.remove("oculto");
-            detallesPago.innerHTML = "";
+            // CORRECCIÓN: Limpiar solo el contenedor dinámico al regresar
+            const detallesDinamicosPago = document.getElementById('detalles-dinamicos-pago');
+            if (detallesDinamicosPago) detallesDinamicosPago.innerHTML = "";
             detallesPago.classList.add("oculto");
             const allPaymentButtons = document.querySelectorAll('.metodos-pago .metodo');
             allPaymentButtons.forEach(btn => {
