@@ -77,8 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         messageContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
         messageContainer.classList.remove('oculto');
-    messageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(() => {
+            setTimeout(() => {
             messageContainer.classList.add('oculto');
             messageContainer.innerHTML = '';
         }, 5000);
@@ -556,23 +555,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // La validación solo se activa si el formulario de comprobante está visible
             if (formularioComprobanteVisible) {
+// Asegura que existan los elementos para mostrar errores individuales
+const errorReferencia = document.querySelector('#error-referencia') || document.createElement('div');
+errorReferencia.id = 'error-referencia';
+errorReferencia.className = 'error-campo';
+referenciaPagoInput.parentNode.insertBefore(errorReferencia, referenciaPagoInput.nextSibling);
+
+const errorComprobante = document.querySelector('#error-comprobante') || document.createElement('div');
+errorComprobante.id = 'error-comprobante';
+errorComprobante.className = 'error-campo';
+comprobantePagoInput.parentNode.insertBefore(errorComprobante, comprobantePagoInput.nextSibling);
                 // Elimina errores anteriores
-if (referenciaPagoInput) referenciaPagoInput.classList.remove('campo-requerido');
-if (comprobantePagoInput) comprobantePagoInput.classList.remove('campo-requerido');
+if (referenciaPagoInput) {
+    referenciaPagoInput.classList.remove('campo-requerido');
+    const err = document.querySelector('#error-referencia');
+    if (err) err.textContent = '';
+}
+if (comprobantePagoInput) {
+    comprobantePagoInput.classList.remove('campo-requerido');
+    const err = document.querySelector('#error-comprobante');
+    if (err) err.textContent = '';
+}
 
 if (!tieneReferencia && !tieneComprobante) {
     if (referenciaPagoInput) referenciaPagoInput.classList.add('campo-requerido');
+    errorReferencia.textContent = 'Este campo es obligatorio';
     if (comprobantePagoInput) comprobantePagoInput.classList.add('campo-requerido');
+    errorComprobante.textContent = 'Este campo es obligatorio';
     showMessage('Debes ingresar la referencia de pago y subir el comprobante.', 'error');
     return;
 }
 if (!tieneReferencia) {
     if (referenciaPagoInput) referenciaPagoInput.classList.add('campo-requerido');
+    errorReferencia.textContent = 'Este campo es obligatorio';
     showMessage('Por favor, ingresa la referencia de pago.', 'error');
     return;
 }
 if (!tieneComprobante) {
     if (comprobantePagoInput) comprobantePagoInput.classList.add('campo-requerido');
+    errorComprobante.textContent = 'Este campo es obligatorio';
     showMessage('Por favor, sube el comprobante de pago.', 'error');
     return;
 }
