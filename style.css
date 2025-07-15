@@ -1084,7 +1084,7 @@ form button:active {
     background: #fdfefe;
     padding: 1.2rem;
     border-radius: 12px;
-    width: 100%;
+    width: 200%;
     max-width: 250px;
     cursor: pointer;
     transition: all var(--transition-fast);
