@@ -502,7 +502,7 @@ form button:active {
 
 .ver-tickets:active {
     transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 /* === ESTILOS DEL OVERLAY DEL MODAL (GENÉRICO Y CORREGIDO) === */
@@ -1083,7 +1083,7 @@ form button:active {
     background: #fdfefe;
     padding: 1.2rem;
     border-radius: 12px;
-    width: 100%; /* Ahora son 100% en móviles por defecto */
+    width: 100%;
     max-width: 250px;
     cursor: pointer;
     transition: all var(--transition-fast);
@@ -1382,7 +1382,7 @@ form button:active {
 /* === Media Queries para Responsividad === */
 
 /* Para tabletas y dispositivos medianos (min-width 481px) */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) {
     html { font-size: 15px; }
     main { padding: 1.5rem; }
     h1 { font-size: 2rem; }
