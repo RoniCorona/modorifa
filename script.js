@@ -552,9 +552,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const referenciaPagoInput = detallesPago.querySelector('input[name="referenciaPago"]');
             const tieneReferencia = referenciaPagoInput && referenciaPagoInput.value.trim() !== '';
             const tieneComprobante = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
+            const formularioComprobanteVisible = formularioComprobante && !formularioComprobante.classList.contains('oculto');
 
             // La validación solo se activa si el formulario de comprobante está visible
-            if (!formularioComprobante.classList.contains('oculto')) {
+            if (formularioComprobanteVisible) {
                 if (!tieneReferencia && !tieneComprobante) {
                     showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
                     return;
