@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formularioComprobante = document.getElementById('formulario-comprobante');
     const comprobantePagoInput = document.getElementById('comprobantePago');
-
+    
     let metodoPagoSeleccionado = '';
 
     if (detallesPago && inputCantidad) {
