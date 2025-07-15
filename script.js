@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Asegura que el valor inicial del input sea la compra mínima si existe el elemento
     if (inputCantidad) {
-        inputCantidad.value = MIN_TICKETS_COMPRA;
+        inputCantidad.value = MIN_TICKets_COMPRA;
         inputCantidad.min = MIN_TICKETS_COMPRA; // También actualiza el atributo min del HTML
     }
     // --- FIN CAMBIOS INICIALES ---
@@ -548,7 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // --- 2. VALIDACIÓN DE CAMPOS DINÁMICOS (REFERENCIA Y COMPROBANTE) ---
-            // CORRECCIÓN: Obtener el input de la referencia directamente del DOM
             const referenciaPagoInput = document.querySelector('input[name="referenciaPago"]');
             const tieneReferencia = referenciaPagoInput && referenciaPagoInput.value.trim() !== '';
             const tieneComprobante = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
