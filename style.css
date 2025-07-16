@@ -1573,20 +1573,18 @@ form button:active {
     background-color: #0056b3;
 }
 
-/* Estilos para el contenedor de mensajes */
-#message-container {
-    position: fixed; /* Lo fija en la pantalla */
-    top: 0;          /* En la parte superior */
-    left: 0;
-    width: 100%;     /* Ocupa todo el ancho */
-    z-index: 10000;  /* Asegura que esté por encima de otros elementos */
-    text-align: center;
-    padding: 10px 0;
-    box-sizing: border-box; /* Para que el padding no afecte el ancho total */
-    /* Asegúrate de que las reglas .alert-success y .alert-error le den un fondo visible */
+.mensaje-copiado {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  font-size: 0.9em;
+  margin-bottom: 0.5em;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Las clases alert-success, alert-error, etc., que ya tienes, le darán el color y padding. */
-/* .alert { ... } */
-/* .alert-success { ... } */
-/* .alert-error { ... } */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

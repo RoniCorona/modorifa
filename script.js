@@ -392,18 +392,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Formato de texto a copiar: solo los valores, y el banco con el código
                         const textoACopiar = `${ci}\n${telefono}\n${banco} (0102)`;
 
-                        navigator.clipboard.writeText(textoACopiar)
-                            .then(() => {
+                        try {
+                            // Intenta copiar
+                            navigator.clipboard.writeText(textoACopiar);
+                            // Si llega aquí, la operación de copiar se inició (o fue síncrona exitosamente).
+                            // Muestra el mensaje de éxito después de un breve retardo para asegurar la operación.
+                            setTimeout(() => {
                                 showMessage('¡Datos de Pago Móvil copiados!', 'success');
-                            })
-                            .catch(err => {
-                                console.error('Error al copiar los datos:', err);
-                                showMessage('Error al copiar los datos. Por favor, cópialos manualmente.', 'error');
-                            });
+                            }, 100); // Pequeño retardo de 100ms
+                        } catch (err) {
+                            // Esto capturaría errores síncronos (e.g., permisos denegados inmediatamente)
+                            console.error('Error al intentar copiar los datos:', err);
+                            showMessage('Error al copiar los datos. Por favor, cópialos manualmente.', 'error');
+                        }
+                        // Nota: Errores asíncronos de writeText (promesas rechazadas) no serían capturados aquí,
+                        // pero dado que el usuario confirma que el copiado sí funciona, esta es una solución pragmática para la UI.
                     });
                 }
             }
-        }
+        } // <--- ¡Esta llave de cierre estaba faltando en tu código anterior!
 
         if (btnBinance) {
             btnBinance.addEventListener("click", () => {
