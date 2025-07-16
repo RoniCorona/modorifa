@@ -348,12 +348,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const totalBs = totalUSD * rifaTasaCambio;
                 html = `
                     <h4>Pago Móvil</h4>
-                    <p><strong>Banco:</strong> Venezuela</p>
-                    <p><strong>Teléfono:</strong> 0414-3548533</p>
-                    <p><strong>CI:</strong> V-24771856</p>
+                    <p><strong>Banco:</strong> <span id="bancoPagoMovil">Venezuela</span></p>
+                    <p><strong>Teléfono:</strong> <span id="telefonoPagoMovil">04143548533</span></p>
+                    <p><strong>CI:</strong> <span id="ciPagoMovil">24771856</span></p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
                     <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
+                    <button type="button" id="btnCopiarDatosPagoMovil" class="btn-copiar">
+                        Copiar datos Pago Móvil
+                    </button>
                 `;
                 metodoPagoSeleccionado = 'Pago Móvil';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto');
@@ -377,6 +380,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (detallesDinamicosPago) {
                 detallesDinamicosPago.innerHTML = html;
                 detallesPago.classList.remove("oculto");
+
+                // === Lógica para el botón de copiar datos de Pago Móvil ===
+                const btnCopiar = document.getElementById('btnCopiarDatosPagoMovil');
+                if (btnCopiar) {
+                    btnCopiar.addEventListener('click', () => {
+                        const ci = document.getElementById('ciPagoMovil')?.textContent || '';
+                        const telefono = document.getElementById('telefonoPagoMovil')?.textContent || '';
+                        const banco = document.getElementById('bancoPagoMovil')?.textContent || '';
+                        
+                        // Formato de texto a copiar
+                        const textoACopiar = `C.I.: ${ci}\nTeléfono: ${telefono}\nBanco: ${banco} (0102)`;
+
+                        navigator.clipboard.writeText(textoACopiar)
+                            .then(() => {
+                                showMessage('¡Datos de Pago Móvil copiados!', 'success');
+                            })
+                            .catch(err => {
+                                console.error('Error al copiar los datos:', err);
+                                showMessage('Error al copiar los datos. Por favor, cópialos manualmente.', 'error');
+                            });
+                    });
+                }
             }
         }
 
