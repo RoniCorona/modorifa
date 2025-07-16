@@ -352,11 +352,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><strong>Teléfono:</strong> <span id="telefonoPagoMovil">04143548533</span></p>
                     <p><strong>CI:</strong> <span id="ciPagoMovil">24771856</span></p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
-                    <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
-                    <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
                     <button type="button" id="btnCopiarDatosPagoMovil" class="btn-copiar">
                         Copiar datos Pago Móvil
                     </button>
+                    <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
+                    <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
                 `;
                 metodoPagoSeleccionado = 'Pago Móvil';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto');
@@ -389,8 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const telefono = document.getElementById('telefonoPagoMovil')?.textContent || '';
                         const banco = document.getElementById('bancoPagoMovil')?.textContent || '';
                         
-                        // Formato de texto a copiar
-                        const textoACopiar = `C.I.: ${ci}\nTeléfono: ${telefono}\nBanco: ${banco} (0102)`;
+                        // Formato de texto a copiar: solo los valores, y el banco con el código
+                        const textoACopiar = `${ci}\n${telefono}\n${banco} (0102)`;
 
                         navigator.clipboard.writeText(textoACopiar)
                             .then(() => {
