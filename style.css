@@ -1572,3 +1572,21 @@ form button:active {
 .btn-copiar:hover {
     background-color: #0056b3;
 }
+
+/* Estilos para el contenedor de mensajes */
+#message-container {
+    position: fixed; /* Lo fija en la pantalla */
+    top: 0;          /* En la parte superior */
+    left: 0;
+    width: 100%;     /* Ocupa todo el ancho */
+    z-index: 10000;  /* Asegura que esté por encima de otros elementos */
+    text-align: center;
+    padding: 10px 0;
+    box-sizing: border-box; /* Para que el padding no afecte el ancho total */
+    /* Asegúrate de que las reglas .alert-success y .alert-error le den un fondo visible */
+}
+
+/* Las clases alert-success, alert-error, etc., que ya tienes, le darán el color y padding. */
+/* .alert { ... } */
+/* .alert-success { ... } */
+/* .alert-error { ... } */
