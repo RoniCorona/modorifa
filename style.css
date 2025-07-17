@@ -1604,7 +1604,7 @@ form button:active {
 
 /* Estilo para el botón de Copiar Datos */
 .btn-copiar-datos {
-    background-color: var(--light-blue); /* Un azul claro, puedes ajustar con una de tus variables o un color fijo */
+    background-color: #1A365D; /* Un azul claro, puedes ajustar con una de tus variables o un color fijo */
     color: white;
     padding: 0.6rem 1.2rem;
     border: none;
