@@ -362,22 +362,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const totalBs = totalUSD * rifaTasaCambio;
                 const banco = 'Venezuela';
                 const telefono = '0414-3548533';
-                const ci = 'V-24771856';
+                const ciCompleto = 'V-24771856'; // Guardamos el CI completo para mostrar
+                const ciSoloNumeros = '24771856'; // Creamos una variable solo para los números del CI
 
                 html = `
                     <h4>Pago Móvil</h4>
                     <p><strong>Banco:</strong> ${banco}</p>
                     <p><strong>Teléfono:</strong> ${telefono}</p>
-                    <p><strong>CI:</strong> ${ci}</p>
+                    <p><strong>CI:</strong> ${ciCompleto}</p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
 
-                    <div id="pagomovilDataToCopy" style="display:none;">
-                        ${banco}
-                        ${telefono}
-                        ${ci.replace('V-', '')}
-                    </div>
+                    <div id="pagomovilDataToCopy" style="display:none;"></div> 
 
-                    <button type="button" class="btn-copiar-datos" data-target="pagomovilDataToCopy">Copiar Datos</button>
+                    <button type="button" class="btn-copiar-datos" data-target="pagomovilDataToCopy"
+                            data-banco="${banco}"
+                            data-telefono="${telefono}"
+                            data-ci="${ciSoloNumeros}">Copiar Datos</button>
 
                     <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
@@ -409,23 +409,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 const copiarBtns = detallesDinamicosPago.querySelectorAll('.btn-copiar-datos');
                 copiarBtns.forEach(btn => {
                     btn.addEventListener('click', () => {
-                        const targetId = btn.dataset.target;
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            const textToCopy = targetElement.textContent.trim();
-                            navigator.clipboard.writeText(textToCopy)
-                                .then(() => {
-                                    showMessage('Datos copiados al portapapeles.', 'success');
-                                    btn.textContent = '¡Copiado!'; // Feedback visual
-                                    setTimeout(() => {
-                                        btn.textContent = 'Copiar Datos'; // Restaurar texto
-                                    }, 2000);
-                                })
-                                .catch(err => {
-                                    console.error('Error al copiar: ', err);
-                                    showMessage('Error al copiar los datos.', 'error');
-                                });
-                        }
+                        // Obtenemos los datos directamente de los atributos 'data-' del botón
+                        const bancoACopiar = btn.dataset.banco;
+                        const telefonoACopiar = btn.dataset.telefono;
+                        const ciACopiar = btn.dataset.ci; // Este ya tiene solo los números
+
+                        // Construimos la cadena EXACTA que queremos copiar
+                        // Formato: cada dato en una nueva línea
+                        const textToCopy = `${bancoACopiar}\n${telefonoACopiar}\n${ciACopiar}`;
+                        
+                        // Si quisieras separados por comas:
+                        // const textToCopy = `${bancoACopiar},${telefonoACopiar},${ciACopiar}`;
+                        
+                        // O solo espacio:
+                        // const textToCopy = `${bancoACopiar} ${telefonoACopiar} ${ciACopiar}`;
+
+                        navigator.clipboard.writeText(textToCopy)
+                            .then(() => {
+                                showMessage('Datos copiados al portapapeles.', 'success');
+                                btn.textContent = '¡Copiado!'; // Feedback visual
+                                setTimeout(() => {
+                                    btn.textContent = 'Copiar Datos'; // Restaurar texto
+                                }, 2000);
+                            })
+                            .catch(err => {
+                                console.error('Error al copiar: ', err);
+                                showMessage('Error al copiar los datos.', 'error');
+                            });
                     });
                 });
                 // ===========================================================================================
