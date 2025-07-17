@@ -558,22 +558,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const tieneComprobante = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
             const formularioComprobanteVisible = formularioComprobante && !formularioComprobante.classList.contains('oculto');
 
-            // === VALIDACIONES DEL COMPROBANTE Y REFERENCIA ===
-            if (formularioComprobanteVisible) {
-                if (!tieneReferencia && !tieneComprobante) {
-                    showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
-                    return;
-                }
-                if (!tieneReferencia) {
-                    showMessage('Por favor, ingresa la referencia de pago.', 'error');
-                    return;
-                }
-                if (!tieneComprobante) {
-                    showMessage('Por favor, sube el comprobante de pago.', 'error');
-                    return;
-                }
-            }
-            // ===============================================
+            // === VALIDACIONES DEL COMPROBANTE Y REFERENCIA (ROBUSTA) ===
+if (formularioComprobanteVisible) {
+    const referenciaInput = document.querySelector('input[name="referenciaPago"]:not([style*="display: none"])');
+    const comprobanteAdjunto = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
+
+    const referenciaValida = referenciaInput && referenciaInput.value.trim() !== '';
+
+    if (!referenciaValida && !comprobanteAdjunto) {
+        showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
+        return;
+    }
+
+    if (!referenciaValida) {
+        showMessage('Por favor, ingresa la referencia de pago.', 'error');
+        return;
+    }
+
+    if (!comprobanteAdjunto) {
+        showMessage('Por favor, sube el comprobante de pago.', 'error');
+        return;
+    }
+}
+// ===============================================
 
             const nombreInput = document.querySelector(".formulario-usuario input[name='nombre']");
             const telefonoInput = document.querySelector(".formulario-usuario input[name='telefono']");
