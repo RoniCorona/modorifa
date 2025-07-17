@@ -1601,3 +1601,38 @@ form button:active {
     /* Puedes añadir display: block; aquí si #message-container.oculto tiene display: none; */
     /* Aunque el script ya maneja la clase 'oculto' */
 }
+
+/* Estilo para el botón de Copiar Datos */
+.btn-copiar-datos {
+    background-color: var(--light-blue); /* Un azul claro, puedes ajustar con una de tus variables o un color fijo */
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--button-radius); /* Usando tu variable de radio de botón */
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform 0.15s ease, box-shadow var(--transition-fast);
+    box-shadow: 0 3px 8px rgba(49, 130, 206, 0.2);
+    margin-top: 1rem; /* Margen superior para separarlo del texto */
+    margin-bottom: 1rem; /* Margen inferior para separarlo del input */
+    display: inline-block; /* Para que no ocupe todo el ancho si no es necesario */
+    width: auto; /* Ancho automático según contenido */
+    max-width: 200px; /* Ancho máximo para pantallas grandes */
+    text-transform: uppercase; /* Opcional: texto en mayúsculas */
+    letter-spacing: 0.02em; /* Opcional: espaciado entre letras */
+    outline: none; /* Elimina el contorno al hacer focus */
+}
+
+/* Estado hover (al pasar el ratón por encima) */
+.btn-copiar-datos:hover {
+    background-color: #3182ce; /* Un tono más oscuro de azul para el hover */
+    transform: translateY(-2px); /* Pequeño efecto de elevación */
+    box-shadow: 0 5px 12px rgba(49, 130, 206, 0.3); /* Sombra más pronunciada */
+}
+
+/* Estado active (al hacer clic) */
+.btn-copiar-datos:active {
+    transform: translateY(0); /* Vuelve a la posición original */
+    box-shadow: 0 1px 3px rgba(49, 130, 206, 0.2); /* Sombra más sutil */
+}
