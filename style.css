@@ -1500,10 +1500,10 @@ form button:active {
 }
 
 /* Estilo para campos requeridos no completados */
-.campo-requerido {
+/*.campo-requerido {
   border: 2px solid #E53E3E !important; /* rojo alerta */
-  background-color: #fff5f5;             /* fondo ligeramente rosado */
-  transition: border-color 0.3s, background-color 0.3s;
+ /* background-color: #fff5f5;             /* fondo ligeramente rosado */
+ /* transition: border-color 0.3s, background-color 0.3s;
 }
 
 .error-campo {
@@ -1552,4 +1552,52 @@ form button:active {
 #siguienteMetodo:disabled {
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+/* --- ESTILOS PARA MENSAJES DE ALERTA (DENTRO DE #message-container) --- */
+
+/* Estilo base para todos los tipos de alerta */
+.alert {
+    padding: 1rem 1.5rem; /* Relleno interno */
+    border-radius: 8px; /* Bordes redondeados */
+    margin: 0.5rem 0; /* Margen superior e inferior para separación */
+    font-size: 1rem; /* Tamaño de fuente */
+    font-weight: 600; /* Negrita */
+    line-height: 1.4; /* Espaciado de línea */
+    text-align: center; /* Centrar texto */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    border: 1px solid transparent; /* Borde predeterminado transparente */
+    display: block; /* Asegura que ocupe su propio bloque */
+}
+
+/* Estilo para mensajes de éxito */
+.alert-success {
+    background-color: #D4EDDA; /* Fondo verde claro */
+    color: #155724; /* Texto verde oscuro */
+    border-color: #C3E6CB; /* Borde verde más oscuro */
+}
+
+/* Estilo para mensajes de error */
+.alert-error {
+    background-color: #F8D7DA; /* Fondo rojo claro */
+    color: #721C24; /* Texto rojo oscuro */
+    border-color: #F5C6CB; /* Borde rojo más oscuro */
+}
+
+/* Estilo para mensajes de información */
+.alert-info {
+    background-color: #CCE5FF; /* Fondo azul claro */
+    color: #004085; /* Texto azul oscuro */
+    border-color: #B8DAFF; /* Borde azul más oscuro */
+}
+
+/* Asegura que el contenedor principal sea visible cuando el mensaje está dentro */
+/* Estas reglas ya existen en tu CSS, pero las reafirmo por claridad */
+#message-container.success,
+#message-container.error,
+#message-container.info {
+    opacity: 1;
+    transform: translateY(0);
+    /* Puedes añadir display: block; aquí si #message-container.oculto tiene display: none; */
+    /* Aunque el script ya maneja la clase 'oculto' */
 }
