@@ -1570,36 +1570,16 @@ form button:active {
     display: block; /* Asegura que ocupe su propio bloque */
 }
 
-/* Estilo para mensajes de éxito */
-.alert-success {
-    background-color: #D4EDDA; /* Fondo verde claro */
-    color: #155724; /* Texto verde oscuro */
-    border-color: #C3E6CB; /* Borde verde más oscuro */
+.error-message {
+    color: #E53E3E; /* Tu variable de error */
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
+    display: block; /* Asegura que ocupe su propia línea */
 }
-
-/* Estilo para mensajes de error */
-.alert-error {
-    background-color: #F8D7DA; /* Fondo rojo claro */
-    color: #721C24; /* Texto rojo oscuro */
-    border-color: #F5C6CB; /* Borde rojo más oscuro */
-}
-
-/* Estilo para mensajes de información */
-.alert-info {
-    background-color: #CCE5FF; /* Fondo azul claro */
-    color: #004085; /* Texto azul oscuro */
-    border-color: #B8DAFF; /* Borde azul más oscuro */
-}
-
-/* Asegura que el contenedor principal sea visible cuando el mensaje está dentro */
-/* Estas reglas ya existen en tu CSS, pero las reafirmo por claridad */
-#message-container.success,
-#message-container.error,
-#message-container.info {
-    opacity: 1;
-    transform: translateY(0);
-    /* Puedes añadir display: block; aquí si #message-container.oculto tiene display: none; */
-    /* Aunque el script ya maneja la clase 'oculto' */
+/* O si quieres resaltar el input */
+.input-error {
+    border-color: #E53E3E !important;
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2) !important;
 }
 
 /* Estilo para el botón de Copiar Datos */

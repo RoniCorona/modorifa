@@ -297,6 +297,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const formularioComprobante = document.getElementById('formulario-comprobante');
             if (formularioComprobante) formularioComprobante.classList.add('oculto');
+            // Limpiar errores en línea al regresar
+            const referenciaInput = document.querySelector('input[name="referenciaPago"]');
+            const comprobantePagoInput = document.getElementById('comprobantePago');
+            if (referenciaInput) clearInlineError(referenciaInput);
+            if (comprobantePagoInput) clearInlineError(comprobantePagoInput);
         });
     }
 
@@ -314,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tasaBCVDisplay = document.getElementById("tasaBCVDisplay");
     const detallesDinamicosPago = document.getElementById('detalles-dinamicos-pago');
     const formularioComprobante = document.getElementById('formulario-comprobante');
-    const comprobantePagoInput = document.getElementById('comprobantePago');
+    const comprobantePagoInput = document.getElementById('comprobantePago'); // Definición aquí
     let metodoPagoSeleccionado = '';
 
     if (detallesPago && inputCantidad) {
@@ -327,6 +332,10 @@ document.addEventListener('DOMContentLoaded', () => {
             detallesPago.classList.add("oculto");
             metodoPagoSeleccionado = '';
             if (formularioComprobante) formularioComprobante.classList.add('oculto');
+            // Limpiar errores en línea de los campos de referencia/comprobante
+            const currentReferenciaInput = document.querySelector('input[name="referenciaPago"]');
+            if (currentReferenciaInput) clearInlineError(currentReferenciaInput);
+            if (comprobantePagoInput) clearInlineError(comprobantePagoInput);
         }
 
         function mostrarDetalles(metodo) {
@@ -334,6 +343,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 showMessage('No se pudo cargar la información de precios de la rifa. Intenta recargar la página.', 'error');
                 return;
             }
+
+            // Limpiar errores en línea antes de mostrar nuevos detalles
+            const currentReferenciaInput = document.querySelector('input[name="referenciaPago"]');
+            if (currentReferenciaInput) clearInlineError(currentReferenciaInput);
+            if (comprobantePagoInput) clearInlineError(comprobantePagoInput);
+
 
             const cantidad = Number(inputCantidad.value);
             const totalUSD = cantidad * rifaPrecioUnitario;
@@ -545,6 +560,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const datoCantidad = document.getElementById("datoCantidad");
     const boletosAsignadosContenedor = document.getElementById("boletosAsignados");
 
+    // --- NUEVAS FUNCIONES PARA ERRORES EN LÍNEA ---
+    function displayInlineError(inputElement, message) {
+        if (!inputElement) return; // Asegúrate de que el elemento exista
+        let errorSpan = inputElement.nextElementSibling;
+        if (!errorSpan || !errorSpan.classList.contains('error-message')) {
+            errorSpan = document.createElement('span');
+            errorSpan.classList.add('error-message');
+            inputElement.parentNode.insertBefore(errorSpan, inputElement.nextSibling);
+        }
+        errorSpan.textContent = message;
+        inputElement.classList.add('input-error');
+    }
+
+    function clearInlineError(inputElement) {
+        if (!inputElement) return; // Asegúrate de que el elemento exista
+        let errorSpan = inputElement.nextElementSibling;
+        if (errorSpan && errorSpan.classList.contains('error-message')) {
+            errorSpan.textContent = '';
+            inputElement.classList.remove('input-error');
+            // Si el error span no tiene texto y no hay otros errores en línea cerca, puedes removerlo.
+            // O simplemente dejarlo vacío si es un span preexistente en el HTML
+        }
+    }
+    // --- FIN NUEVAS FUNCIONES PARA ERRORES EN LÍNEA ---
+
     if (siguienteMetodoBtn) {
         siguienteMetodoBtn.addEventListener("click", async () => {
 
@@ -554,33 +594,42 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const referenciaPagoInput = document.querySelector('input[name="referenciaPago"]');
-            const tieneReferencia = referenciaPagoInput && referenciaPagoInput.value.trim() !== '';
-            const tieneComprobante = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
+            // Asegúrate de que comprobantePagoInput esté definido globalmente o dentro de este scope
+            // Ya está definido en la sección de métodos de pago.
+
+            // Limpiar errores en línea previos antes de revalidar
+            clearInlineError(referenciaPagoInput);
+            clearInlineError(comprobantePagoInput);
+
+
             const formularioComprobanteVisible = formularioComprobante && !formularioComprobante.classList.contains('oculto');
 
             // === VALIDACIONES DEL COMPROBANTE Y REFERENCIA (ROBUSTA) ===
-if (formularioComprobanteVisible) {
-    const referenciaInput = document.querySelector('input[name="referenciaPago"]:not([style*="display: none"])');
-    const comprobanteAdjunto = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
+            if (formularioComprobanteVisible) {
+                const referenciaValida = referenciaPagoInput && referenciaPagoInput.value.trim() !== '';
+                const comprobanteAdjunto = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
 
-    const referenciaValida = referenciaInput && referenciaInput.value.trim() !== '';
+                // Si no hay referencia Y no hay comprobante
+                if (!referenciaValida && !comprobanteAdjunto) {
+                    displayInlineError(referenciaPagoInput, 'Campo requerido.');
+                    displayInlineError(comprobantePagoInput, 'Requerido.');
+                    showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
+                    return;
+                }
 
-    if (!referenciaValida && !comprobanteAdjunto) {
-        showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
-        return;
-    }
+                // Si solo falta la referencia
+                if (!referenciaValida) {
+                    displayInlineError(referenciaPagoInput, 'Por favor, ingresa la referencia de pago.');
+                    return;
+                }
 
-    if (!referenciaValida) {
-        showMessage('Por favor, ingresa la referencia de pago.', 'error');
-        return;
-    }
-
-    if (!comprobanteAdjunto) {
-        showMessage('Por favor, sube el comprobante de pago.', 'error');
-        return;
-    }
-}
-// ===============================================
+                // Si solo falta el comprobante
+                if (!comprobanteAdjunto) {
+                    displayInlineError(comprobantePagoInput, 'Por favor, sube el comprobante de pago.');
+                    return;
+                }
+            }
+            // ===============================================
 
             const nombreInput = document.querySelector(".formulario-usuario input[name='nombre']");
             const telefonoInput = document.querySelector(".formulario-usuario input[name='telefono']");
