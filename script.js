@@ -360,18 +360,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 const totalBs = totalUSD * rifaTasaCambio;
+                const banco = 'Venezuela';
+                const telefono = '0414-3548533';
+                const ci = 'V-24771856';
+
                 html = `
                     <h4>Pago Móvil</h4>
-                    <p><strong>Banco:</strong> Venezuela</p>
-                    <p><strong>Teléfono:</strong> 0414-3548533</p>
-                    <p><strong>CI:</strong> V-24771856</p>
+                    <p><strong>Banco:</strong> ${banco}</p>
+                    <p><strong>Teléfono:</strong> ${telefono}</p>
+                    <p><strong>CI:</strong> ${ci}</p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
 
                     <div id="pagomovilDataToCopy" style="display:none;">
-                        Banco: Venezuela
-                        Teléfono: 0414-3548533
-                        CI: V-24771856
-                        Monto: ${totalBs.toFixed(2)} Bs
+                        ${banco}
+                        ${telefono}
+                        ${ci.replace('V-', '')}
                     </div>
 
                     <button type="button" class="btn-copiar-datos" data-target="pagomovilDataToCopy">Copiar Datos</button>
@@ -631,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     data.numerosTicketsAsignados.forEach(boleto => {
                         const tarjeta = document.createElement("div");
                         tarjeta.className = "boleto";
-                        tarjeta.textContent = `🎟️ ${boleto.toString().padStart(4, '0')}`; // [cite: 2025-06-21]
+                        tarjeta.textContent = `🎟️ ${boleto.toString().padStart(4, '0')}`; // Los números para cada rifa deben ser de 10000 y deben ir desde el 0001 hasta el 10000. [cite: 2025-06-21]
                         boletosAsignadosContenedor.appendChild(tarjeta);
                     });
                 } else {
@@ -734,7 +737,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <div class="boletos-list">
                             `;
                             rifaData.boletos.sort((a, b) => a - b).forEach(boletoNum => {
-                                htmlResultados += `<span class="boleto">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`; // [cite: 2025-06-21]
+                                htmlResultados += `<span class="boleto">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`; // Los números para cada rifa deben ser de 10000 y deben ir desde el 0001 hasta el 10000. [cite: 2025-06-21]
                             });
                             htmlResultados += `
                                     </div>
