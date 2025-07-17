@@ -48,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     }
 
+    // Variable para almacenar el ID del temporizador de mensajes
+    let messageTimeoutId;
+
     function showMessage(message, type = 'success') {
         const messageContainer = document.getElementById('message-container');
         if (!messageContainer) {
@@ -65,11 +68,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return;
         }
+
+        // Limpia cualquier temporizador anterior
+        if (messageTimeoutId) {
+            clearTimeout(messageTimeoutId);
+        }
+
         messageContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
         messageContainer.classList.remove('oculto');
-        setTimeout(() => {
+        // Asegúrate de que las clases de éxito/error se apliquen antes de remover 'oculto'
+        messageContainer.classList.remove('success', 'error', 'info'); // Limpia clases anteriores
+        messageContainer.classList.add(type); // Añade la clase correcta
+
+        messageTimeoutId = setTimeout(() => {
             messageContainer.classList.add('oculto');
             messageContainer.innerHTML = '';
+            messageContainer.classList.remove('success', 'error', 'info'); // Limpia clases al ocultar
         }, 5000);
     }
 
@@ -496,6 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const tieneComprobante = comprobantePagoInput && comprobantePagoInput.files && comprobantePagoInput.files.length > 0;
             const formularioComprobanteVisible = formularioComprobante && !formularioComprobante.classList.contains('oculto');
 
+            // === VALIDACIONES DEL COMPROBANTE Y REFERENCIA ===
             if (formularioComprobanteVisible) {
                 if (!tieneReferencia && !tieneComprobante) {
                     showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
@@ -510,6 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
             }
+            // ===============================================
 
             const nombreInput = document.querySelector(".formulario-usuario input[name='nombre']");
             const telefonoInput = document.querySelector(".formulario-usuario input[name='telefono']");
@@ -550,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('numeroIdentificacionComprador', numeroIdentificacionComprador);
             formData.append('tasaCambioUsada', rifaTasaCambio);
 
-            // --- Lógica del Loader y el Botón ---
+            // --- Lógica del Loader y el Botón (solo si todas las validaciones pasan) ---
             siguienteMetodoBtn.disabled = true;
             siguienteMetodoBtn.classList.add('is-loading');
             showMessage('Registrando tu pago, por favor espera...', 'info');
@@ -580,6 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     data.numerosTicketsAsignados.forEach(boleto => {
                         const tarjeta = document.createElement("div");
                         tarjeta.className = "boleto";
+                        // Recordando lo del 0001 hasta el 10000. [cite: 2025-06-21]
                         tarjeta.textContent = `🎟️ ${boleto.toString().padStart(4, '0')}`;
                         boletosAsignadosContenedor.appendChild(tarjeta);
                     });
@@ -683,6 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <div class="boletos-list">
                             `;
                             rifaData.boletos.sort((a, b) => a - b).forEach(boletoNum => {
+                                // Recordando lo del 0001 hasta el 10000. [cite: 2025-06-21]
                                 htmlResultados += `<span class="boleto">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`;
                             });
                             htmlResultados += `
