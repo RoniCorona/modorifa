@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><strong>Usuario:</strong> Jesus Galindez</p>
                     <p><strong>Correo:</strong> napogalindez@gmail.com</p>
                     <p><strong>Compra mínima para este metodo de pago:</strong> 5 Tickets</p>
-                    <p><strong>Monto a pagar:</strong> $${totalUSD.toFixed(2)}</p>
+                    <p><strong>Monto a pagar:</strong> $<span id="montoBinanceDisplay">${totalUSD.toFixed(2)}</span></p>
                     <label for="referenciaBinance">Referencia / ID de la Transacción:</label>
                     <input type="text" id="referenciaBinance" name="referenciaPago" placeholder="ID de la transacción Binance" required />
                 `;
@@ -366,6 +366,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><strong>Teléfono:</strong> 0414-3548533</p>
                     <p><strong>CI:</strong> V-24771856</p>
                     <p><strong>Monto a pagar:</strong> ${totalBs.toFixed(2)} Bs</p>
+
+                    <div id="pagomovilDataToCopy" style="display:none;">
+                        Banco: Venezuela
+                        Teléfono: 0414-3548533
+                        CI: V-24771856
+                        Monto: ${totalBs.toFixed(2)} Bs
+                    </div>
+
+                    <button type="button" class="btn-copiar-datos" data-target="pagomovilDataToCopy">Copiar Datos</button>
+
                     <label for="referenciaPagoMovil">Últimos 6 dígitos de la referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" maxlength="6" pattern="\\d{6}" placeholder="Ej: 123456" required />
                 `;
@@ -377,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><strong>Correo:</strong> modorifa@gmail.com</p>
                     <p><strong>Nombre:</strong> Elvia Nunez</p>
                     <p><strong>Compra mínima para este metodo de pago:</strong> 10 Tickets</p>
-                    <p><strong>Monto a pagar:</strong> $${totalUSD.toFixed(2)}</p>
+                    <p><strong>Monto a pagar:</strong> $<span id="montoZelleDisplay">${totalUSD.toFixed(2)}</span></p>
                     <label for="referenciaZelle">Confirmación o Nombre de Envío:</label>
                     <input type="text" id="referenciaZelle" name="referenciaPago" placeholder="ID o Nombre de la transacción" required />
                 `;
@@ -391,6 +401,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if (detallesDinamicosPago) {
                 detallesDinamicosPago.innerHTML = html;
                 detallesPago.classList.remove("oculto");
+
+                // === AÑADIR EVENT LISTENERS A LOS BOTONES DE COPIAR DESPUÉS DE QUE EL HTML SE HAYA INSERTADO ===
+                const copiarBtns = detallesDinamicosPago.querySelectorAll('.btn-copiar-datos');
+                copiarBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const targetId = btn.dataset.target;
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            const textToCopy = targetElement.textContent.trim();
+                            navigator.clipboard.writeText(textToCopy)
+                                .then(() => {
+                                    showMessage('Datos copiados al portapapeles.', 'success');
+                                    btn.textContent = '¡Copiado!'; // Feedback visual
+                                    setTimeout(() => {
+                                        btn.textContent = 'Copiar Datos'; // Restaurar texto
+                                    }, 2000);
+                                })
+                                .catch(err => {
+                                    console.error('Error al copiar: ', err);
+                                    showMessage('Error al copiar los datos.', 'error');
+                                });
+                        }
+                    });
+                });
+                // ===========================================================================================
             }
         }
 
@@ -596,8 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     data.numerosTicketsAsignados.forEach(boleto => {
                         const tarjeta = document.createElement("div");
                         tarjeta.className = "boleto";
-                        // Recordando lo del 0001 hasta el 10000. [cite: 2025-06-21]
-                        tarjeta.textContent = `🎟️ ${boleto.toString().padStart(4, '0')}`;
+                        tarjeta.textContent = `🎟️ ${boleto.toString().padStart(4, '0')}`; // [cite: 2025-06-21]
                         boletosAsignadosContenedor.appendChild(tarjeta);
                     });
                 } else {
@@ -700,8 +734,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <div class="boletos-list">
                             `;
                             rifaData.boletos.sort((a, b) => a - b).forEach(boletoNum => {
-                                // Recordando lo del 0001 hasta el 10000. [cite: 2025-06-21]
-                                htmlResultados += `<span class="boleto">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`;
+                                htmlResultados += `<span class="boleto">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`; // [cite: 2025-06-21]
                             });
                             htmlResultados += `
                                     </div>
