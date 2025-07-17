@@ -574,7 +574,13 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage('Registrando tu pago, por favor espera...', 'info');
 
             try {
-                const response = await fetch(`${API_URL}/pagos`, {
+                
+            console.log("=== FormData a enviar ===");
+            for (let pair of formData.entries()) {
+                console.log(`${pair[0]}:`, pair[1]);
+            }
+
+const response = await fetch(`${API_URL}/pagos`, {
                     method: 'POST',
                     body: formData,
                 });
