@@ -497,15 +497,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const formularioComprobanteVisible = formularioComprobante && !formularioComprobante.classList.contains('oculto');
 
             if (formularioComprobanteVisible) {
-    if (!tieneReferencia) {
-        showMessage('Por favor, ingresa la referencia de pago.', 'error');
-        return;
-    }
-    if (!tieneComprobante) {
-        showMessage('Por favor, sube el comprobante de pago.', 'error');
-        return;
-    }
-}
+                if (!tieneReferencia && !tieneComprobante) {
+                    showMessage('Debes ingresar la referencia de pago y subir el comprobante para continuar.', 'error');
+                    return;
+                }
+                if (!tieneReferencia) {
+                    showMessage('Por favor, ingresa la referencia de pago.', 'error');
+                    return;
+                }
+                if (!tieneComprobante) {
+                    showMessage('Por favor, sube el comprobante de pago.', 'error');
+                    return;
+                }
+            }
 
             const nombreInput = document.querySelector(".formulario-usuario input[name='nombre']");
             const telefonoInput = document.querySelector(".formulario-usuario input[name='telefono']");
