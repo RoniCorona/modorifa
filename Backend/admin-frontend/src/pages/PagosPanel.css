@@ -684,3 +684,110 @@
         min-width: 150px; /* Más espacio para los botones de acción */
     }
 }
+
+/* --- NUEVOS ESTILOS PARA TOP COMPRADORES Y DATOS SENSIBLES --- */
+
+/* Estilos para la sección de Top Compradores */
+.top-compradores-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.top-compradores-result {
+    background-color: #f9f9f9;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.top-compradores-table-wrapper {
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+}
+
+.top-compradores-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.top-compradores-table th,
+.top-compradores-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.top-compradores-table th {
+    background-color: var(--bg-light);
+    font-weight: 600;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.top-compradores-table td {
+    font-size: 0.9rem;
+    color: var(--text-medium);
+}
+
+.top-compradores-table tr:hover {
+    background-color: #f0f2f5;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.info-message {
+    text-align: center;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: var(--spacing-md);
+}
+
+/* Estilos para datos sensibles */
+.sensitive-data {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sensitive-data-toggle {
+    background: none;
+    border: none;
+    color: var(--primary-blue);
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+}
+
+.sensitive-data-toggle:hover {
+    color: var(--primary-blue-dark);
+    background-color: #f0f0f0;
+}
+
+/* Media Queries para responsividad */
+@media (min-width: 768px) {
+    .top-compradores-table {
+        table-layout: fixed;
+    }
+    
+    .top-compradores-table th:nth-child(1),
+    .top-compradores-table td:nth-child(1) { width: 10%; }
+    .top-compradores-table th:nth-child(2),
+    .top-compradores-table td:nth-child(2) { width: 20%; }
+    .top-compradores-table th:nth-child(3),
+    .top-compradores-table td:nth-child(3) { width: 30%; }
+    .top-compradores-table th:nth-child(4),
+    .top-compradores-table td:nth-child(4) { width: 20%; }
+    .top-compradores-table th:nth-child(5),
+    .top-compradores-table td:nth-child(5) { width: 20%; }
+}

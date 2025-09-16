@@ -5,8 +5,9 @@ import { Link } from 'react-router-dom';
 import { getPagos, verifyPago, rejectPago, deletePago } from '../api/pagosApi';
 import { getRifas } from '../api/rifasApi';
 import { consultarTicketPorNumeroYRifa } from '../api/ticketsApi';
+import { getTopCompradoresPorRifa } from '../api/topCompradoresApi'; // NUEVA IMPORTACIÓN
 
-import { FaFilter, FaSearch, FaDollarSign, FaFileInvoiceDollar, FaArrowLeft, FaSpinner, FaTimesCircle, FaCheckCircle, FaTrash } from 'react-icons/fa';
+import { FaFilter, FaSearch, FaDollarSign, FaFileInvoiceDollar, FaArrowLeft, FaSpinner, FaTimesCircle, FaCheckCircle, FaTrash, FaCrown, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import './PagosPanel.css'; // Importa los estilos CSS específicos para esta página
 import axios from 'axios';
@@ -19,6 +20,29 @@ const showToast = (message, type = 'info') => {
     // if (type === 'success') toast.success(message);
     // else if (type === 'error') toast.error(message);
     // else toast.info(message);
+};
+
+// Componente para mostrar datos sensibles con asteriscos y toggle para revelar
+const SensitiveData = ({ value, type = 'text' }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  if (!value) return 'N/A';
+
+  const maskedValue = value.replace(/./g, '*');
+  
+  return (
+    <div className="sensitive-data">
+      <span>{isVisible ? value : maskedValue}</span>
+      <button 
+        type="button"
+        onClick={() => setIsVisible(!isVisible)}
+        className="sensitive-data-toggle"
+        title={isVisible ? 'Ocultar' : 'Mostrar'}
+      >
+        {isVisible ? <FaEyeSlash /> : <FaEye />}
+      </button>
+    </div>
+  );
 };
 
 const PagosPanel = () => {
@@ -42,6 +66,13 @@ const PagosPanel = () => {
     const [ticketQueryResult, setTicketQueryResult] = useState(null);
     const [ticketQueryError, setTicketQueryError] = useState('');
     const [ticketQueryLoading, setTicketQueryLoading] = useState(false);
+
+    // NUEVOS ESTADOS PARA TOP COMPRADORES
+    const [isTopCompradoresOpen, setIsTopCompradoresOpen] = useState(false);
+    const [selectedRifaIdForTop, setSelectedRifaIdForTop] = useState('');
+    const [topCompradores, setTopCompradores] = useState([]);
+    const [topCompradoresLoading, setTopCompradoresLoading] = useState(false);
+    const [topCompradoresError, setTopCompradoresError] = useState('');
 
     // Función para obtener pagos y rifas
     const fetchPagosAndRifas = async () => {
@@ -162,6 +193,28 @@ const PagosPanel = () => {
         }
     };
 
+    // NUEVA FUNCIÓN: Obtener top 10 compradores por rifa
+    const handleGetTopCompradores = async () => {
+        if (!selectedRifaIdForTop) {
+            setTopCompradoresError('Por favor, selecciona una rifa.');
+            return;
+        }
+
+        setTopCompradoresLoading(true);
+        setTopCompradoresError('');
+        setTopCompradores([]);
+
+        try {
+            const data = await getTopCompradoresPorRifa(selectedRifaIdForTop);
+            setTopCompradores(data);
+        } catch (err) {
+            setTopCompradoresError(err.message || 'Error al obtener el top de compradores');
+            console.error('Error fetching top compradores:', err);
+        } finally {
+            setTopCompradoresLoading(false);
+        }
+    };
+
     // Renderizado condicional mientras carga
     if (loading) {
         return (
@@ -273,9 +326,11 @@ const PagosPanel = () => {
                                         <div className="detail-group">
                                             <h5>Información del Comprador:</h5>
                                             <p><strong>Nombre:</strong> {ticketQueryResult.nombreComprador || 'N/A'}</p>
-                                            <p><strong>Identificación:</strong> {ticketQueryResult.tipoIdentificacionComprador || 'N/A'}-{ticketQueryResult.numeroIdentificacionComprador || 'N/A'}</p>
-                                            <p><strong>Teléfono:</strong> {ticketQueryResult.telefonoComprador || 'N/A'}</p>
-                                            <p><strong>Correo:</strong> {ticketQueryResult.emailComprador || 'N/A'}</p>
+                                            <p><strong>Identificación:</strong> 
+                                                <SensitiveData value={ticketQueryResult.tipoIdentificacionComprador ? `${ticketQueryResult.tipoIdentificacionComprador}-${ticketQueryResult.numeroIdentificacionComprador}` : null} />
+                                            </p>
+                                            <p><strong>Teléfono:</strong> <SensitiveData value={ticketQueryResult.telefonoComprador} /></p>
+                                            <p><strong>Correo:</strong> <SensitiveData value={ticketQueryResult.emailComprador} /></p>
                                         </div>
                                         <div className="detail-group">
                                             <h5>Información del Ticket:</h5>
@@ -290,6 +345,89 @@ const PagosPanel = () => {
                                 </div>
                             )}
                             {/* --- Fin de Sección de Detalles del Ticket --- */}
+                        </div>
+                    )}
+                </section>
+
+                {/* NUEVA SECCIÓN: Top 10 Compradores */}
+                <section className="section-card-container top-compradores-section">
+                    <div className="section-header">
+                        <h2 className="section-title"><FaCrown /> Top 10 Compradores por Rifa</h2>
+                        <button
+                            onClick={() => {
+                                setIsTopCompradoresOpen(!isTopCompradoresOpen);
+                                setSelectedRifaIdForTop('');
+                                setTopCompradores([]);
+                                setTopCompradoresError('');
+                            }}
+                            className="toggle-query-button"
+                        >
+                            {isTopCompradoresOpen ? 'Ocultar Top' : 'Ver Top'}
+                        </button>
+                    </div>
+
+                    {isTopCompradoresOpen && (
+                        <div className="query-content">
+                            <div className="query-inputs-grid">
+                                <div className="filter-group">
+                                    <label htmlFor="selectRifaForTop" className="filter-label">Seleccionar Rifa:</label>
+                                    <select
+                                        id="selectRifaForTop"
+                                        value={selectedRifaIdForTop}
+                                        onChange={(e) => setSelectedRifaIdForTop(e.target.value)}
+                                        className="filter-select"
+                                    >
+                                        <option value="">Selecciona una Rifa</option>
+                                        {rifas.map(rifa => (
+                                            <option key={rifa._id} value={rifa._id}>{rifa.nombreProducto}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={handleGetTopCompradores} 
+                                className="action-button primary-button query-button" 
+                                disabled={topCompradoresLoading}
+                            >
+                                <FaCrown /> {topCompradoresLoading ? 'Buscando...' : 'Obtener Top 10'}
+                            </button>
+
+                            {topCompradoresError && <p className="error-message query-error-message">{topCompradoresError}</p>}
+
+                            {topCompradores.length > 0 && (
+                                <div className="top-compradores-result">
+                                    <h4 className="ticket-result-title">Top 10 Compradores - {rifas.find(r => r._id === selectedRifaIdForTop)?.nombreProducto}</h4>
+                                    <div className="top-compradores-table-wrapper">
+                                        <table className="top-compradores-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Posición</th>
+                                                    <th>Cédula</th>
+                                                    <th>Nombre</th>
+                                                    <th>Tickets Comprados</th>
+                                                    <th>Compras Realizadas</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {topCompradores.map((comprador, index) => (
+                                                    <tr key={comprador._id}>
+                                                        <td className="text-center">{index + 1}</td>
+                                                        <td>{comprador._id}</td>
+                                                        <td>{comprador.nombre}</td>
+                                                        <td className="text-center">{comprador.totalTicketsComprados}</td>
+                                                        <td className="text-center">{comprador.compras}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+
+                            {topCompradores.length === 0 && !topCompradoresLoading && selectedRifaIdForTop && (
+                                <p className="info-message">No hay datos de compradores para esta rifa o no hay compras verificadas.</p>
+                            )}
                         </div>
                     )}
                 </section>
@@ -391,8 +529,7 @@ const PagosPanel = () => {
                                                 <p><strong>Nombre:</strong> {pago.comprador?.nombre || 'N/A'}</p>
                                                 <p>
                                                     <strong>ID:</strong> 
-                                                    {pago.comprador?.tipoIdentificacion || 'N/A'}-
-                                                    {pago.comprador?.numeroIdentificacion || 'N/A'}
+                                                    {pago.comprador?.tipoIdentificacion || 'N/A'}-{pago.comprador?.numeroIdentificacion || 'N/A'}
                                                 </p>
                                                 <p><strong>Teléfono:</strong> {pago.comprador?.telefono || 'N/A'}</p>
                                                 <p><strong>Correo:</strong> {pago.comprador?.email || 'N/A'}</p>
