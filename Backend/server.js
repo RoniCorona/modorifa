@@ -84,6 +84,7 @@ app.use('/api/tickets', require('./routes/tickets'));
 app.use('/api/pagos', require('./routes/pagos'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/tasacambio', require('./routes/tasacambio'));
+app.use('/api/stats', require('./routes/stats')); // ✅ NUEVA RUTA AGREGADA
 
 // ===========================
 // 🚀 Iniciar servidor
@@ -94,4 +95,6 @@ app.listen(PORT, () => {
   console.log(`🟢 Frontend público: /`);
   console.log(`🟢 Panel admin: /admin`);
   console.log(`🟢 API: /api/...`);
+  console.log(`📊 Nueva ruta de estadísticas: /api/stats/top-compradores/:rifaId`); // ✅ NUEVA CONSOLA LOG
 });
+// ===========================

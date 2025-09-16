@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Pago = require('../models/Pago');
 const { protect, authorize } = require('../middleware/auth');
@@ -10,10 +11,15 @@ router.get('/top-compradores/:rifaId', protect, authorize(['admin']), async (req
     try {
         const { rifaId } = req.params;
 
+        // Validar que rifaId es un ObjectId válido
+        if (!mongoose.Types.ObjectId.isValid(rifaId)) {
+            return res.status(400).json({ message: 'ID de rifa no válido' });
+        }
+
         const topCompradores = await Pago.aggregate([
             {
                 $match: {
-                    rifa: mongoose.Types.ObjectId(rifaId), // Filtra por la rifa específica
+                    rifa: new mongoose.Types.ObjectId(rifaId), // Filtra por la rifa específica
                     estado: 'verificado', // Solo pagos verificados cuentan
                     'comprador.numeroIdentificacion': { $exists: true, $ne: null } // Solo compradores con cédula
                 }
