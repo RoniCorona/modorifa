@@ -582,3 +582,17 @@
         min-width: 180px; /* Más espacio para los botones de acción en escritorio */
     }
 }
+
+/* Añade este estilo a tu archivo CSS */
+
+/* Estilo para la celda de la tabla que contiene la descripción */
+.rifas-list td div {
+    /* Esto es lo que permite que los saltos de línea (\n) se muestren */
+    white-space: pre-wrap; 
+    
+    /* Limita el ancho de la columna para evitar que la tabla sea demasiado ancha */
+    max-width: 250px; 
+    
+    /* Asegura que el texto que exceda el límite sea visible con un desplazamiento */
+    word-wrap: break-word; 
+}

@@ -1,4 +1,5 @@
 // admin-frontend/src/pages/RifasPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import api from '../api/axiosInstance';
 import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt } from 'react-icons/fa';
@@ -509,6 +510,7 @@ function RifasPage() {
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
+                                    <th>Descripción</th>
                                     <th>Tickets Vendidos</th>
                                     <th>Total Tickets</th>
                                     <th>% Vendido</th>
@@ -525,6 +527,11 @@ function RifasPage() {
                                 {rifas.map((rifa) => (
                                     <tr key={rifa._id}>
                                         <td>{rifa.nombreProducto}</td>
+                                        <td>
+                                            <div style={{ whiteSpace: 'pre-wrap' }}>
+                                                {rifa.descripcion}
+                                            </div>
+                                        </td>
                                         <td>{rifa.ticketsVendidos}</td>
                                         <td>{rifa.totalTickets}</td>
                                         <td>{rifa.porcentajeVendido ? rifa.porcentajeVendido.toFixed(2) : '0.00'}%</td>
