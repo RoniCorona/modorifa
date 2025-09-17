@@ -740,7 +740,11 @@ document.addEventListener('DOMContentLoaded', () => {
             modalTickets.classList.remove('oculto');
             modalTickets.dataset.currentRifaId = rifaId;
             if (correoConsultaInput) correoConsultaInput.value = '';
-            if (resultadosConsultaDiv) resultadosConsultaDiv.innerHTML = '';
+            if (resultadosConsultaDiv) {
+                resultadosConsultaDiv.innerHTML = '';
+                // LÍNEA AÑADIDA: Oculta el div al abrir el modal para que esté listo para la siguiente consulta
+                resultadosConsultaDiv.classList.add('oculto'); 
+            }
         }
     }
 
@@ -764,9 +768,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (resultadosConsultaDiv) {
                 if (!correo || !correo.includes('@')) {
                     resultadosConsultaDiv.innerHTML = `<p class="mensaje-error">Por favor, ingresa un correo electrónico válido.</p>`;
+                    // LÍNEA AÑADIDA: Asegura que el recuadro se muestre en caso de error de validación del correo
+                    resultadosConsultaDiv.classList.remove('oculto'); 
                     return;
                 }
                 resultadosConsultaDiv.innerHTML = `<p>Buscando tickets para: <strong>${correo}</strong>...</p>`;
+                // LÍNEA AÑADIDA: Muestra el recuadro cuando la búsqueda comienza
+                resultadosConsultaDiv.classList.remove('oculto'); 
             }
 
             try {
