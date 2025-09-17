@@ -582,3 +582,55 @@
         min-width: 180px; /* Más espacio para los botones de acción en escritorio */
     }
 }
+
+
+/* Estilos mejorados para campos de texto */
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f8fafc;
+}
+
+.form-group input[type="text"]:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+  background-color: #ffffff;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+  background-color: #f8fafc;
+}
+
+.form-group textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+  background-color: #ffffff;
+}
+
+/* Estilo para el botón de finalizar */
+.action-button.finalizar-button {
+  background-color: #6c757d;
+}
+
+.action-button.finalizar-button:hover {
+  background-color: #5a6268;
+}
