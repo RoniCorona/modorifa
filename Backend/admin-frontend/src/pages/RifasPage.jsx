@@ -1,7 +1,7 @@
 // admin-frontend/src/pages/RifasPage.jsx
 import React, { useState, useEffect } from 'react';
-import api from '../api/axiosInstance'; // Asegúrate de que la ruta sea correcta
-import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt } from 'react-icons/fa'; // Importamos FaEdit y FaTrashAlt
+import api from '../api/axiosInstance';
+import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt } from 'react-icons/fa';
 
 // Componente de Toast (simulado, puedes reemplazarlo por una librería real como react-toastify)
 const showToast = (message, type = 'info') => {
@@ -27,6 +27,17 @@ const ToggleSwitch = ({ id, checked, onChange, label }) => (
     </div>
 );
 
+// MEJORA: Nueva función para convertir la fecha ISO de UTC a formato local para input[datetime-local]
+const convertUtcToLocal = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
 
 function RifasPage() {
     const [rifas, setRifas] = useState([]);
@@ -45,7 +56,7 @@ function RifasPage() {
         fechaInicioSorteo: '',
         fechaFin: '',
         fechaSorteo: '',
-        estaAbiertaParaVenta: true, // Añadir al formData para creación/edición
+        estaAbiertaParaVenta: true,
     });
 
     useEffect(() => {
@@ -83,7 +94,7 @@ function RifasPage() {
             } else if (name === 'estaAbiertaParaVenta') {
                 parsedValue = checked;
             }
-            
+
             return {
                 ...prevData,
                 [name]: parsedValue,
@@ -91,10 +102,12 @@ function RifasPage() {
         });
     };
 
+    // MEJORA: La función ahora usa un nuevo enfoque para manejar las fechas.
     const formatDatesForBackend = (data) => {
         const newData = { ...data };
+        // Al crear/editar, convertimos la fecha local a UTC antes de enviar
         if (newData.fechaInicioSorteo) {
-            newData.fechaInicioSorteo = new Date(newData.fechaInicioSorteo).toISOString();
+            newData.fechaInicioSorteo = new Date(newData.fechaInicioSorteo + 'T00:00:00').toISOString();
         }
         if (newData.fechaFin) {
             newData.fechaFin = new Date(newData.fechaFin).toISOString();
@@ -103,7 +116,7 @@ function RifasPage() {
             if (newData.fechaSorteo !== '') {
                 newData.fechaSorteo = new Date(newData.fechaSorteo).toISOString();
             } else {
-                delete newData.fechaSorteo; 
+                delete newData.fechaSorteo;
             }
         }
         return newData;
@@ -114,9 +127,9 @@ function RifasPage() {
         if (typeof newData.precioTicketUSD === 'string' && newData.precioTicketUSD !== '') {
             newData.precioTicketUSD = parseFloat(newData.precioTicketUSD);
         } else if (newData.precioTicketUSD === '') {
-            delete newData.precioTicketUSD; 
+            delete newData.precioTicketUSD;
         }
-        
+
         if (typeof newData.tasaCambio === 'string' && newData.tasaCambio !== '') {
             newData.tasaCambio = parseFloat(newData.tasaCambio);
         } else if (newData.tasaCambio === '') {
@@ -140,9 +153,9 @@ function RifasPage() {
 
         try {
             const token = localStorage.getItem('adminToken');
-            let dataToSend = formatNumbersForBackend(formData); 
-            dataToSend = formatDatesForBackend(dataToSend); 
-            
+            let dataToSend = formatNumbersForBackend(formData);
+            dataToSend = formatDatesForBackend(dataToSend);
+
             const response = await api.post('/rifas', dataToSend, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -165,21 +178,23 @@ function RifasPage() {
 
     const handleEditRifa = (rifa) => {
         setSelectedRifa(rifa);
-        const formattedFechaFin = rifa.fechaFin ? new Date(rifa.fechaFin).toISOString().slice(0, 16) : '';
-        const formattedFechaSorteo = rifa.fechaSorteo ? new Date(rifa.fechaSorteo).toISOString().slice(0, 16) : '';
+        // MEJORA: Utiliza la nueva función para convertir fechas y así mantener la hora
+        const formattedFechaFin = convertUtcToLocal(rifa.fechaFin);
+        const formattedFechaSorteo = convertUtcToLocal(rifa.fechaSorteo);
+        // La fecha de inicio sigue siendo solo fecha (date), sin hora
         const formattedFechaInicioSorteo = rifa.fechaInicioSorteo ? new Date(rifa.fechaInicioSorteo).toISOString().slice(0, 10) : '';
 
         setFormData({
             nombreProducto: rifa.nombreProducto,
             descripcion: rifa.descripcion,
             imagenUrl: rifa.imagenUrl,
-            precioTicketUSD: rifa.precioTicketUSD, 
+            precioTicketUSD: rifa.precioTicketUSD,
             tasaCambio: rifa.tasaCambio,
             totalTickets: rifa.totalTickets,
             fechaInicioSorteo: formattedFechaInicioSorteo,
             fechaFin: formattedFechaFin,
             fechaSorteo: formattedFechaSorteo,
-            estaAbiertaParaVenta: rifa.estaAbiertaParaVenta, // Cargar el estado manual
+            estaAbiertaParaVenta: rifa.estaAbiertaParaVenta,
         });
         setIsFormOpen(true);
     };
@@ -263,7 +278,6 @@ function RifasPage() {
         }
     };
 
-    // ¡NUEVA FUNCIÓN! Para cambiar el estado manual de venta
     const handleToggleVentaManual = async (rifaId, currentStatus) => {
         const newStatus = !currentStatus;
         if (!window.confirm(`¿Estás seguro de que quieres ${newStatus ? 'ABRIR' : 'CERRAR'} esta rifa para la venta manual?`)) {
@@ -281,7 +295,7 @@ function RifasPage() {
                 },
             });
             showToast(`Rifa ${newStatus ? 'abierta' : 'cerrada'} manualmente para la venta.`, 'success');
-            fetchRifas(); // Recargar la lista para ver el cambio
+            fetchRifas();
         } catch (err) {
             console.error('Error al cambiar estado manual de venta:', err);
             setError(err.response?.data?.message || 'Error al cambiar el estado manual de venta de la rifa.');
@@ -289,7 +303,6 @@ function RifasPage() {
             setLoading(false);
         }
     };
-
 
     const handleGoBack = () => {
         window.history.back();
@@ -502,7 +515,7 @@ function RifasPage() {
                                     <th>Fecha Fin Venta</th>
                                     <th>Fecha Sorteo</th>
                                     <th>Estado General</th>
-                                    <th>Acciones</th> {/* Solo una columna de acciones */}
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -522,16 +535,12 @@ function RifasPage() {
                                                 {rifa.estado.charAt(0).toUpperCase() + rifa.estado.slice(1)}
                                             </span>
                                         </td>
-                                        {/* ¡COLUMNA DE ACCIONES CONSOLIDADA! */}
                                         <td className="actions-cell">
-                                            {/* Toggle Switch para el estado manual de venta */}
                                             <ToggleSwitch
                                                 id={`toggle-${rifa._id}`}
                                                 checked={rifa.estaAbiertaParaVenta}
                                                 onChange={() => handleToggleVentaManual(rifa._id, rifa.estaAbiertaParaVenta)}
-                                                // No hay 'label' aquí, el texto se mostrará con CSS si es necesario
                                             />
-                                            {/* Botones de acción existentes */}
                                             <button onClick={() => handleEditRifa(rifa)} className="action-button edit-button" title="Editar Rifa"><FaEdit /></button>
                                             <button onClick={() => handleDeleteRifa(rifa._id)} className="action-button delete-button" title="Eliminar Rifa"><FaTrashAlt /></button>
                                             {!rifa.sorteada && rifa.ticketsVendidos > 0 && (
