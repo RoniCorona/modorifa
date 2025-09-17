@@ -36,7 +36,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Evita barras horizontales */
 }
 
 /* Encabezado del panel de rifas */
@@ -140,7 +140,7 @@
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
     width: 100%;
-    max-width: 700px;
+    max-width: 700px; /* Ancho máximo para el formulario */
 }
 .form-container h3 {
     font-size: 1.8rem;
@@ -206,9 +206,6 @@
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 .form-actions button[type="submit"]:hover {
     background-color: var(--primary-blue-dark);
@@ -228,53 +225,6 @@
     background-color: #dc2626;
     transform: translateY(-2px);
 }
-.loading-spinner {
-    animation: spin 1s linear infinite;
-}
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Estilos para React-Quill */
-.form-group .quill {
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-}
-.form-group .ql-toolbar {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    background-color: var(--bg-light);
-    border-bottom: 1px solid var(--border-color);
-}
-.form-group .ql-container {
-    border: none;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-}
-
-/* Estilos para React-Datepicker */
-.date-picker-container {
-    position: relative;
-}
-.date-picker-container .react-datepicker-wrapper,
-.date-picker-container .react-datepicker__input-container,
-.date-picker-container .react-datepicker__input-container input {
-    width: 100%;
-}
-.date-picker-container input.form-control {
-    padding-left: 40px; /* Espacio para el icono */
-}
-.date-picker-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-medium);
-    pointer-events: none; /* No interfiere con el input */
-    z-index: 2;
-}
-
 
 /* Lista de Rifas (Tabla) */
 .rifas-list {
@@ -295,7 +245,7 @@
 }
 
 .table-responsive {
-    overflow-x: auto;
+    overflow-x: auto; /* Permite scroll horizontal solo en la tabla si es necesario */
     border-radius: var(--border-radius);
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.03);
 }
@@ -303,8 +253,8 @@
 .rifas-list table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
-    min-width: 1000px;
+    table-layout: fixed; /* Fuerza el layout fijo para la tabla */
+    min-width: 1000px; /* Ancho mínimo para la tabla en general */
 }
 
 .rifas-list th,
@@ -313,9 +263,9 @@
     border-bottom: 1px solid var(--border-color);
     text-align: left;
     vertical-align: middle;
-    word-wrap: break-word;
+    word-wrap: break-word; /* Permite que el texto se envuelva */
     overflow-wrap: break-word;
-    font-size: 0.9rem;
+    font-size: 0.9rem; /* Ajuste de fuente para celdas */
 }
 
 .rifas-list th {
@@ -323,7 +273,7 @@
     font-weight: 600;
     color: var(--text-dark);
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: 0.8rem; /* Ajuste de fuente para encabezados */
 }
 
 /* Anchos de columnas de la tabla (ajustados para el nuevo diseño) */
@@ -362,20 +312,20 @@
 /* Estilos para la celda de acciones */
 .actions-cell {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-    justify-content: center;
-    align-items: center;
-    min-width: 120px;
+    flex-direction: column; /* Apila los elementos verticalmente */
+    gap: 5px; /* Espacio entre los elementos de acción */
+    justify-content: center; /* Centra verticalmente */
+    align-items: center; /* Centra horizontalmente */
+    min-width: 120px; /* Ancho mínimo para la celda de acciones */
 }
 
-/* Estilos para los botones de acción */
+/* Estilos para los botones de acción (Editar, Eliminar, Sortear) */
 .action-button {
     background-color: var(--primary-blue);
     color: white;
-    padding: 6px 10px;
+    padding: 6px 10px; /* Padding ajustado para botones más pequeños */
     border-radius: 6px;
-    font-size: 0.8rem;
+    font-size: 0.8rem; /* Fuente más pequeña para botones */
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
@@ -384,24 +334,21 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 100%;
-    max-width: 100px;
+    width: 100%; /* Ocupa el 100% del ancho disponible en la columna */
+    max-width: 100px; /* Limita el ancho máximo para que no sean demasiado anchos */
 }
 .action-button:hover {
     background-color: var(--primary-blue-dark);
     transform: translateY(-1px);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
-.action-button.edit-button { background-color: #007bff; }
-.action-button.edit-button:hover { background-color: #0056b3; }
-.action-button.delete-button { background-color: #dc3545; }
-.action-button.delete-button:hover { background-color: #c82333; }
-.action-button.sortear-button { background-color: #6f42c1; }
-.action-button.sortear-button:hover { background-color: #563d7c; }
 
-/* NUEVO Estilo para el botón de Finalizar */
-.action-button.finalizar-button { background-color: #607d8b; }
-.action-button.finalizar-button:hover { background-color: #546e7a; }
+.action-button.edit-button { background-color: #007bff; } /* Azul Bootstrap */
+.action-button.edit-button:hover { background-color: #0056b3; }
+.action-button.delete-button { background-color: #dc3545; } /* Rojo Bootstrap */
+.action-button.delete-button:hover { background-color: #c82333; }
+.action-button.sortear-button { background-color: #6f42c1; } /* Morado */
+.action-button.sortear-button:hover { background-color: #563d7c; }
 
 .winner-info {
     font-size: 0.85rem;
@@ -413,24 +360,25 @@
 
 /* Estilos para el ToggleSwitch */
 .toggle-switch-container {
-    width: 100px;
-    height: 35px;
-    border-radius: 8px;
-    background-color: #ef4444;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    /* Estilo general del contenedor que se verá como el botón */
+    width: 100px; /* Ancho fijo para el botón de toggle */
+    height: 35px; /* Altura fija */
+    border-radius: 8px; /* ¡AJUSTE! Bordes más cuadrados para parecer un botón */
+    background-color: #ef4444; /* Color por defecto: Rojo (Cerrada) */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Sombra para darle profundidad */
     cursor: pointer;
     position: relative;
-    overflow: hidden;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
+    overflow: hidden; /* Para ocultar el contenido que se desliza */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave del color de fondo y sombra */
+    display: flex; /* Para centrar el contenido */
     align-items: center;
-    justify-content: center;
-    padding: 0;
-    box-sizing: border-box;
-    margin-bottom: 5px;
+    justify-content: center; /* Centrar todo el contenido */
+    padding: 0; /* Sin padding interno */
+    box-sizing: border-box; /* Incluir padding en el ancho/alto */
+    margin-bottom: 5px; /* Espacio debajo del toggle si hay otros elementos */
 }
 .toggle-switch-container:hover {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada al pasar el ratón */
 }
 
 .toggle-switch-checkbox {
@@ -439,6 +387,7 @@
     visibility: hidden;
 }
 
+/* El label es el área clicable principal, no el elemento visual */
 .toggle-switch-label {
     cursor: pointer;
     width: 100%;
@@ -446,48 +395,80 @@
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 2;
+    z-index: 2; /* Para que sea clicable */
 }
 
+/* Texto "Abierta" y "Cerrada" directamente en el contenedor, superpuestos */
 .toggle-switch-container::before,
 .toggle-switch-container::after {
-    display: flex;
+    display: flex; /* Usar flex para centrar el texto */
     justify-content: center;
     align-items: center;
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 100%; /* Ocupa todo el ancho del contenedor */
     height: 100%;
-    font-size: 0.8rem;
+    font-size: 0.8rem; /* ¡AJUSTE! Fuente para el texto del botón */
     font-weight: bold;
     color: white;
     text-align: center;
-    line-height: 1;
+    line-height: 1; /* Ajuste de line-height */
     transition: opacity 0.3s ease;
-    z-index: 1;
+    z-index: 1; /* Detrás del switch */
 }
 
-.toggle-switch-container::before {
+.toggle-switch-container::before { /* Texto "Abierta" */
     content: "Abierta";
-    background-color: #22c55e;
-    opacity: 0;
+    background-color: #22c55e; /* Color para "Abierta" */
+    opacity: 0; /* Oculto por defecto */
 }
 
-.toggle-switch-container::after {
+.toggle-switch-container::after { /* Texto "Cerrada" */
     content: "Cerrada";
-    background-color: #ef4444;
-    opacity: 1;
+    background-color: #ef4444; /* Color para "Cerrada" */
+    opacity: 1; /* Visible por defecto */
 }
 
+
+.toggle-switch-switch {
+    display: block;
+    width: 25px; /* Ancho del interruptor (pastilla) */
+    height: 25px; /* Altura del interruptor */
+    background: #fff;
+    border-radius: 6px; /* ¡AJUSTE! Bordes más cuadrados para la pastilla */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /* Centrado vertical */
+    left: 5px; /* Posición inicial a la izquierda */
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    z-index: 3; /* Encima del texto */
+}
+
+/* Estado "checked" */
 .toggle-switch-checkbox:checked + .toggle-switch-label + .toggle-switch-container {
-    background-color: #22c55e;
+    background-color: #22c55e; /* Cambia el color de fondo del contenedor a verde */
 }
+
 .toggle-switch-checkbox:checked + .toggle-switch-label + .toggle-switch-container::before {
-    opacity: 1;
+    opacity: 1; /* Muestra el texto "Abierta" */
 }
+
 .toggle-switch-checkbox:checked + .toggle-switch-label + .toggle-switch-container::after {
-    opacity: 0;
+    opacity: 0; /* Oculta el texto "Cerrada" */
+}
+
+.toggle-switch-checkbox:checked + .toggle-switch-label .toggle-switch-switch {
+    transform: translateY(-50%) translateX(calc(100% - 30px)); /* Mueve el switch a la derecha, ajustado por padding */
+    /* Ancho del contenedor (100px) - padding (5px*2) - ancho switch (25px) = 65px */
+    /* 100px - 5px(left) - 25px(width) = 70px. Movemos 70 - 5 = 65px */
+}
+
+
+/* Deshabilitar el texto al lado del switch si ya no se usa */
+.toggle-switch-text {
+    display: none; 
 }
 
 
@@ -514,53 +495,51 @@
         text-align: left;
         padding: var(--spacing-lg) var(--spacing-xl);
     }
+
     .rifas-header h2 {
         font-size: 2.8rem;
     }
+
     .rifas-header .header-buttons {
         flex-wrap: nowrap;
         justify-content: flex-end;
         flex-grow: 0;
     }
+
     .rifas-header .btn-navegacion {
         flex-grow: 0;
         min-width: unset;
     }
+
     .form-container {
         padding: var(--spacing-xl);
     }
+
     .rifas-list table {
-        min-width: 1000px;
+        min-width: 1000px; /* Mantener un ancho mínimo para la tabla */
     }
-    .rifas-list th, .rifas-list td {
-        font-size: 0.95rem;
+
+    .rifas-list th,
+    .rifas-list td {
+        font-size: 0.95rem; /* Un poco más grande en tabletas */
     }
     .rifas-list th {
         font-size: 0.85rem;
     }
+
     .status-badge {
         font-size: 0.7rem;
     }
+
     .action-button {
-        font-size: 0.75rem;
+        font-size: 0.75rem; /* Un poco más grande para botones en tabletas */
         padding: 7px 10px;
     }
-    .actions-cell {
-        flex-direction: row; /* En tabletas, alinea los botones horizontalmente */
-        flex-wrap: wrap;
-        min-width: 180px;
-    }
-    .action-button, .toggle-switch-container {
-        max-width: none; /* Permite que los botones ocupen el espacio necesario */
-        width: auto;
-    }
+
     .toggle-switch-container {
-        width: 80px;
-        height: 30px;
-    }
-    .toggle-switch-container::before,
-    .toggle-switch-container::after {
-        font-size: 0.7rem;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
     }
 }
 
@@ -569,30 +548,37 @@
     .rifas-page-container {
         padding: var(--spacing-lg) var(--spacing-lg);
     }
+
     .rifas-header h2 {
         font-size: 3.2rem;
     }
+
     .rifas-header .btn-navegacion {
         padding: 12px 22px;
         font-size: 1rem;
     }
+
     .rifas-list table {
-        min-width: 1200px;
+        min-width: 1200px; /* Aumentar el ancho mínimo en escritorio si es necesario */
     }
-    .rifas-list th, .rifas-list td {
-        font-size: 1rem;
+
+    .rifas-list th,
+    .rifas-list td {
+        font-size: 1rem; /* Tamaño normal en escritorio */
     }
     .rifas-list th {
         font-size: 0.9rem;
     }
+
     .status-badge {
         font-size: 0.8rem;
     }
+
     .action-button {
-        font-size: 0.9rem;
+        font-size: 0.9rem; /* Tamaño normal para botones en escritorio */
         padding: 8px 12px;
     }
     .actions-cell {
-        min-width: 200px;
+        min-width: 180px; /* Más espacio para los botones de acción en escritorio */
     }
 }

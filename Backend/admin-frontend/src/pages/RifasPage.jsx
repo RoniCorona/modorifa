@@ -1,27 +1,16 @@
 // admin-frontend/src/pages/RifasPage.jsx
 import React, { useState, useEffect } from 'react';
-import api from '../api/axiosInstance';
-import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt, FaCalendarAlt, FaSave } from 'react-icons/fa';
+import api from '../api/axiosInstance'; // Asegúrate de que la ruta sea correcta
+import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt } from 'react-icons/fa'; // Importamos FaEdit y FaTrashAlt
 
-// Importaciones para el editor de texto y el selector de fechas
-import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import es from 'date-fns/locale/es';
-registerLocale('es', es);
-
-// Añadir soporte para emojis en ReactQuill
-const Emoji = Quill.import('formats/emoji');
-Quill.register(Emoji, true);
-
-// Componente de Toast (simulado)
+// Componente de Toast (simulado, puedes reemplazarlo por una librería real como react-toastify)
 const showToast = (message, type = 'info') => {
     console.log(`[Toast ${type.toUpperCase()}]: ${message}`);
+    // Implementa aquí tu lógica real de Toast
 };
 
-// Componente ToggleSwitch
-const ToggleSwitch = ({ id, checked, onChange }) => (
+// Componente ToggleSwitch para el control manual
+const ToggleSwitch = ({ id, checked, onChange, label }) => (
     <div className="toggle-switch-container">
         <input
             type="checkbox"
@@ -30,9 +19,14 @@ const ToggleSwitch = ({ id, checked, onChange }) => (
             onChange={onChange}
             className="toggle-switch-checkbox"
         />
-        <label htmlFor={id} className="toggle-switch-label"></label>
+        <label htmlFor={id} className="toggle-switch-label">
+            <span className="toggle-switch-inner" data-yes="Abierta" data-no="Cerrada"></span>
+            <span className="toggle-switch-switch"></span>
+        </label>
+        {label && <span className="toggle-switch-text">{label}</span>}
     </div>
 );
+
 
 function RifasPage() {
     const [rifas, setRifas] = useState([]);
@@ -41,20 +35,18 @@ function RifasPage() {
     const [selectedRifa, setSelectedRifa] = useState(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
 
-    const initialFormState = {
+    const [formData, setFormData] = useState({
         nombreProducto: '',
         descripcion: '',
         imagenUrl: '',
         precioTicketUSD: '',
         tasaCambio: '',
         totalTickets: '',
-        fechaInicioSorteo: null,
-        fechaFin: null,
-        fechaSorteo: null,
-        estaAbiertaParaVenta: true,
-    };
-
-    const [formData, setFormData] = useState(initialFormState);
+        fechaInicioSorteo: '',
+        fechaFin: '',
+        fechaSorteo: '',
+        estaAbiertaParaVenta: true, // Añadir al formData para creación/edición
+    });
 
     useEffect(() => {
         fetchRifas();
@@ -66,7 +58,9 @@ function RifasPage() {
         try {
             const token = localStorage.getItem('adminToken');
             const response = await api.get('/rifas', {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
             setRifas(response.data);
         } catch (err) {
@@ -79,25 +73,65 @@ function RifasPage() {
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: type === 'checkbox' ? checked : value,
-        }));
+        setFormData((prevData) => {
+            let parsedValue = value;
+
+            if (name === 'precioTicketUSD' || name === 'tasaCambio') {
+                parsedValue = value === '' ? '' : parseFloat(value);
+            } else if (name === 'totalTickets') {
+                parsedValue = value === '' ? '' : parseInt(value, 10);
+            } else if (name === 'estaAbiertaParaVenta') {
+                parsedValue = checked;
+            }
+            
+            return {
+                ...prevData,
+                [name]: parsedValue,
+            };
+        });
     };
 
-    const handleQuillChange = (value) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            descripcion: value,
-        }));
+    const formatDatesForBackend = (data) => {
+        const newData = { ...data };
+        if (newData.fechaInicioSorteo) {
+            newData.fechaInicioSorteo = new Date(newData.fechaInicioSorteo).toISOString();
+        }
+        if (newData.fechaFin) {
+            newData.fechaFin = new Date(newData.fechaFin).toISOString();
+        }
+        if (newData.fechaSorteo) {
+            if (newData.fechaSorteo !== '') {
+                newData.fechaSorteo = new Date(newData.fechaSorteo).toISOString();
+            } else {
+                delete newData.fechaSorteo; 
+            }
+        }
+        return newData;
     };
 
-    const handleDateChange = (name, date) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: date,
-        }));
+    const formatNumbersForBackend = (data) => {
+        const newData = { ...data };
+        if (typeof newData.precioTicketUSD === 'string' && newData.precioTicketUSD !== '') {
+            newData.precioTicketUSD = parseFloat(newData.precioTicketUSD);
+        } else if (newData.precioTicketUSD === '') {
+            delete newData.precioTicketUSD; 
+        }
+        
+        if (typeof newData.tasaCambio === 'string' && newData.tasaCambio !== '') {
+            newData.tasaCambio = parseFloat(newData.tasaCambio);
+        } else if (newData.tasaCambio === '') {
+            delete newData.tasaCambio;
+        }
+
+        if (typeof newData.totalTickets === 'string' && newData.totalTickets !== '') {
+            newData.totalTickets = parseInt(newData.totalTickets, 10);
+        } else if (newData.totalTickets === '') {
+            delete newData.totalTickets;
+        }
+
+        return newData;
     };
+
 
     const handleCreateRifa = async (e) => {
         e.preventDefault();
@@ -106,26 +140,24 @@ function RifasPage() {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const dataToSend = {
-                ...formData,
-                fechaInicioSorteo: formData.fechaInicioSorteo?.toISOString(),
-                fechaFin: formData.fechaFin?.toISOString(),
-                fechaSorteo: formData.fechaSorteo?.toISOString(),
-                precioTicketUSD: parseFloat(formData.precioTicketUSD),
-                tasaCambio: parseFloat(formData.tasaCambio),
-                totalTickets: parseInt(formData.totalTickets, 10),
-            };
-
+            let dataToSend = formatNumbersForBackend(formData); 
+            dataToSend = formatDatesForBackend(dataToSend); 
+            
             const response = await api.post('/rifas', dataToSend, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
             showToast('Rifa creada exitosamente!', 'success');
             setIsFormOpen(false);
-            setFormData(initialFormState);
+            setFormData({
+                nombreProducto: '', descripcion: '', imagenUrl: '', precioTicketUSD: '', tasaCambio: '', totalTickets: '',
+                fechaInicioSorteo: '', fechaFin: '', fechaSorteo: '', estaAbiertaParaVenta: true
+            });
             fetchRifas();
         } catch (err) {
             console.error('Error al crear rifa:', err.response?.data || err);
-            setError(err.response?.data?.message || 'Error al crear la rifa. Asegúrate de que todos los campos requeridos sean válidos.');
+            setError(err.response?.data?.message || 'Error al crear la rifa. Asegúrate de que todos los campos requeridos estén llenos y sean válidos.');
         } finally {
             setLoading(false);
         }
@@ -133,11 +165,21 @@ function RifasPage() {
 
     const handleEditRifa = (rifa) => {
         setSelectedRifa(rifa);
+        const formattedFechaFin = rifa.fechaFin ? new Date(rifa.fechaFin).toISOString().slice(0, 16) : '';
+        const formattedFechaSorteo = rifa.fechaSorteo ? new Date(rifa.fechaSorteo).toISOString().slice(0, 16) : '';
+        const formattedFechaInicioSorteo = rifa.fechaInicioSorteo ? new Date(rifa.fechaInicioSorteo).toISOString().slice(0, 10) : '';
+
         setFormData({
-            ...rifa,
-            fechaInicioSorteo: rifa.fechaInicioSorteo ? new Date(rifa.fechaInicioSorteo) : null,
-            fechaFin: rifa.fechaFin ? new Date(rifa.fechaFin) : null,
-            fechaSorteo: rifa.fechaSorteo ? new Date(rifa.fechaSorteo) : null,
+            nombreProducto: rifa.nombreProducto,
+            descripcion: rifa.descripcion,
+            imagenUrl: rifa.imagenUrl,
+            precioTicketUSD: rifa.precioTicketUSD, 
+            tasaCambio: rifa.tasaCambio,
+            totalTickets: rifa.totalTickets,
+            fechaInicioSorteo: formattedFechaInicioSorteo,
+            fechaFin: formattedFechaFin,
+            fechaSorteo: formattedFechaSorteo,
+            estaAbiertaParaVenta: rifa.estaAbiertaParaVenta, // Cargar el estado manual
         });
         setIsFormOpen(true);
     };
@@ -149,27 +191,25 @@ function RifasPage() {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const dataToSend = {
-                ...formData,
-                fechaInicioSorteo: formData.fechaInicioSorteo?.toISOString(),
-                fechaFin: formData.fechaFin?.toISOString(),
-                fechaSorteo: formData.fechaSorteo?.toISOString(),
-                precioTicketUSD: parseFloat(formData.precioTicketUSD),
-                tasaCambio: parseFloat(formData.tasaCambio),
-                totalTickets: parseInt(formData.totalTickets, 10),
-            };
+            let dataToSend = formatNumbersForBackend(formData);
+            dataToSend = formatDatesForBackend(dataToSend);
 
             const response = await api.patch(`/rifas/${selectedRifa._id}`, dataToSend, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
             showToast('Rifa actualizada exitosamente!', 'success');
             setIsFormOpen(false);
             setSelectedRifa(null);
-            setFormData(initialFormState);
+            setFormData({
+                nombreProducto: '', descripcion: '', imagenUrl: '', precioTicketUSD: '', tasaCambio: '', totalTickets: '',
+                fechaInicioSorteo: '', fechaFin: '', fechaSorteo: '', estaAbiertaParaVenta: true
+            });
             fetchRifas();
         } catch (err) {
             console.error('Error al actualizar rifa:', err.response?.data || err);
-            setError(err.response?.data?.message || 'Error al actualizar la rifa. Asegúrate de que todos los campos sean válidos.');
+            setError(err.response?.data?.message || 'Error al actualizar la rifa. Asegúrate de que todos los campos requeridos estén llenos y sean válidos.');
         } finally {
             setLoading(false);
         }
@@ -183,8 +223,10 @@ function RifasPage() {
         setError('');
         try {
             const token = localStorage.getItem('adminToken');
-            await api.delete(`/rifas/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
+            const response = await api.delete(`/rifas/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
             showToast('Rifa eliminada exitosamente!', 'success');
             fetchRifas();
@@ -196,27 +238,32 @@ function RifasPage() {
         }
     };
 
-    const handleFinalizarRifa = async (rifaId) => {
-        if (!window.confirm('¿Estás seguro de que quieres finalizar esta rifa? La rifa quedará cerrada y no se podrá sortear más adelante.')) {
+    const handleSortearRifa = async (rifaId) => {
+        if (!window.confirm('¿Estás seguro de que quieres sortear esta rifa? Esta acción es irreversible y seleccionará al ganador.')) {
             return;
         }
         setLoading(true);
         setError('');
         try {
             const token = localStorage.getItem('adminToken');
-            await api.patch(`/rifas/${rifaId}/finalizar`, {}, {
-                headers: { Authorization: `Bearer ${token}` },
+            const response = await api.post(`/rifas/${rifaId}/sortear`, {
+                numberOfWinners: { "primer_lugar": 1 }
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
-            showToast('Rifa finalizada exitosamente!', 'success');
+            showToast('Rifa sorteada exitosamente! Ganador: ' + response.data.ganadores[0]?.nombreGanador, 'success');
             fetchRifas();
         } catch (err) {
-            console.error('Error al finalizar la rifa:', err);
-            setError(err.response?.data?.message || 'Error al finalizar la rifa. Asegúrate de que tu backend tenga el endpoint /rifas/:id/finalizar.');
+            console.error('Error al sortear rifa:', err);
+            setError(err.response?.data?.message || 'Error al sortear la rifa.');
         } finally {
             setLoading(false);
         }
     };
 
+    // ¡NUEVA FUNCIÓN! Para cambiar el estado manual de venta
     const handleToggleVentaManual = async (rifaId, currentStatus) => {
         const newStatus = !currentStatus;
         if (!window.confirm(`¿Estás seguro de que quieres ${newStatus ? 'ABRIR' : 'CERRAR'} esta rifa para la venta manual?`)) {
@@ -229,10 +276,12 @@ function RifasPage() {
             await api.patch(`/rifas/${rifaId}/toggle-venta-manual`, {
                 estaAbiertaParaVenta: newStatus
             }, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
             showToast(`Rifa ${newStatus ? 'abierta' : 'cerrada'} manualmente para la venta.`, 'success');
-            fetchRifas();
+            fetchRifas(); // Recargar la lista para ver el cambio
         } catch (err) {
             console.error('Error al cambiar estado manual de venta:', err);
             setError(err.response?.data?.message || 'Error al cambiar el estado manual de venta de la rifa.');
@@ -241,29 +290,20 @@ function RifasPage() {
         }
     };
 
-    const handleGoBack = () => { window.history.back(); };
-    const handleGoToDashboard = () => { window.location.href = '/dashboard'; };
 
-    const quillModules = {
-        toolbar: [
-            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-            [{size: []}],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-            ['link', 'image', 'video'],
-            ['clean'],
-            [{ 'align': [] }],
-            ['emoji']
-        ],
-        'emoji-toolbar': true,
-        'emoji-shortname': true,
+    const handleGoBack = () => {
+        window.history.back();
+    };
+
+    const handleGoToDashboard = () => {
+        window.location.href = '/dashboard';
     };
 
     if (loading) {
         return <div className="loading-screen"><FaSpinner className="loading-spinner" /><p className="loading-text">Cargando rifas...</p></div>;
     }
 
-    if (error && !isFormOpen) {
+    if (error) {
         return (
             <div className="error-screen">
                 <FaTimesCircle className="error-icon" />
@@ -294,12 +334,16 @@ function RifasPage() {
             </div>
 
             {error && <p className="error-message">{error}</p>}
+            {loading && <p className="loading-message">Cargando rifas...</p>}
 
             {!isFormOpen && (
                 <button onClick={() => {
                         setIsFormOpen(true);
                         setSelectedRifa(null);
-                        setFormData(initialFormState);
+                        setFormData({
+                            nombreProducto: '', descripcion: '', imagenUrl: '', precioTicketUSD: '', tasaCambio: '', totalTickets: '',
+                            fechaInicioSorteo: '', fechaFin: '', fechaSorteo: '', estaAbiertaParaVenta: true
+                        });
                     }} className="add-button">
                     Crear Nueva Rifa
                 </button>
@@ -322,13 +366,13 @@ function RifasPage() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="descripcion">Descripción:</label>
-                            <ReactQuill
-                                theme="snow"
+                            <textarea
+                                id="descripcion"
+                                name="descripcion"
                                 value={formData.descripcion}
-                                onChange={handleQuillChange}
-                                modules={quillModules}
-                                placeholder="Escribe una descripción detallada aquí..."
-                            />
+                                onChange={handleInputChange}
+                                required
+                            ></textarea>
                         </div>
                         <div className="form-group">
                             <label htmlFor="imagenUrl">URL de la Imagen:</label>
@@ -384,68 +428,54 @@ function RifasPage() {
                                 required
                             />
                         </div>
+
+                        {/* Control para el estado manual de venta */}
                         <div className="form-group">
-                            <label htmlFor="estaAbiertaParaVenta">Estado Manual de Venta:</label>
                             <ToggleSwitch
                                 id="estaAbiertaParaVenta"
+                                name="estaAbiertaParaVenta"
                                 checked={formData.estaAbiertaParaVenta}
-                                onChange={() => handleInputChange({ target: { name: 'estaAbiertaParaVenta', type: 'checkbox', checked: !formData.estaAbiertaParaVenta } })}
+                                onChange={handleInputChange}
+                                label="Abierta para Venta Manual"
                             />
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="fechaInicioSorteo">Fecha de Inicio del Sorteo:</label>
-                            <div className="date-picker-container">
-                                <FaCalendarAlt className="date-picker-icon" />
-                                <DatePicker
-                                    id="fechaInicioSorteo"
-                                    selected={formData.fechaInicioSorteo}
-                                    onChange={(date) => handleDateChange('fechaInicioSorteo', date)}
-                                    dateFormat="dd/MM/yyyy"
-                                    locale="es"
-                                    required
-                                    placeholderText="Seleccionar fecha"
-                                    className="form-control"
-                                />
-                            </div>
+                            <input
+                                type="date"
+                                id="fechaInicioSorteo"
+                                name="fechaInicioSorteo"
+                                value={formData.fechaInicioSorteo}
+                                onChange={handleInputChange}
+                                required
+                            />
                         </div>
                         <div className="form-group">
                             <label htmlFor="fechaFin">Fecha de Finalización (y Hora):</label>
-                            <div className="date-picker-container">
-                                <FaCalendarAlt className="date-picker-icon" />
-                                <DatePicker
-                                    id="fechaFin"
-                                    selected={formData.fechaFin}
-                                    onChange={(date) => handleDateChange('fechaFin', date)}
-                                    showTimeSelect
-                                    dateFormat="dd/MM/yyyy h:mm aa"
-                                    locale="es"
-                                    required
-                                    placeholderText="Seleccionar fecha y hora"
-                                    className="form-control"
-                                />
-                            </div>
+                            <input
+                                type="datetime-local"
+                                id="fechaFin"
+                                name="fechaFin"
+                                value={formData.fechaFin}
+                                onChange={handleInputChange}
+                                required
+                            />
                         </div>
                         <div className="form-group">
                             <label htmlFor="fechaSorteo">Fecha y Hora del Sorteo:</label>
-                            <div className="date-picker-container">
-                                <FaCalendarAlt className="date-picker-icon" />
-                                <DatePicker
-                                    id="fechaSorteo"
-                                    selected={formData.fechaSorteo}
-                                    onChange={(date) => handleDateChange('fechaSorteo', date)}
-                                    showTimeSelect
-                                    dateFormat="dd/MM/yyyy h:mm aa"
-                                    locale="es"
-                                    placeholderText="Seleccionar fecha y hora (Opcional)"
-                                    className="form-control"
-                                />
-                            </div>
+                            <input
+                                type="datetime-local"
+                                id="fechaSorteo"
+                                name="fechaSorteo"
+                                value={formData.fechaSorteo}
+                                onChange={handleInputChange}
+                            />
                         </div>
 
                         <div className="form-actions">
                             <button type="submit" disabled={loading}>
-                                {loading ? <FaSpinner className="loading-spinner" /> : (selectedRifa ? 'Actualizar Rifa' : 'Crear Rifa')}
+                                {loading ? 'Guardando...' : (selectedRifa ? 'Actualizar Rifa' : 'Crear Rifa')}
                             </button>
                             <button type="button" onClick={() => { setIsFormOpen(false); setSelectedRifa(null); setError(''); }} className="cancel-button">
                                 Cancelar
@@ -472,7 +502,7 @@ function RifasPage() {
                                     <th>Fecha Fin Venta</th>
                                     <th>Fecha Sorteo</th>
                                     <th>Estado General</th>
-                                    <th>Acciones</th>
+                                    <th>Acciones</th> {/* Solo una columna de acciones */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -492,18 +522,23 @@ function RifasPage() {
                                                 {rifa.estado.charAt(0).toUpperCase() + rifa.estado.slice(1)}
                                             </span>
                                         </td>
+                                        {/* ¡COLUMNA DE ACCIONES CONSOLIDADA! */}
                                         <td className="actions-cell">
+                                            {/* Toggle Switch para el estado manual de venta */}
                                             <ToggleSwitch
                                                 id={`toggle-${rifa._id}`}
                                                 checked={rifa.estaAbiertaParaVenta}
                                                 onChange={() => handleToggleVentaManual(rifa._id, rifa.estaAbiertaParaVenta)}
+                                                // No hay 'label' aquí, el texto se mostrará con CSS si es necesario
                                             />
+                                            {/* Botones de acción existentes */}
                                             <button onClick={() => handleEditRifa(rifa)} className="action-button edit-button" title="Editar Rifa"><FaEdit /></button>
                                             <button onClick={() => handleDeleteRifa(rifa._id)} className="action-button delete-button" title="Eliminar Rifa"><FaTrashAlt /></button>
-                                            {rifa.estado !== 'finalizada' && rifa.ticketsVendidos > 0 && (
-                                                <button onClick={() => handleFinalizarRifa(rifa._id)} className="action-button finalizar-button" title="Finalizar Rifa">
-                                                    <FaSave /> Finalizar Rifa
-                                                </button>
+                                            {!rifa.sorteada && rifa.ticketsVendidos > 0 && (
+                                                <button onClick={() => handleSortearRifa(rifa._id)} className="action-button sortear-button" title="Sortear Rifa"><FaSpinner /></button>
+                                            )}
+                                            {rifa.sorteada && rifa.ganadores && rifa.ganadores.length > 0 && (
+                                                <span className="winner-info">Ganador: {rifa.ganadores[0]?.nombreGanador || 'N/A'}</span>
                                             )}
                                         </td>
                                     </tr>
