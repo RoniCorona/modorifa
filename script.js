@@ -499,8 +499,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (rifaTituloElement) rifaTituloElement.textContent = rifa.nombreProducto;
                 const rifaImagenElement = document.getElementById('rifaImagen');
                 if (rifaImagenElement) rifaImagenElement.src = rifa.imagenUrl;
+                
+                // --- CÓDIGO CORREGIDO PARA RESPETAR SALTOS DE LÍNEA ---
                 const rifaDescripcionElement = document.getElementById('rifaDescripcion');
-                if (rifaDescripcionElement) rifaDescripcionElement.textContent = rifa.descripcion;
+                if (rifaDescripcionElement) {
+                    // Reemplaza todos los saltos de línea (\n) por etiquetas <br>
+                    const descripcionConSaltos = rifa.descripcion.replace(/\n/g, '<br>');
+                    rifaDescripcionElement.innerHTML = descripcionConSaltos;
+                }
+                // ---------------------------------------------------
+                
                 const rifaPrecioElement = document.getElementById('rifaPrecio');
                 if (rifaPrecioElement) rifaPrecioElement.textContent = rifa.precioTicketUSD.toFixed(2);
 
