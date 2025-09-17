@@ -253,8 +253,9 @@ function RifasPage() {
         }
     };
 
+    // MEJORA: Se modifica la función de sorteo para no mostrar un ganador ni enviar correos.
     const handleSortearRifa = async (rifaId) => {
-        if (!window.confirm('¿Estás seguro de que quieres sortear esta rifa? Esta acción es irreversible y seleccionará al ganador.')) {
+        if (!window.confirm('¿Estás seguro de que quieres sortear esta rifa? Esta acción es irreversible y finalizará la rifa.')) {
             return;
         }
         setLoading(true);
@@ -268,7 +269,8 @@ function RifasPage() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            showToast('Rifa sorteada exitosamente! Ganador: ' + response.data.ganadores[0]?.nombreGanador, 'success');
+            // MEJORA: El mensaje de éxito ya no menciona al ganador.
+            showToast('Rifa sorteada exitosamente y finalizada.', 'success');
             fetchRifas();
         } catch (err) {
             console.error('Error al sortear rifa:', err);
@@ -379,6 +381,7 @@ function RifasPage() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="descripcion">Descripción:</label>
+                            {/* MEJORA: Usamos un textarea simple que respeta saltos de línea y emojis */}
                             <textarea
                                 id="descripcion"
                                 name="descripcion"
@@ -545,9 +548,6 @@ function RifasPage() {
                                             <button onClick={() => handleDeleteRifa(rifa._id)} className="action-button delete-button" title="Eliminar Rifa"><FaTrashAlt /></button>
                                             {!rifa.sorteada && rifa.ticketsVendidos > 0 && (
                                                 <button onClick={() => handleSortearRifa(rifa._id)} className="action-button sortear-button" title="Sortear Rifa"><FaSpinner /></button>
-                                            )}
-                                            {rifa.sorteada && rifa.ganadores && rifa.ganadores.length > 0 && (
-                                                <span className="winner-info">Ganador: {rifa.ganadores[0]?.nombreGanador || 'N/A'}</span>
                                             )}
                                         </td>
                                     </tr>

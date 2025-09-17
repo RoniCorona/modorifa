@@ -1,4 +1,5 @@
 // backend/routes/rifas.js
+
 const express = require('express');
 const router = express.Router();
 const Rifa = require('../models/Rifa');
@@ -6,6 +7,7 @@ const Ticket = require('../models/Ticket');
 
 const { protect, authorize } = require('../middleware/auth'); 
 
+// La siguiente línea se mantiene, pero la función ya no se usará en este archivo
 const { sendWinnerNotificationEmail } = require('../utils/emailService');
 
 const formatTicketNumber = (num) => {
@@ -282,15 +284,19 @@ router.post('/:id/sortear', protect, authorize(['admin']), async (req, res) => {
 
         await rifa.save();
 
+        // Código a eliminar para evitar el envío de correos
+        /*
         for (const ganador of ganadoresSeleccionados) {
-            // sendWinnerNotificationEmail(ganador, rifa); 
+            sendWinnerNotificationEmail(ganador, rifa); 
             console.log(`Ganador seleccionado para ${rifa.nombreProducto} (${ganador.posicion}): ${ganador.nombreGanador} con el número ${ganador.numeroGanador}`);
         }
+        */
 
         res.json({
             message: 'Sorteo realizado exitosamente.',
+            // Se elimina la devolución de la lista de ganadores
             rifa: rifa,
-            ganadores: ganadoresSeleccionados
+            // ganadores: ganadoresSeleccionados
         });
 
     } catch (err) {
