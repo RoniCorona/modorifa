@@ -1,15 +1,19 @@
 // admin-frontend/src/pages/RifasPage.jsx
 import React, { useState, useEffect } from 'react';
-import api from '../api/axiosInstance'; 
-import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt, FaCalendarAlt, FaStar, FaSave } from 'react-icons/fa';
+import api from '../api/axiosInstance';
+import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt, FaCalendarAlt, FaSave } from 'react-icons/fa';
 
 // Importaciones para el editor de texto y el selector de fechas
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Estilos para el editor
+import ReactQuill, { Quill } from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import es from 'date-fns/locale/es'; // Importar el locale español
+import es from 'date-fns/locale/es';
 registerLocale('es', es);
+
+// Añadir soporte para emojis en ReactQuill
+const Emoji = Quill.import('formats/emoji');
+Quill.register(Emoji, true);
 
 // Componente de Toast (simulado)
 const showToast = (message, type = 'info') => {
@@ -37,7 +41,7 @@ function RifasPage() {
     const [selectedRifa, setSelectedRifa] = useState(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
 
-    const [formData, setFormData] = useState({
+    const initialFormState = {
         nombreProducto: '',
         descripcion: '',
         imagenUrl: '',
@@ -48,7 +52,9 @@ function RifasPage() {
         fechaFin: null,
         fechaSorteo: null,
         estaAbiertaParaVenta: true,
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormState);
 
     useEffect(() => {
         fetchRifas();
@@ -115,10 +121,7 @@ function RifasPage() {
             });
             showToast('Rifa creada exitosamente!', 'success');
             setIsFormOpen(false);
-            setFormData({
-                nombreProducto: '', descripcion: '', imagenUrl: '', precioTicketUSD: '', tasaCambio: '', totalTickets: '',
-                fechaInicioSorteo: null, fechaFin: null, fechaSorteo: null, estaAbiertaParaVenta: true
-            });
+            setFormData(initialFormState);
             fetchRifas();
         } catch (err) {
             console.error('Error al crear rifa:', err.response?.data || err);
@@ -131,16 +134,10 @@ function RifasPage() {
     const handleEditRifa = (rifa) => {
         setSelectedRifa(rifa);
         setFormData({
-            nombreProducto: rifa.nombreProducto,
-            descripcion: rifa.descripcion,
-            imagenUrl: rifa.imagenUrl,
-            precioTicketUSD: rifa.precioTicketUSD,
-            tasaCambio: rifa.tasaCambio,
-            totalTickets: rifa.totalTickets,
+            ...rifa,
             fechaInicioSorteo: rifa.fechaInicioSorteo ? new Date(rifa.fechaInicioSorteo) : null,
             fechaFin: rifa.fechaFin ? new Date(rifa.fechaFin) : null,
             fechaSorteo: rifa.fechaSorteo ? new Date(rifa.fechaSorteo) : null,
-            estaAbiertaParaVenta: rifa.estaAbiertaParaVenta,
         });
         setIsFormOpen(true);
     };
@@ -168,10 +165,7 @@ function RifasPage() {
             showToast('Rifa actualizada exitosamente!', 'success');
             setIsFormOpen(false);
             setSelectedRifa(null);
-            setFormData({
-                nombreProducto: '', descripcion: '', imagenUrl: '', precioTicketUSD: '', tasaCambio: '', totalTickets: '',
-                fechaInicioSorteo: null, fechaFin: null, fechaSorteo: null, estaAbiertaParaVenta: true
-            });
+            setFormData(initialFormState);
             fetchRifas();
         } catch (err) {
             console.error('Error al actualizar rifa:', err.response?.data || err);
@@ -202,7 +196,6 @@ function RifasPage() {
         }
     };
 
-    // ¡NUEVA FUNCIÓN! Para finalizar la rifa sin sortear
     const handleFinalizarRifa = async (rifaId) => {
         if (!window.confirm('¿Estás seguro de que quieres finalizar esta rifa? La rifa quedará cerrada y no se podrá sortear más adelante.')) {
             return;
@@ -215,16 +208,15 @@ function RifasPage() {
                 headers: { Authorization: `Bearer ${token}` },
             });
             showToast('Rifa finalizada exitosamente!', 'success');
-            fetchRifas(); // Recargar la lista para ver el cambio de estado
+            fetchRifas();
         } catch (err) {
             console.error('Error al finalizar la rifa:', err);
-            setError(err.response?.data?.message || 'Error al finalizar la rifa.');
+            setError(err.response?.data?.message || 'Error al finalizar la rifa. Asegúrate de que tu backend tenga el endpoint /rifas/:id/finalizar.');
         } finally {
             setLoading(false);
         }
     };
 
-    // Función para cambiar el estado manual de venta
     const handleToggleVentaManual = async (rifaId, currentStatus) => {
         const newStatus = !currentStatus;
         if (!window.confirm(`¿Estás seguro de que quieres ${newStatus ? 'ABRIR' : 'CERRAR'} esta rifa para la venta manual?`)) {
@@ -252,6 +244,21 @@ function RifasPage() {
     const handleGoBack = () => { window.history.back(); };
     const handleGoToDashboard = () => { window.location.href = '/dashboard'; };
 
+    const quillModules = {
+        toolbar: [
+            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+            [{size: []}],
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+            ['link', 'image', 'video'],
+            ['clean'],
+            [{ 'align': [] }],
+            ['emoji']
+        ],
+        'emoji-toolbar': true,
+        'emoji-shortname': true,
+    };
+
     if (loading) {
         return <div className="loading-screen"><FaSpinner className="loading-spinner" /><p className="loading-text">Cargando rifas...</p></div>;
     }
@@ -271,29 +278,6 @@ function RifasPage() {
             </div>
         );
     }
-
-    const modules = {
-        toolbar: [
-            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-            [{size: []}],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-            ['link', 'image', 'video'],
-            ['clean'],
-            [{ 'align': [] }],
-            ['emoji']
-        ],
-        'emoji-toolbar': true,
-        'emoji-shortname': true,
-    };
-    
-    const formats = [
-        'header', 'font', 'size',
-        'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list', 'bullet', 'indent',
-        'link', 'image', 'video',
-        'align',
-    ];
 
     return (
         <div className="rifas-page-container">
@@ -315,10 +299,7 @@ function RifasPage() {
                 <button onClick={() => {
                         setIsFormOpen(true);
                         setSelectedRifa(null);
-                        setFormData({
-                            nombreProducto: '', descripcion: '', imagenUrl: '', precioTicketUSD: '', tasaCambio: '', totalTickets: '',
-                            fechaInicioSorteo: null, fechaFin: null, fechaSorteo: null, estaAbiertaParaVenta: true
-                        });
+                        setFormData(initialFormState);
                     }} className="add-button">
                     Crear Nueva Rifa
                 </button>
@@ -345,8 +326,7 @@ function RifasPage() {
                                 theme="snow"
                                 value={formData.descripcion}
                                 onChange={handleQuillChange}
-                                modules={modules}
-                                formats={formats}
+                                modules={quillModules}
                                 placeholder="Escribe una descripción detallada aquí..."
                             />
                         </div>
