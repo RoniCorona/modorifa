@@ -784,9 +784,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <h2>¡Gracias por tu compra, ${firstTicket.nombreComprador || 'Comprador'}!</h2>
                                 <div class="buyer-details">
                                     <p><strong>Nombre:</strong> ${firstTicket.nombreComprador || 'N/A'}</p>
-                                    <p><strong>Correo:</strong> ${firstTicket.emailComprador || 'N/A'}</p>
-                                    <p><strong>Teléfono:</strong> ${firstTicket.telefonoComprador || 'N/A'}</p>
-                                    <p><strong>Identificación:</strong> ${(firstTicket.tipoIdentificacionComprador && firstTicket.numeroIdentificacionComprador) ? `${firstTicket.tipoIdentificacionComprador}-${firstTicket.numeroIdentificacionComprador}` : 'N/A'}</p>
                                 </div>
                                 <h4>Tus tickets:</h4>
                             </div>
