@@ -54,11 +54,14 @@ const PagosPanel = () => {
     const [filters, setFilters] = useState({
         rifaId: '',
         estado: '',
-        searchTerm: '',
+        searchTerm: '', // Mantener searchTerm en los filtros para la carga inicial y el useEffect
         page: 1,
         limit: 10
     });
     const [totalPagos, setTotalPagos] = useState(0);
+
+    // ESTADO NUEVO para manejar la búsqueda localmente antes de aplicar el filtro
+    const [localSearchTerm, setLocalSearchTerm] = useState('');
 
     const [isTicketQueryOpen, setIsTicketQueryOpen] = useState(false);
     const [ticketNumber, setTicketNumber] = useState('');
@@ -96,13 +99,22 @@ const PagosPanel = () => {
 
     // useEffect para cargar pagos y rifas cuando los filtros cambian
     useEffect(() => {
+        // Establecer el localSearchTerm con el valor del filtro cuando se recarga
+        // Esto previene que el input se borre cuando se navega por la paginación
+        setLocalSearchTerm(filters.searchTerm);
         fetchPagosAndRifas();
     }, [filters]);
 
     // Manejadores de cambios en los filtros
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
+        // La búsqueda ya no se maneja aquí, solo los filtros de select
         setFilters(prevFilters => ({ ...prevFilters, [name]: value, page: 1 }));
+    };
+
+    // NUEVO MANEJADOR: Para ejecutar la búsqueda solo con el botón o Enter
+    const handleSearch = () => {
+        setFilters(prevFilters => ({ ...prevFilters, searchTerm: localSearchTerm, page: 1 }));
     };
 
     // Manejador de cambio de página
@@ -115,12 +127,17 @@ const PagosPanel = () => {
         if (window.confirm('¿Estás seguro de que quieres VERIFICAR este pago?')) {
             const notes = prompt('Añade una nota de administrador (opcional):');
             try {
+                // Actualización optimista: Cambiar el estado en la interfaz inmediatamente
+                setPagos(prevPagos => prevPagos.map(p => p._id === id ? { ...p, estado: 'verificado' } : p));
+                
                 await verifyPago(id, notes);
-                await fetchPagosAndRifas(); // Recargar datos después de la acción
                 showToast('Pago verificado exitosamente.', 'success'); 
+                
             } catch (err) {
                 showToast('Error al verificar el pago: ' + (err.response?.data?.message || err.message), 'error'); 
                 console.error(err);
+                // Si falla, volvemos a cargar para tener la info correcta
+                await fetchPagosAndRifas();
             }
         }
     };
@@ -134,12 +151,17 @@ const PagosPanel = () => {
                 return;
             }
             try {
+                // Actualización optimista: Cambiar el estado en la interfaz inmediatamente
+                setPagos(prevPagos => prevPagos.map(p => p._id === id ? { ...p, estado: 'rechazado' } : p));
+                
                 await rejectPago(id, notes);
-                await fetchPagosAndRifas(); // Recargar datos después de la acción
                 showToast('Pago rechazado exitosamente. Tickets liberados.', 'success'); 
+                
             } catch (err) {
                 showToast('Error al rechazar el pago: ' + (err.response?.data?.message || err.message), 'error'); 
                 console.error(err);
+                // Si falla, volvemos a cargar para tener la info correcta
+                await fetchPagosAndRifas();
             }
         }
     };
@@ -148,13 +170,18 @@ const PagosPanel = () => {
     const handleDeletePago = async (id) => {
         if (window.confirm('¿Estás seguro de que quieres ELIMINAR este pago? Esta acción es irreversible y podría liberar tickets.')) {
             try {
+                // Actualización optimista: Eliminar el pago de la lista de la interfaz inmediatamente
+                setPagos(prevPagos => prevPagos.filter(p => p._id !== id));
+                setTotalPagos(prevTotal => prevTotal - 1);
+                
                 await deletePago(id);
-                await fetchPagosAndRifas(); // Recargar datos después de la acción
                 showToast('Pago eliminado exitosamente.', 'success'); 
             }
             catch (err) {
                 showToast('Error al eliminar el pago: ' + (err.response?.data?.message || err.message), 'error'); 
                 console.error(err);
+                // Si falla, volvemos a cargar para tener la info correcta
+                await fetchPagosAndRifas();
             }
         }
     };
@@ -468,17 +495,32 @@ const PagosPanel = () => {
                                 <option value="rechazado">Rechazado</option>
                             </select>
                         </div>
-                        <div className="filter-group">
+                        {/* CAMBIOS PARA LA BÚSQUEDA */}
+                        <div className="filter-group filter-group-search">
                             <label htmlFor="searchTerm" className="filter-label">Buscar <FaSearch /> (Ref., Nombre, Email):</label>
-                            <input
-                                type="text"
-                                id="searchTerm"
-                                name="searchTerm"
-                                value={filters.searchTerm}
-                                onChange={handleFilterChange}
-                                placeholder="Buscar..."
-                                className="filter-input"
-                            />
+                            <div className="search-input-group">
+                                <input
+                                    type="text"
+                                    id="searchTerm"
+                                    name="searchTerm"
+                                    value={localSearchTerm} // Usamos el nuevo estado local
+                                    onChange={(e) => setLocalSearchTerm(e.target.value)}
+                                    onKeyPress={(e) => { // Agregamos el evento onKeyPress para la tecla Enter
+                                        if (e.key === 'Enter') {
+                                            handleSearch();
+                                        }
+                                    }}
+                                    placeholder="Buscar..."
+                                    className="filter-input"
+                                />
+                                <button
+                                    onClick={handleSearch} // Agregamos un botón para ejecutar la búsqueda
+                                    className="search-button"
+                                    title="Buscar"
+                                >
+                                    <FaSearch />
+                                </button>
+                            </div>
                         </div>
                         <div className="filter-group">
                             <label htmlFor="limit" className="filter-label">Pagos por página:</label>
