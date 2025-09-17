@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import api from '../api/axiosInstance';
-import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { FaArrowLeft, FaHome, FaSpinner, FaTimesCircle, FaCheckCircle, FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 
 // Componente de Toast (simulado, puedes reemplazarlo por una librería real como react-toastify)
 const showToast = (message, type = 'info') => {
@@ -40,12 +40,35 @@ const convertUtcToLocal = (dateString) => {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
+// Nuevo componente de Modal para la descripción
+const DescriptionModal = ({ show, onClose, description }) => {
+    if (!show) {
+        return null;
+    }
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h3>Descripción de la Rifa</h3>
+                    <button className="close-button" onClick={onClose}>&times;</button>
+                </div>
+                <div className="modal-body">
+                    {/* Usa dangerouslySetInnerHTML para renderizar el HTML de <br> */}
+                    <div dangerouslySetInnerHTML={{ __html: description }} />
+                </div>
+            </div>
+        </div>
+    );
+};
+
 function RifasPage() {
     const [rifas, setRifas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedRifa, setSelectedRifa] = useState(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+    const [descriptionModalContent, setDescriptionModalContent] = useState('');
 
     const [formData, setFormData] = useState({
         nombreProducto: '',
@@ -315,6 +338,12 @@ function RifasPage() {
         window.location.href = '/dashboard';
     };
 
+    // Función para mostrar el modal de descripción
+    const handleShowDescription = (description) => {
+        setDescriptionModalContent(description);
+        setShowDescriptionModal(true);
+    };
+
     if (loading) {
         return <div className="loading-screen"><FaSpinner className="loading-spinner" /><p className="loading-text">Cargando rifas...</p></div>;
     }
@@ -361,7 +390,7 @@ function RifasPage() {
                             fechaInicioSorteo: '', fechaFin: '', fechaSorteo: '', estaAbiertaParaVenta: true
                         });
                     }} className="add-button">
-                    Crear Nueva Rifa
+                    <FaPlus /> Crear Nueva Rifa
                 </button>
             )}
 
@@ -382,7 +411,6 @@ function RifasPage() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="descripcion">Descripción:</label>
-                            {/* MEJORA: Usamos un textarea simple que respeta saltos de línea y emojis */}
                             <textarea
                                 id="descripcion"
                                 name="descripcion"
@@ -510,7 +538,6 @@ function RifasPage() {
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
-                                    <th>Descripción</th>
                                     <th>Tickets Vendidos</th>
                                     <th>Total Tickets</th>
                                     <th>% Vendido</th>
@@ -527,11 +554,6 @@ function RifasPage() {
                                 {rifas.map((rifa) => (
                                     <tr key={rifa._id}>
                                         <td>{rifa.nombreProducto}</td>
-                                        <td>
-                                            <div style={{ whiteSpace: 'pre-wrap' }}>
-                                                {rifa.descripcion}
-                                            </div>
-                                        </td>
                                         <td>{rifa.ticketsVendidos}</td>
                                         <td>{rifa.totalTickets}</td>
                                         <td>{rifa.porcentajeVendido ? rifa.porcentajeVendido.toFixed(2) : '0.00'}%</td>
@@ -546,6 +568,11 @@ function RifasPage() {
                                             </span>
                                         </td>
                                         <td className="actions-cell">
+                                            {/* Nuevo botón para ver la descripción */}
+                                            <button onClick={() => handleShowDescription(rifa.descripcion)} className="action-button view-button" title="Ver Descripción">
+                                                <FaEye />
+                                            </button>
+                                            
                                             <ToggleSwitch
                                                 id={`toggle-${rifa._id}`}
                                                 checked={rifa.estaAbiertaParaVenta}
@@ -568,6 +595,13 @@ function RifasPage() {
             {!loading && !error && !isFormOpen && rifas.length === 0 && (
                 <p className="no-rifas-message">No hay rifas para mostrar. ¡Crea una nueva!</p>
             )}
+            
+            {/* Renderiza el modal si showDescriptionModal es true */}
+            <DescriptionModal
+                show={showDescriptionModal}
+                onClose={() => setShowDescriptionModal(false)}
+                description={descriptionModalContent}
+            />
         </div>
     );
 }
