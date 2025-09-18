@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><strong>Compra mínima para este metodo de pago:</strong> 5 Tickets</p>
                     <p><strong>Monto a pagar:</strong> $<span id="montoBinanceDisplay">${totalUSD.toFixed(2)}</span></p>
                     <label for="referenciaBinance">Referencia / ID de la Transacción:</label>
-                    <input type="text" id="referenciaBinance" name="referenciaPago" placeholder="ID de la transacción Binance" required />
+                    <input type="text" id="referenciaBinance" name="referenciaPago" placeholder="ID de la Transacción Binance" required />
                 `;
                 metodoPagoSeleccionado = 'Binance';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto');
@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             data-ci="${ciSoloNumeros}">Copiar Datos</button>
 
                     <label for="referenciaPagoMovil">Referencia bancaria:</label>
-                    <input type="text" id="referenciaPagoMovil" name="referenciaPago" placeholder="Ingresa la referencia completa" required />
+                    <input type="text" id="referenciaPagoMovil" name="referenciaPago" placeholder="Ingresa la Referencia Completa" required />
                 `;
                 metodoPagoSeleccionado = 'Pago Móvil';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto');
@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><strong>Compra mínima para este metodo de pago:</strong> 10 Tickets</p>
                     <p><strong>Monto a pagar:</strong> $<span id="montoZelleDisplay">${totalUSD.toFixed(2)}</span></p>
                     <label for="referenciaZelle">Confirmación o Nombre de Envío:</label>
-                    <input type="text" id="referenciaZelle" name="referenciaPago" placeholder="ID o Nombre de la transacción" required />
+                    <input type="text" id="referenciaZelle" name="referenciaPago" placeholder="ID o Nombre de la Transacción" required />
                 `;
                 metodoPagoSeleccionado = 'Zelle';
                 if (formularioComprobante) formularioComprobante.classList.remove('oculto');
