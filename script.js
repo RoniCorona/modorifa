@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             data-telefono="${telefono}"
                             data-ci="${ciSoloNumeros}">Copiar Datos</button>
 
-                    <label for="referenciaPagoMovil">Referencia bancaria completa:</label>
+                    <label for="referenciaPagoMovil">Referencia bancaria:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" placeholder="Ingresa la referencia completa" required />
                 `;
                 metodoPagoSeleccionado = 'Pago Móvil';
@@ -609,6 +609,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInlineError(referenciaPagoInput);
             clearInlineError(comprobantePagoInput);
 
+
             const formularioComprobanteVisible = formularioComprobante && !formularioComprobante.classList.contains('oculto');
 
             // === VALIDACIONES DEL COMPROBANTE Y REFERENCIA (ROBUSTA) ===
@@ -704,83 +705,132 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 boletosAsignadosContenedor.innerHTML = '';
                 if (data.numerosTicketsAsignados && data.numerosTicketsAsignados.length > 0) {
-                    data.numerosTicketsAsignados.forEach(num => {
-                        const span = document.createElement('span');
-                        span.className = 'numero-boleto';
-                        span.textContent = num;
-                        boletosAsignadosContenedor.appendChild(span);
+                    data.numerosTicketsAsignados.forEach(boleto => {
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "boleto";
+                        tarjeta.textContent = `🎟️ ${boleto.toString().padStart(4, '0')}`; // Los números para cada rifa deben ser de 10000 y deben ir desde el 0001 hasta el 10000. [cite: 2025-06-21]
+                        boletosAsignadosContenedor.appendChild(tarjeta);
                     });
                 } else {
-                    boletosAsignadosContenedor.innerHTML = '<p>Los números se asignarán pronto.</p>';
+                    boletosAsignadosContenedor.innerHTML = '<p class="mensaje-error">No se asignaron boletos. Contacta a soporte.</p>';
                 }
 
             } catch (error) {
-                console.error('Error al procesar el pago:', error);
-                showMessage(`Error al procesar el pago: ${error.message}`, 'error');
+                showMessage(`Error al registrar el pago: ${error.message}`, 'error');
+                seccionPago.classList.remove("oculto");
+                seccionFinal.classList.add("oculto");
             } finally {
-                siguienteMetodoBtn.disabled = false;
+                // Restaura el botón a su estado original
                 siguienteMetodoBtn.classList.remove('is-loading');
+                siguienteMetodoBtn.disabled = false;
             }
         });
     }
 
-    // --- MODAL PARA VER TICKETS (en index.html y rifa.html) ---
     const modalTickets = document.getElementById('modalTickets');
-    const cerrarModalTickets = document.getElementById('cerrarModalTickets');
-    const contenedorTicketsModal = document.getElementById('contenedorTicketsModal');
+    const cerrarModalBtn = document.querySelector('.cerrar-modal');
+    const formConsultarTickets = document.getElementById('formConsultarTickets');
+    const correoConsultaInput = document.getElementById('correoConsulta');
+    const resultadosConsultaDiv = document.getElementById('resultados-consulta-tickets');
 
-    function abrirModalTickets(rifaId) {
-        if (modalTickets && contenedorTicketsModal) {
+    if (modalTickets) modalTickets.dataset.currentRifaId = '';
+
+    function abrirModalTickets(rifaId = '') {
+        if (modalTickets) {
             modalTickets.classList.remove('oculto');
-            cargarTicketsEnModal(rifaId);
+            modalTickets.dataset.currentRifaId = rifaId;
+            if (correoConsultaInput) correoConsultaInput.value = '';
+            if (resultadosConsultaDiv) {
+                resultadosConsultaDiv.innerHTML = '';
+                // LÍNEA AÑADIDA: Oculta el div al abrir el modal para que esté listo para la siguiente consulta
+                resultadosConsultaDiv.classList.add('oculto'); 
+            }
         }
     }
 
-    if (cerrarModalTickets) {
-        cerrarModalTickets.addEventListener('click', () => {
-            if (modalTickets) modalTickets.classList.add('oculto');
-        });
-    }
-
-    if (modalTickets) {
-        modalTickets.addEventListener('click', (e) => {
-            if (e.target === modalTickets) {
-                modalTickets.classList.add('oculto');
-            }
-        });
-    }
-
-    async function cargarTicketsEnModal(rifaId) {
-        if (!contenedorTicketsModal) return;
-        contenedorTicketsModal.innerHTML = '<p>Cargando tickets...</p>';
-        try {
-            const response = await fetch(`${API_URL}/rifas/${rifaId}/tickets`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const tickets = await response.json();
-            contenedorTicketsModal.innerHTML = '';
-            if (tickets.length === 0) {
-                contenedorTicketsModal.innerHTML = '<p>No hay tickets vendidos para esta rifa aún.</p>';
-                return;
-            }
-            tickets.forEach(ticket => {
-                const divTicket = document.createElement('div');
-                divTicket.className = `ticket ${ticket.vendido ? 'vendido' : 'disponible'}`;
-                divTicket.textContent = ticket.numero;
-                contenedorTicketsModal.appendChild(divTicket);
-            });
-        } catch (error) {
-            console.error('Error al cargar tickets en el modal:', error);
-            contenedorTicketsModal.innerHTML = '<p class="mensaje-error">Error al cargar los tickets.</p>';
+    function cerrarModalTickets() {
+        if (modalTickets) {
+            modalTickets.classList.add('oculto');
+            if (correoConsultaInput) correoConsultaInput.value = '';
+            if (resultadosConsultaDiv) resultadosConsultaDiv.innerHTML = '';
+            modalTickets.dataset.currentRifaId = '';
         }
     }
 
-    // --- MODAL PARA VER TICKETS en rifa.html ---
-    const btnVerTicketsRifa = document.getElementById('btnVerTicketsRifa');
-    if (btnVerTicketsRifa && rifaId) {
-        btnVerTicketsRifa.addEventListener('click', () => {
-            abrirModalTickets(rifaId);
+    if (cerrarModalBtn) cerrarModalBtn.addEventListener('click', cerrarModalTickets);
+    if (modalTickets) window.addEventListener('click', (event) => { if (event.target === modalTickets) cerrarModalTickets(); });
+
+    if (formConsultarTickets) {
+        formConsultarTickets.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const correo = correoConsultaInput ? correoConsultaInput.value : '';
+            const rifaIdConsulta = modalTickets ? modalTickets.dataset.currentRifaId : '';
+            if (resultadosConsultaDiv) {
+                if (!correo || !correo.includes('@')) {
+                    resultadosConsultaDiv.innerHTML = `<p class="mensaje-error">Por favor, ingresa un correo electrónico válido.</p>`;
+                    // LÍNEA AÑADIDA: Asegura que el recuadro se muestre en caso de error de validación del correo
+                    resultadosConsultaDiv.classList.remove('oculto'); 
+                    return;
+                }
+                resultadosConsultaDiv.innerHTML = `<p>Buscando tickets para: <strong>${correo}</strong>...</p>`;
+                // LÍNEA AÑADIDA: Muestra el recuadro cuando la búsqueda comienza
+                resultadosConsultaDiv.classList.remove('oculto'); 
+            }
+
+            try {
+                let url = `${API_URL}/tickets/consultar?email=${encodeURIComponent(correo)}`;
+                if (rifaIdConsulta) url += `&rifaId=${encodeURIComponent(rifaIdConsulta)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Error al consultar tickets.');
+
+                if (resultadosConsultaDiv) {
+                    if (data.tickets && data.tickets.length > 0) {
+                        const firstTicket = data.tickets[0];
+                        let htmlResultados = `
+                            <div class="consulta-header">
+                                <h2>¡Gracias por tu compra, ${firstTicket.nombreComprador || 'Comprador'}!</h2>
+                                <div class="buyer-details">
+                                    <p><strong>Nombre:</strong> ${firstTicket.nombreComprador || 'N/A'}</p>
+                                </div>
+                                <h4>Tus tickets:</h4>
+                            </div>
+                        `;
+
+                        const ticketsAgrupadosPorRifa = data.tickets.reduce((acc, ticket) => {
+                            const rifaDetail = ticket.rifaId;
+                            const currentRifaId = rifaDetail ? rifaDetail._id : 'unknown_rifa';
+                            const rifaName = (rifaDetail && rifaDetail.nombreProducto) ? rifaDetail.nombreProducto : 'Rifa Desconocida';
+                            if (!acc[currentRifaId]) {
+                                acc[currentRifaId] = { nombreProducto: rifaName, boletos: [] };
+                            }
+                            acc[currentRifaId].boletos.push(ticket.numeroTicket);
+                            return acc;
+                        }, {});
+
+                        for (const rifaId in ticketsAgrupadosPorRifa) {
+                            const rifaData = ticketsAgrupadosPorRifa[rifaId];
+                            htmlResultados += `
+                                <div class="rifa-tickets-group">
+                                    <p><strong>Rifa:</strong> ${rifaData.nombreProducto}</p>
+                                    <div class="boletos-list">
+                            `;
+                            rifaData.boletos.sort((a, b) => a - b).forEach(boletoNum => {
+                                htmlResultados += `<span class="boleto">🎟️ ${boletoNum.toString().padStart(4, '0')}</span>`; // Los números para cada rifa deben ser de 10000 y deben ir desde el 0001 hasta el 10000. [cite: 2025-06-21]
+                            });
+                            htmlResultados += `
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        resultadosConsultaDiv.innerHTML = htmlResultados;
+                    } else {
+                        resultadosConsultaDiv.innerHTML = `<p class="mensaje-info">No se encontraron tickets asociados a este correo electrónico ${rifaIdConsulta ? `para esta rifa.` : `.`}</p>`;
+                    }
+                }
+            } catch (error) {
+                if (resultadosConsultaDiv) resultadosConsultaDiv.innerHTML = `<p class="mensaje-error">Error al consultar tickets: ${error.message}</p>`;
+            }
         });
     }
 });
