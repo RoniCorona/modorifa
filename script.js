@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             data-telefono="${telefono}"
                             data-ci="${ciSoloNumeros}">Copiar Datos</button>
 
-                    <label for="referenciaPagoMovil">Referencia bancaria:</label>
+                    <label for="referenciaPagoMovil">Referencia Bancaria Completa:</label>
                     <input type="text" id="referenciaPagoMovil" name="referenciaPago" placeholder="Ingresa la Referencia Completa" required />
                 `;
                 metodoPagoSeleccionado = 'Pago Móvil';
