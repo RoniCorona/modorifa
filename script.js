@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 const totalBs = totalUSD * rifaTasaCambio;
-                const banco = 'Venezuela';
+                const banco = 'Banco Nacional de Crédito (BNC)';
                 const telefono = '0414-3548533';
                 const ciCompleto = 'V-24771856'; // Guardamos el CI completo para mostrar
                 const ciSoloNumeros = '24771856'; // Creamos una variable solo para los números del CI
